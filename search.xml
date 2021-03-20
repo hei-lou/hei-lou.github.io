@@ -1,38 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>Hello hexo</title>
-      <link href="2021/03/20/Hello-hexo/"/>
-      <url>2021/03/20/Hello-hexo/</url>
-      
-        <content type="html"><![CDATA[<h2 id="关于博客"><a href="#关于博客" class="headerlink" title="关于博客"></a>关于博客</h2><p>在老早以前，自己就有搭建一个博客的想法，中途也尝试自己动手操作过，但是好几次都半途而废了。在自己的想法中，一个博客需要一套管理系统，自己没那么多时间。最近在晚上搜寻的时候，发现了一个惊为天人的博客，其UI甚合我意，于是一番操作下发现了这个<a href="http://hexo.io/zh-cn/">Hexo</a>，以及那个深得我心的主题-<a href="https://github.com/TriDiamond/hexo-theme-obsidian">obsidian</a>。</p><h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><blockquote><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br>用人话来讲就是，你只管写自己的markdown，那些高大上的渲染以及兼容我会处理好。啊这。。。</p></blockquote><h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><h3 id="所需工具软件"><a href="#所需工具软件" class="headerlink" title="所需工具软件"></a>所需工具软件</h3><ul><li>git : <a href="http://git-scm.com/">http://git-scm.com/</a></li><li>Nodejs : <a href="http://nodejs.org/">http://nodejs.org/</a></li><li>Hexo ： <a href="http://hexo.io/zh-cn/">http://hexo.io/zh-cn/</a></li></ul><h3 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h3><ul><li><p>git和Nodejs的安装就不说了。</p></li><li><p>安装Hexo</p><pre><code class="bash">$ npm install -g hexo-cli</code></pre></li><li><p>创建hexo文件夹并进入</p><pre><code class="bash">$ hexo init$ npm install</code></pre></li><li><p>启动Hexo服务</p><pre><code class="bash">$ hexo server</code></pre><blockquote><p>浏览器访问：<a href="http://localhost:4000/%EF%BC%8C%E6%AD%A4%E6%97%B6%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E9%BB%98%E8%AE%A4%E4%B8%BB%E9%A2%98">http://localhost:4000/，此时使用的是默认主题</a></p></blockquote></li></ul><h3 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h3><ul><li><p>下载主题</p><pre><code class="bash">$ git clone https://github.com/TriDiamond/hexo-theme-obsidian.git obsidian</code></pre></li><li><p>修改_config.yml，启用主题</p></li></ul><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f20b587aeb5c49eb983c8be2e2f7641e~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p><blockquote><p>更多配置项，请参考<a href="https://hexo.io/zh-cn/docs/configuration.html">这里</a></p></blockquote><ul><li><p>安装主题需要的 NPM 依赖</p><pre><code class="bash">$ cd themes/obsidian$ npm install</code></pre></li><li><p>重新启动</p><pre><code class="bash">$ cd hexo$ hexo s</code></pre></li></ul>]]></content>
-      
-      
+<search>
+  <entry>
+    <title>Hello hexo</title>
+    <url>/2021/03/20/Hello-hexo/</url>
+    <content><![CDATA[<h2 id="关于博客"><a href="#关于博客" class="headerlink" title="关于博客"></a>关于博客</h2><p>在老早以前，自己就有搭建一个博客的想法，中途也尝试自己动手操作过，但是好几次都半途而废了。在自己的想法中，一个博客需要一套管理系统，自己没那么多时间。最近在晚上搜寻的时候，发现了一个惊为天人的博客，其UI甚合我意，于是一番操作下发现了这个<a href="http://hexo.io/zh-cn/">Hexo</a>，以及那个深得我心的主题-<a href="https://github.com/TriDiamond/hexo-theme-obsidian">obsidian</a>。</p>
+<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><blockquote>
+<p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br>用人话来讲就是，你只管写自己的markdown，那些高大上的渲染以及兼容我会处理好。啊这。。。</p>
+</blockquote>
+<h2 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h2><h3 id="所需工具软件"><a href="#所需工具软件" class="headerlink" title="所需工具软件"></a>所需工具软件</h3><ul>
+<li>git : <a href="http://git-scm.com/">http://git-scm.com/</a></li>
+<li>Nodejs : <a href="http://nodejs.org/">http://nodejs.org/</a></li>
+<li>Hexo ： <a href="http://hexo.io/zh-cn/">http://hexo.io/zh-cn/</a></li>
+</ul>
+<h3 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h3><ul>
+<li><p>git和Nodejs的安装就不说了。</p>
+</li>
+<li><p>安装Hexo</p>
+<pre><code class="bash">$ npm install -g hexo-cli
+</code></pre>
+</li>
+<li><p>创建hexo文件夹并进入</p>
+<pre><code class="bash">$ hexo init
+$ npm install
+</code></pre>
+</li>
+<li><p>启动Hexo服务</p>
+<pre><code class="bash">$ hexo server
+</code></pre>
+<blockquote>
+<p>浏览器访问：<a href="http://localhost:4000/%EF%BC%8C%E6%AD%A4%E6%97%B6%E4%BD%BF%E7%94%A8%E7%9A%84%E6%98%AF%E9%BB%98%E8%AE%A4%E4%B8%BB%E9%A2%98">http://localhost:4000/，此时使用的是默认主题</a></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h3><ul>
+<li><p>下载主题</p>
+<pre><code class="bash">$ git clone https://github.com/TriDiamond/hexo-theme-obsidian.git obsidian
+</code></pre>
+</li>
+<li><p>修改_config.yml，启用主题</p>
+</li>
+</ul>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f20b587aeb5c49eb983c8be2e2f7641e~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<blockquote>
+<p>更多配置项，请参考<a href="https://hexo.io/zh-cn/docs/configuration.html">这里</a></p>
+</blockquote>
+<ul>
+<li><p>安装主题需要的 NPM 依赖</p>
+<pre><code class="bash">$ cd themes/obsidian
+$ npm install
+</code></pre>
+</li>
+<li><p>重新启动</p>
+<pre><code class="bash">$ cd hexo
+$ hexo s
+</code></pre>
+</li>
+</ul>
+]]></content>
       <categories>
-          
-          <category> 初见 </category>
-          
+        <category>初见</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> blog </tag>
-            
-            <tag> hexo </tag>
-            
-            <tag> obsidian </tag>
-            
-            <tag> node </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
+      <tags>
+        <tag>blog</tag>
+        <tag>hexo</tag>
+        <tag>obsidian</tag>
+        <tag>node</tag>
+      </tags>
+  </entry>
 </search>
