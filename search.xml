@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Hello hexo</title>
-    <url>/2021/03/20/Hello-hexo/</url>
+    <url>/2019/03/20/Hello-hexo/</url>
     <content><![CDATA[<h2 id="关于博客"><a href="#关于博客" class="headerlink" title="关于博客"></a>关于博客</h2><p>在老早以前，自己就有搭建一个博客的想法，中途也尝试自己动手操作过，但是好几次都半途而废了。在自己的想法中，一个博客需要一套管理系统，自己没那么多时间。最近在晚上搜寻的时候，发现了一个惊为天人的博客，其UI甚合我意，于是一番操作下发现了这个<a href="http://hexo.io/zh-cn/">Hexo</a>，以及那个深得我心的主题-<a href="https://github.com/TriDiamond/hexo-theme-obsidian">obsidian</a>。</p>
 <h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><blockquote>
 <p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br>用人话来讲就是，你只管写自己的markdown，那些高大上的渲染以及兼容我会处理好。啊这。。。</p>
@@ -65,6 +65,99 @@ $ hexo s
         <tag>hexo</tag>
         <tag>obsidian</tag>
         <tag>node</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机网络、TCP原理</title>
+    <url>/2019/03/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E3%80%81TCP%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01e6973a8daa42aeba5d48b9c49fa19b~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<ul>
+<li><p>应用层：通过应用进程间的交互来完成特定的网络应用。应用层协议定义的是应用进程间通信和交互的规则。应用层交互的数据单元成为报文。常用应用层协议有HTTP、DNS、FTP、SMTP。</p>
+</li>
+<li><p>运输层：运输层的任务就是负责向两个主机中进程之间的通信提供通用的数据传输服务。运输层主要使用以下两种协议：</p>
+<blockquote>
+<p>TCP：提供面向连接的、可靠的数据传输服务，其数据传输单位是报文段。</p>
+<p>UDP：提供无连接的、尽最大努力的数据传输服务，其数据传输的单位是用户数据报</p>
+</blockquote>
+</li>
+<li><p>网络层：选择合适的网间路由和交换结点，为分组交换网上的不同主机提供通信服务。在发送数据时，网络层把运输层产生的报文段或用户数据报封装成分组和包进行传送</p>
+<blockquote>
+<p>网络层只向上提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网际协议IP是TCP/IP体系中最主要的协议之一，与其配套使用的还有ARP、ICMP、IGMP。</p>
+</blockquote>
+</li>
+<li><p>数据链路层：使用专门的链路层的协议在两台主机上一段一段的传输数据。数据链路层将网络层交下来的 IP 数据报组装成帧（加上帧头和帧尾），在两个相邻节点间的链路上传送。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
+<blockquote>
+<p>数据链路层使用CRC检验实现无比特差错的传输。对于通信质量良好的有线链路，链路层协议不使用确认和重传机制，改正差错的任务由上层协议完成。对于通信质量较差的无线链路，数据链路层使用确认和重传机制向上提供可靠传输服务。</p>
+</blockquote>
+</li>
+<li><p>物理层：在物理层上所传送的数据单位是比特。其实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异</p>
+</li>
+</ul>
+<h2 id="数据传递过程"><a href="#数据传递过程" class="headerlink" title="数据传递过程"></a>数据传递过程</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d80a3ad092424604a383714dca896d00~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>主机1的应用进程AP1向主机2的应用进程AP2传送数据:</p>
+<ul>
+<li>AP1先将其数据交给本主机的第5层（应用层）。第5层加上必要的控制信息H5就变成了下一层的数据单元。</li>
+<li>第4层（运输层）收到这个数据单元后，加上本层的控制信息H4，再交给第3层（网络层），成为第3层的数据单元。<br>依此类推。不过到了第2层（数据链路层）后，控制信息被分成两部分，分别加到本层数据单元的首部（H2）和尾部（T2）；而第1层（物理层）由于是比特流的传送，所以不再加上控制信息。请注意，传送比特流时应从首部开始传送。</li>
+</ul>
+<p>当这一串的比特流离开主机1的物理层经网络的物理媒体（传输信道）传送到路由器时，就从路由器的第1层（物理层）依次上升到第3层（网络层）。每一层都是根据控制信息进行必要的操作，然后将控制信息剥去，将该层剩下的数据单元上交给更高的一层。当分组上升到了第3层时，就根据首部中的目的地址查找路由器中的路由表，找出转发分组的接口，然后往下传送到第2层（链路层），加上新的首部和尾部后，再到最下面的第1层，然后在物理媒体上把每一个比特发送出去。</p>
+<p>当这一串的比特流离开路由器到达目的站主机2时，就从主机2的第1层按照上面讲过的方式，依次上升到第5层。最后，把应用进程AP1发送的数据交给目的站的应用进程AP2。</p>
+<h2 id="TCP详解"><a href="#TCP详解" class="headerlink" title="TCP详解"></a>TCP详解</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/534bd90b21ab4993b4e2ae690c8f6073~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h5 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
+<p>建立连接时，客户端发送syn包（seq=x）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
+</blockquote>
+<h5 id="第二次"><a href="#第二次" class="headerlink" title="第二次"></a>第二次</h5><blockquote>
+<p>服务器收到syn包，必须确认客户的SYN（ack=x+1），同时自己也发送一个SYN包（seq=y），即SYN+ACK包，此时服务器进入SYN_RECV状态。</p>
+</blockquote>
+<h5 id="第三次"><a href="#第三次" class="headerlink" title="第三次"></a>第三次</h5><blockquote>
+<p>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=y+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
+</blockquote>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e174cf7bf489462c876dd2762e41ccdb~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>对于一个已经建立的连接，TCP使用改进的四次握手来释放连接（使用一个带有FIN附加标记的报文段）。TCP关闭连接的步骤如下：</p>
+<h5 id="第一次-1"><a href="#第一次-1" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
+<p>当主机A的应用程序通知TCP数据已经发送完毕时，TCP向主机B发送一个带有FIN附加标记的报文段（FIN表示英文finish）。</p>
+</blockquote>
+<h5 id="第二次-1"><a href="#第二次-1" class="headerlink" title="第二次"></a>第二次</h5><blockquote>
+<p>主机B收到这个FIN报文段之后，并不立即用FIN报文段回复主机A，而是先向主机A发送一个确认序号ACK，同时通知自己相应的应用程序：对方要求关闭连接（先发送ACK的目的是为了防止在这段时间内，对方重传FIN报文段）。</p>
+</blockquote>
+<h5 id="第三次-1"><a href="#第三次-1" class="headerlink" title="第三次"></a>第三次</h5><blockquote>
+<p>主机B的应用程序告诉TCP：我要彻底的关闭连接，TCP向主机A送一个FIN报文段。</p>
+</blockquote>
+<h5 id="第四次"><a href="#第四次" class="headerlink" title="第四次"></a>第四次</h5><blockquote>
+<p>主机A收到这个FIN报文段后，向主机B发送一个ACK表示连接彻底释放。</p>
+</blockquote>
+<h2 id="TCP协议如何保证可靠传输"><a href="#TCP协议如何保证可靠传输" class="headerlink" title="TCP协议如何保证可靠传输"></a>TCP协议如何保证可靠传输</h2><h4 id="ARQ协议"><a href="#ARQ协议" class="headerlink" title="ARQ协议"></a>ARQ协议</h4><p>自动重传请求（Automatic Repeat-reQuest，ARQ），它通过使用确认和超时这两个机制，在不可靠服务的基础上实现可靠的信息传输。如果发送方在发送后一段时间之内没有收到确认帧，它通常会重新发送。接收方收到重复的分组也会发送确认帧。ARQ包括停止等待ARQ协议和连续ARQ协议。</p>
+<blockquote>
+<p>停止等待协议：每次发完一个分组就停止发送，等待对方的确认。在收到确认后再发送下一个请求。</p>
+<p>连续ARQ协议：发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认。接收方一般采用累计确认，对按序到达的最后一个分组发送确认，表明到这个分组为止的所有分组都已经正确收到了。</p>
+</blockquote>
+<h2 id="TCP的流量控制"><a href="#TCP的流量控制" class="headerlink" title="TCP的流量控制"></a>TCP的流量控制</h2><p>所谓流量控制，就是让发送方的发送速率不要太快，要让接收方来得及接受。TCP 利用滑动窗口实现流量控制。</p>
+<blockquote>
+<p>持续计时器：为解决在传输期间，非零窗口通知丢失，而导致互相等待的死锁局面。只要TCP连接的一方收到对方的零窗口通知，就启动持续计时器。若持续计时器设置的时间到期，就发送一个零窗口探测报文段（仅携带1字节的数据），而对方就在确认这个探测报文段时给出了现在的窗口值。</p>
+</blockquote>
+<h2 id="TCP的拥塞控制"><a href="#TCP的拥塞控制" class="headerlink" title="TCP的拥塞控制"></a>TCP的拥塞控制</h2><p>拥塞控制就是为了防止过多的数据注入到网络中，这样就可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提，就是网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机，所有的路由器，以及与降低网络传输性能有关的所有因素。进行拥塞控制的四种算法如下：</p>
+<ul>
+<li><p>慢开始： 慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的符合情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</p>
+</li>
+<li><p>拥塞避免： 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送放的cwnd加1.</p>
+</li>
+<li><p>快重传与快恢复： 在 TCP/IP 中，快速重传和恢复（fast retransmit and recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP 将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了 FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</p>
+</li>
+</ul>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cffae4b0e7fc411d8e04869b91142b60~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="TCP的有限状态机"><a href="#TCP的有限状态机" class="headerlink" title="TCP的有限状态机"></a>TCP的有限状态机</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d8481bb0041c416da98fcb1f99361a52~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《图解HTTP》</li>
+<li>《计算机网络第七版》（谢希仁编著）</li>
+<li><a href="https://snailclimb.gitee.io/javaguide">https://snailclimb.gitee.io/javaguide</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>tcp</tag>
+        <tag>三次握手</tag>
+        <tag>网络</tag>
       </tags>
   </entry>
 </search>

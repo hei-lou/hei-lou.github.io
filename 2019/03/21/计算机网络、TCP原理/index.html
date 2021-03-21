@@ -1,0 +1,513 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>计算机网络、TCP原理 - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,计算机网络体系结构
+
+应用层：通过应用进程间的交互来完成特定的网络应用。应用层协议定义的是应用进程间通信和交互的规则。应用层交互的数据单元成为报文。常用应用层协议有HTTP、DNS、FTP、SMTP,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">计算机网络、TCP原理</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/网络"><b>「
+                    </b>网络<b> 」</b></a>
+                
+                三月 21, 2019
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/03/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E3%80%81TCP%E5%8E%9F%E7%90%86/" title="计算机网络、TCP原理" class="">计算机网络、TCP原理</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    6.1k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    6 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/tcp/" rel="tag">tcp</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" rel="tag">三次握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01e6973a8daa42aeba5d48b9c49fa19b~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<ul>
+<li><p>应用层：通过应用进程间的交互来完成特定的网络应用。应用层协议定义的是应用进程间通信和交互的规则。应用层交互的数据单元成为报文。常用应用层协议有HTTP、DNS、FTP、SMTP。</p>
+</li>
+<li><p>运输层：运输层的任务就是负责向两个主机中进程之间的通信提供通用的数据传输服务。运输层主要使用以下两种协议：</p>
+<blockquote>
+<p>TCP：提供面向连接的、可靠的数据传输服务，其数据传输单位是报文段。</p>
+<p>UDP：提供无连接的、尽最大努力的数据传输服务，其数据传输的单位是用户数据报</p>
+</blockquote>
+</li>
+<li><p>网络层：选择合适的网间路由和交换结点，为分组交换网上的不同主机提供通信服务。在发送数据时，网络层把运输层产生的报文段或用户数据报封装成分组和包进行传送</p>
+<blockquote>
+<p>网络层只向上提供简单灵活的、无连接的、尽最大努力交付的数据报服务。网际协议IP是TCP/IP体系中最主要的协议之一，与其配套使用的还有ARP、ICMP、IGMP。</p>
+</blockquote>
+</li>
+<li><p>数据链路层：使用专门的链路层的协议在两台主机上一段一段的传输数据。数据链路层将网络层交下来的 IP 数据报组装成帧（加上帧头和帧尾），在两个相邻节点间的链路上传送。每一帧包括数据和必要的控制信息（如同步信息，地址信息，差错控制等）。</p>
+<blockquote>
+<p>数据链路层使用CRC检验实现无比特差错的传输。对于通信质量良好的有线链路，链路层协议不使用确认和重传机制，改正差错的任务由上层协议完成。对于通信质量较差的无线链路，数据链路层使用确认和重传机制向上提供可靠传输服务。</p>
+</blockquote>
+</li>
+<li><p>物理层：在物理层上所传送的数据单位是比特。其实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异</p>
+</li>
+</ul>
+<h2 id="数据传递过程"><a href="#数据传递过程" class="headerlink" title="数据传递过程"></a>数据传递过程</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d80a3ad092424604a383714dca896d00~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>主机1的应用进程AP1向主机2的应用进程AP2传送数据:</p>
+<ul>
+<li>AP1先将其数据交给本主机的第5层（应用层）。第5层加上必要的控制信息H5就变成了下一层的数据单元。</li>
+<li>第4层（运输层）收到这个数据单元后，加上本层的控制信息H4，再交给第3层（网络层），成为第3层的数据单元。<br>依此类推。不过到了第2层（数据链路层）后，控制信息被分成两部分，分别加到本层数据单元的首部（H2）和尾部（T2）；而第1层（物理层）由于是比特流的传送，所以不再加上控制信息。请注意，传送比特流时应从首部开始传送。</li>
+</ul>
+<p>当这一串的比特流离开主机1的物理层经网络的物理媒体（传输信道）传送到路由器时，就从路由器的第1层（物理层）依次上升到第3层（网络层）。每一层都是根据控制信息进行必要的操作，然后将控制信息剥去，将该层剩下的数据单元上交给更高的一层。当分组上升到了第3层时，就根据首部中的目的地址查找路由器中的路由表，找出转发分组的接口，然后往下传送到第2层（链路层），加上新的首部和尾部后，再到最下面的第1层，然后在物理媒体上把每一个比特发送出去。</p>
+<p>当这一串的比特流离开路由器到达目的站主机2时，就从主机2的第1层按照上面讲过的方式，依次上升到第5层。最后，把应用进程AP1发送的数据交给目的站的应用进程AP2。</p>
+<h2 id="TCP详解"><a href="#TCP详解" class="headerlink" title="TCP详解"></a>TCP详解</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/534bd90b21ab4993b4e2ae690c8f6073~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h5 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
+<p>建立连接时，客户端发送syn包（seq=x）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
+</blockquote>
+<h5 id="第二次"><a href="#第二次" class="headerlink" title="第二次"></a>第二次</h5><blockquote>
+<p>服务器收到syn包，必须确认客户的SYN（ack=x+1），同时自己也发送一个SYN包（seq=y），即SYN+ACK包，此时服务器进入SYN_RECV状态。</p>
+</blockquote>
+<h5 id="第三次"><a href="#第三次" class="headerlink" title="第三次"></a>第三次</h5><blockquote>
+<p>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=y+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
+</blockquote>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e174cf7bf489462c876dd2762e41ccdb~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>对于一个已经建立的连接，TCP使用改进的四次握手来释放连接（使用一个带有FIN附加标记的报文段）。TCP关闭连接的步骤如下：</p>
+<h5 id="第一次-1"><a href="#第一次-1" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
+<p>当主机A的应用程序通知TCP数据已经发送完毕时，TCP向主机B发送一个带有FIN附加标记的报文段（FIN表示英文finish）。</p>
+</blockquote>
+<h5 id="第二次-1"><a href="#第二次-1" class="headerlink" title="第二次"></a>第二次</h5><blockquote>
+<p>主机B收到这个FIN报文段之后，并不立即用FIN报文段回复主机A，而是先向主机A发送一个确认序号ACK，同时通知自己相应的应用程序：对方要求关闭连接（先发送ACK的目的是为了防止在这段时间内，对方重传FIN报文段）。</p>
+</blockquote>
+<h5 id="第三次-1"><a href="#第三次-1" class="headerlink" title="第三次"></a>第三次</h5><blockquote>
+<p>主机B的应用程序告诉TCP：我要彻底的关闭连接，TCP向主机A送一个FIN报文段。</p>
+</blockquote>
+<h5 id="第四次"><a href="#第四次" class="headerlink" title="第四次"></a>第四次</h5><blockquote>
+<p>主机A收到这个FIN报文段后，向主机B发送一个ACK表示连接彻底释放。</p>
+</blockquote>
+<h2 id="TCP协议如何保证可靠传输"><a href="#TCP协议如何保证可靠传输" class="headerlink" title="TCP协议如何保证可靠传输"></a>TCP协议如何保证可靠传输</h2><h4 id="ARQ协议"><a href="#ARQ协议" class="headerlink" title="ARQ协议"></a>ARQ协议</h4><p>自动重传请求（Automatic Repeat-reQuest，ARQ），它通过使用确认和超时这两个机制，在不可靠服务的基础上实现可靠的信息传输。如果发送方在发送后一段时间之内没有收到确认帧，它通常会重新发送。接收方收到重复的分组也会发送确认帧。ARQ包括停止等待ARQ协议和连续ARQ协议。</p>
+<blockquote>
+<p>停止等待协议：每次发完一个分组就停止发送，等待对方的确认。在收到确认后再发送下一个请求。</p>
+<p>连续ARQ协议：发送方维持一个发送窗口，凡位于发送窗口内的分组可以连续发送出去，而不需要等待对方确认。接收方一般采用累计确认，对按序到达的最后一个分组发送确认，表明到这个分组为止的所有分组都已经正确收到了。</p>
+</blockquote>
+<h2 id="TCP的流量控制"><a href="#TCP的流量控制" class="headerlink" title="TCP的流量控制"></a>TCP的流量控制</h2><p>所谓流量控制，就是让发送方的发送速率不要太快，要让接收方来得及接受。TCP 利用滑动窗口实现流量控制。</p>
+<blockquote>
+<p>持续计时器：为解决在传输期间，非零窗口通知丢失，而导致互相等待的死锁局面。只要TCP连接的一方收到对方的零窗口通知，就启动持续计时器。若持续计时器设置的时间到期，就发送一个零窗口探测报文段（仅携带1字节的数据），而对方就在确认这个探测报文段时给出了现在的窗口值。</p>
+</blockquote>
+<h2 id="TCP的拥塞控制"><a href="#TCP的拥塞控制" class="headerlink" title="TCP的拥塞控制"></a>TCP的拥塞控制</h2><p>拥塞控制就是为了防止过多的数据注入到网络中，这样就可以使网络中的路由器或链路不致过载。拥塞控制所要做的都有一个前提，就是网络能够承受现有的网络负荷。拥塞控制是一个全局性的过程，涉及到所有的主机，所有的路由器，以及与降低网络传输性能有关的所有因素。进行拥塞控制的四种算法如下：</p>
+<ul>
+<li><p>慢开始： 慢开始算法的思路是当主机开始发送数据时，如果立即把大量数据字节注入到网络，那么可能会引起网络阻塞，因为现在还不知道网络的符合情况。经验表明，较好的方法是先探测一下，即由小到大逐渐增大发送窗口，也就是由小到大逐渐增大拥塞窗口数值。cwnd初始值为1，每经过一个传播轮次，cwnd加倍。</p>
+</li>
+<li><p>拥塞避免： 拥塞避免算法的思路是让拥塞窗口cwnd缓慢增大，即每经过一个往返时间RTT就把发送放的cwnd加1.</p>
+</li>
+<li><p>快重传与快恢复： 在 TCP/IP 中，快速重传和恢复（fast retransmit and recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP 将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了 FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</p>
+</li>
+</ul>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cffae4b0e7fc411d8e04869b91142b60~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="TCP的有限状态机"><a href="#TCP的有限状态机" class="headerlink" title="TCP的有限状态机"></a>TCP的有限状态机</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d8481bb0041c416da98fcb1f99361a52~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《图解HTTP》</li>
+<li>《计算机网络第七版》（谢希仁编著）</li>
+<li><a target="_blank" rel="noopener" href="https://snailclimb.gitee.io/javaguide">https://snailclimb.gitee.io/javaguide</a></li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">2 <p>文章</p></a></li>
+                    <li><a href="/categories">2 <p>分类</p></a></li>
+                    <li><a href="/tags">7 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">计算机网络体系结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">数据传递过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">TCP详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">3.1.</span> <span class="toc-text">三次握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">3.2.</span> <span class="toc-text">四次挥手</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93"><span class="toc-number">4.</span> <span class="toc-text">TCP协议如何保证可靠传输</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">TCP的流量控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E7%9A%84%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="toc-number">6.</span> <span class="toc-text">TCP的拥塞控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E7%9A%84%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="toc-number">7.</span> <span class="toc-text">TCP的有限状态机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.5.0/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>
