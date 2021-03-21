@@ -70,7 +70,7 @@ $ hexo s
   <entry>
     <title>计算机网络、TCP原理</title>
     <url>/2019/03/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E3%80%81TCP%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01e6973a8daa42aeba5d48b9c49fa19b~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+    <content><![CDATA[<h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01e6973a8daa42aeba5d48b9c49fa19b~tplv-k3u1fbpfcp-watermark.image"></p>
 <ul>
 <li><p>应用层：通过应用进程间的交互来完成特定的网络应用。应用层协议定义的是应用进程间通信和交互的规则。应用层交互的数据单元成为报文。常用应用层协议有HTTP、DNS、FTP、SMTP。</p>
 </li>
@@ -93,7 +93,7 @@ $ hexo s
 <li><p>物理层：在物理层上所传送的数据单位是比特。其实现相邻计算机节点之间比特流的透明传送，尽可能屏蔽掉具体传输介质和物理设备的差异</p>
 </li>
 </ul>
-<h2 id="数据传递过程"><a href="#数据传递过程" class="headerlink" title="数据传递过程"></a>数据传递过程</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d80a3ad092424604a383714dca896d00~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="数据传递过程"><a href="#数据传递过程" class="headerlink" title="数据传递过程"></a>数据传递过程</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d80a3ad092424604a383714dca896d00~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>主机1的应用进程AP1向主机2的应用进程AP2传送数据:</p>
 <ul>
 <li>AP1先将其数据交给本主机的第5层（应用层）。第5层加上必要的控制信息H5就变成了下一层的数据单元。</li>
@@ -101,7 +101,7 @@ $ hexo s
 </ul>
 <p>当这一串的比特流离开主机1的物理层经网络的物理媒体（传输信道）传送到路由器时，就从路由器的第1层（物理层）依次上升到第3层（网络层）。每一层都是根据控制信息进行必要的操作，然后将控制信息剥去，将该层剩下的数据单元上交给更高的一层。当分组上升到了第3层时，就根据首部中的目的地址查找路由器中的路由表，找出转发分组的接口，然后往下传送到第2层（链路层），加上新的首部和尾部后，再到最下面的第1层，然后在物理媒体上把每一个比特发送出去。</p>
 <p>当这一串的比特流离开路由器到达目的站主机2时，就从主机2的第1层按照上面讲过的方式，依次上升到第5层。最后，把应用进程AP1发送的数据交给目的站的应用进程AP2。</p>
-<h2 id="TCP详解"><a href="#TCP详解" class="headerlink" title="TCP详解"></a>TCP详解</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/534bd90b21ab4993b4e2ae690c8f6073~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h2 id="TCP详解"><a href="#TCP详解" class="headerlink" title="TCP详解"></a>TCP详解</h2><h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/534bd90b21ab4993b4e2ae690c8f6073~tplv-k3u1fbpfcp-watermark.image"></p>
 <h5 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
 <p>建立连接时，客户端发送syn包（seq=x）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。</p>
 </blockquote>
@@ -111,7 +111,7 @@ $ hexo s
 <h5 id="第三次"><a href="#第三次" class="headerlink" title="第三次"></a>第三次</h5><blockquote>
 <p>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=y+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。</p>
 </blockquote>
-<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e174cf7bf489462c876dd2762e41ccdb~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e174cf7bf489462c876dd2762e41ccdb~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>对于一个已经建立的连接，TCP使用改进的四次握手来释放连接（使用一个带有FIN附加标记的报文段）。TCP关闭连接的步骤如下：</p>
 <h5 id="第一次-1"><a href="#第一次-1" class="headerlink" title="第一次"></a>第一次</h5><blockquote>
 <p>当主机A的应用程序通知TCP数据已经发送完毕时，TCP向主机B发送一个带有FIN附加标记的报文段（FIN表示英文finish）。</p>
@@ -143,8 +143,8 @@ $ hexo s
 <li><p>快重传与快恢复： 在 TCP/IP 中，快速重传和恢复（fast retransmit and recovery，FRR）是一种拥塞控制算法，它能快速恢复丢失的数据包。没有 FRR，如果数据包丢失了，TCP 将会使用定时器来要求传输暂停。在暂停的这段时间内，没有新的或复制的数据包被发送。有了 FRR，如果接收机接收到一个不按顺序的数据段，它会立即给发送机发送一个重复确认。如果发送机接收到三个重复确认，它会立即重传这些丢失的数据段。有了 FRR，就不会因为重传时要求的暂停被耽误。当有单独的数据包丢失时，快速重传和恢复（FRR）能最有效地工作。当有多个数据信息包在某一段很短的时间内丢失时，它则不能很有效地工作。</p>
 </li>
 </ul>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cffae4b0e7fc411d8e04869b91142b60~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<h2 id="TCP的有限状态机"><a href="#TCP的有限状态机" class="headerlink" title="TCP的有限状态机"></a>TCP的有限状态机</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d8481bb0041c416da98fcb1f99361a52~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cffae4b0e7fc411d8e04869b91142b60~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="TCP的有限状态机"><a href="#TCP的有限状态机" class="headerlink" title="TCP的有限状态机"></a>TCP的有限状态机</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d8481bb0041c416da98fcb1f99361a52~tplv-k3u1fbpfcp-watermark.image"></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li>《图解HTTP》</li>
 <li>《计算机网络第七版》（谢希仁编著）</li>
