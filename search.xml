@@ -4,6 +4,84 @@
   
     
     <entry>
+      <title>https-detail-explain</title>
+      <link href="2019/04/03/https-detail-explain/"/>
+      <url>2019/04/03/https-detail-explain/</url>
+      
+        <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多的重要业务往线上转移，网站对用户隐私和安全性也越来越重视。对于防止恶意监听、中间人攻击、恶意劫持篡改，HTTPS是目前较为可行的方案，全站HTTPS逐渐成为主流网站的选择。</p><h2 id="HTTP简介"><a href="#HTTP简介" class="headerlink" title="HTTP简介"></a>HTTP简介</h2><p>HTTP（HyperText Transfer Protocol，超文本传输协议）,是一种<code>无状态 (stateless)</code> 协议，提供了一组规则和标准，从而让信息能够在互联网上进行传播。在HTTP中，客户端通过Socket创建一个TCP/IP连接，并连接到服务器，完成信息交换后，就会关闭TCP连接。（后来通过<code>Connection: Keep-Alive</code>实现长连接）</p><h3 id="HTTP消息组成："><a href="#HTTP消息组成：" class="headerlink" title="HTTP消息组成："></a>HTTP消息组成：</h3><ul><li>请求行或响应行</li><li>HTTP头部</li><li>HTML实体，包括请求实体和响应实体<br>HTTP请求结构，响应结构如图所示：</li></ul><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d0bd30cac2a4faeadfb2ef8953a843e~tplv-k3u1fbpfcp-watermark.image"></p><h4 id="1-HTTP头部"><a href="#1-HTTP头部" class="headerlink" title="1. HTTP头部"></a>1. HTTP头部</h4><p>HTTP头部由一系列的键值对组成，允许客户端向服务器端发送一些附加信息或者客户端自身的信息，如：<code>accept、accept-encoding、cookie</code>等。http头后面必须有一个空行</p><h4 id="2-请求行"><a href="#2-请求行" class="headerlink" title="2. 请求行"></a>2. 请求行</h4><p>请求行由方法、URL、HTTP版本组成。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/20491a699b7b4e4c946d006228d85b58~tplv-k3u1fbpfcp-watermark.image"></p><h4 id="3-响应行"><a href="#3-响应行" class="headerlink" title="3. 响应行"></a>3. 响应行</h4><p>响应行由HTTP版本、状态码、信息提示符组成。<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a24151074aa544d4996bd291f81a4866~tplv-k3u1fbpfcp-watermark.image"></p><h3 id="HTTP2-0和HTTP1-X相比的新特性"><a href="#HTTP2-0和HTTP1-X相比的新特性" class="headerlink" title="HTTP2.0和HTTP1.X相比的新特性"></a>HTTP2.0和HTTP1.X相比的新特性</h3><ul><li><p>新的二进制格式，HTTP1.x的解析是基于文本。基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认0和1的组合。基于这种考虑HTTP2.0的协议解析决定采用二进制格式，实现方便且健壮。</p></li><li><p>多路复用，即每一个请求都是是用作连接共享机制的。一个请求对应一个id，这样一个连接上可以有多个请求，每个连接的请求可以随机的混杂在一起，接收方可以根据请求的<code>id</code>将请求再归属到各自不同的服务端请求里面。</p></li><li><p>header压缩，HTTP1.x的<code>header</code>带有大量信息，而且每次都要重复发送，HTTP2.0使用encoder来减少需要传输的header大小，通讯双方各自cache一份<code>header fields</code>表，既避免了重复header的传输，又减小了需要传输的大小。</p></li><li><p>服务端推送，同<code>SPDY</code>一样，HTTP2.0也具有<code>server push</code>功能。</p></li></ul><h3 id="HTTP安全问题"><a href="#HTTP安全问题" class="headerlink" title="HTTP安全问题"></a>HTTP安全问题</h3><ul><li>通信使用明文(不加密),内容可能会被窃听</li><li>不验证通信方的身份,因此有可能遭遇伪装</li><li>无法证明报文的完整性,所以有可能已遭篡改</li></ul><h2 id="HTTPS协议"><a href="#HTTPS协议" class="headerlink" title="HTTPS协议"></a>HTTPS协议</h2><p>HTTPS 是最流行的 HTTP 安全形式。使用 HTTPS 时，所有的 HTTP 请求和响应数据在发送到网络之前，都要进行加密。 HTTPS 在 HTTP 下面提供了一个传输级的密码安全层——可以使用 SSL，也可以使用其后继者——传输层安全(TLS)。</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6501ef57e7024c32a816f84b9d6e4085~tplv-k3u1fbpfcp-watermark.image"></p><p>相关术语</p><ul><li>密钥：改变密码行为的数字化参数。</li><li>对称密钥加密系统：编、解码使用相同密钥的算法。</li><li>不对称密钥加密系统：编、解码使用不同密钥的算法。</li><li>公开密钥加密系统：一种能够使数百万计算机便捷地发送机密报文的系统。</li><li>数字签名：用来验证报文未被伪造或篡改的校验和。</li><li>数字证书：由一个可信的组织验证和签发的识别信息。</li><li>密钥协商算法：解决动态密钥分配、存储、传输等问题</li></ul><h3 id="TLS-SSL协议"><a href="#TLS-SSL协议" class="headerlink" title="TLS/SSL协议"></a>TLS/SSL协议</h3><p>TLS/SSL协议包含以下一些关键步骤：</p><ul><li>传输的数据必须具有<code>机密性</code>和<code>完整性</code>，一般采用<code>对称加密算法</code>和<code>HMAC算法</code>，这两个算法需要一系列的<code>密钥块（key_block）</code>，比如对称加密算法的密钥、HMAC算法的密钥，如果是AES-128-CBC-PKCS#7加密标准，还需要初始化向量。</li><li>所有的加密块都由<code>主密钥（Master Secret）</code>生成，主密钥就是第1章中讲解的会话密钥，使用密码衍生算法将主密钥转换为多个密码快。</li><li>主密钥来自<code>预备主密钥（Premaster Secret）</code>，预备主密钥采用同样的密码衍生算法转换为主密钥，预备主密钥采用RSA或者DH（ECDH）算法协商而来。不管采用哪种密钥协商算法，服务器必须有一对密钥（可以是RSA或者ECDSA密钥），公钥发给客户端，私钥自己保留。不同的密钥协商算法，服务器密钥对的作用也是不同的。</li><li>通过这些关键步骤，好像TLS/SSL协议的任务已经结束，但这种方案会遇到中间人攻击，这是TLS/SSL协议无法解决的问题，必须结合<code>PKI</code>的技术进行解决，PKI的核心是证书，证书背后的密码学算法是<code>数字签名</code>技术。对于客户端来说，需要校验证书，确保接收到的服务器公钥是经过认证的，不存在伪造，也就是客户端需要对服务器的身份进行验证。</li></ul><p>TLS/SSL协议核心就三大步骤：<code>认证、密钥协商、数据加密</code>。</p><h3 id="RSA握手"><a href="#RSA握手" class="headerlink" title="RSA握手"></a>RSA握手</h3><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6147f92dc7184d5895d364509f2ea63f~tplv-k3u1fbpfcp-watermark.image"></p><p>握手阶段分成五步：</p><ol><li>客户端给出协议版本号、生成的<code>随机数（Client random）</code>，以及客户端支持的加密方法。</li><li>服务端确认双方使用的加密方法，并给出数字证书、以及一个服务器生成的随机数。</li><li>客户端确认数字证书有效，然后生成一个新的<code>随机数（Premaster secret）</code>，并使用数字证书中的公钥，加密这个随机数，发给服务器。</li><li>服务器使用自己的私钥，获取客户端发来的<code>随机数（Premaster secret）</code>。</li><li>双方根据约定的加密方法，使用前面的三个随机数，生成<code>会话密钥（session key）</code>，用来加密接下来的对话过程。</li></ol><p>握手阶段有三点需要注意：</p><ol><li>生成对话密钥一共需要<code>三个随机数</code>。</li><li>握手之后的对话使用<code>对话密钥（session key）</code>加密（对称加密），服务器的<code>公钥</code>和<code>私钥</code>只用于<code>加密和解密对话密钥（session key）</code>（非对称加密），无其他作用。</li><li>服务器<code>公钥</code>放在服务器的<code>数字证书</code>之中。</li></ol><h3 id="DH握手"><a href="#DH握手" class="headerlink" title="DH握手"></a>DH握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4668c8c48f9f43ca9c46d5b14b9b0af5~tplv-k3u1fbpfcp-watermark.image"></p><p>RSA整个握手阶段都不加密，都是明文的。因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于<code>第三个随机数（Premaster secret）</code>能不能被破解。为了足够安全，我们可以考虑把握手阶段的算法从默认的<code>RSA</code>算法，改为 <code>Diffie-Hellman</code>算法（简称DH算法）。采用DH算法后，<code>Premaster secret</code>不需要传递，双方只要交换各自的参数，就可以算出这个随机数。</p><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li>《深入浅出HTTPS：从原理到实战》（虞卫东）</li><li><a href="https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/">https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/</a></li><li><a href="https://segmentfault.com/a/1190000011675421">https://segmentfault.com/a/1190000011675421</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> https </category>
+          
+          <category> 网络 </category>
+          
+          <category> http </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> https </tag>
+            
+            <tag> http </tag>
+            
+            <tag> 网络 </tag>
+            
+            <tag> TLS </tag>
+            
+            <tag> SSL </tag>
+            
+            <tag> RSA握手 </tag>
+            
+            <tag> DH握手 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>cryptography-preliminary-learn</title>
+      <link href="2019/04/02/cryptography-preliminary-learn/"/>
+      <url>2019/04/02/cryptography-preliminary-learn/</url>
+      
+        <content type="html"><![CDATA[<h2 id="基本认知"><a href="#基本认知" class="headerlink" title="基本认知"></a>基本认知</h2><p>密码学有着严格的规范，其算法的实现原理是公开的。密码学算法是相对安全的，主要解决四个问题：</p><ul><li>机密性（隐私性）：在网络中传递的数据如果具备机密性，只有拥有密钥的才能解释这些数据，密钥是加密算法的关键。</li><li>完整性：接收方能够确保接收到的数据就是发送方发送的原始数据，在密码学中，主要使用消息验证码（<code>MAC</code>）算法保证完整性。</li><li>身份验证：通信双方必须确保对端就是要通信的对象。在密码学中，一般使用数字签名技术确认身份。</li><li>不可抵赖性：在密码学中，数字签名技术能够避免抵赖。</li></ul><blockquote><p>OpenSSL：是<code>SSL</code>和<code>TLS</code>最常见的开源实现，包括了底层密码库和命令行工具，其目标是开发一个强壮的、具有完备功能的商业级工具集，以实现<code>SSL</code>和<code>TLS</code>协议以及一个全功能的通用加密库。</p></blockquote><h2 id="随机数"><a href="#随机数" class="headerlink" title="随机数"></a>随机数</h2><h3 id="随机数的类型"><a href="#随机数的类型" class="headerlink" title="随机数的类型"></a>随机数的类型</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/61ede967e5d747e388b79cf5f443ce42~tplv-k3u1fbpfcp-watermark.image"></p><h3 id="随机数的工作原理"><a href="#随机数的工作原理" class="headerlink" title="随机数的工作原理"></a>随机数的工作原理</h3><p>随机数生成器内部会维护一个<code>状态（internal state）</code>，对于随机数生成器（TRNG）来说，内部状态的数值来自外部设备，称为<code>熵（entrory）</code>，比如动态的时间、变化的温度、声音的变化、鼠标位置。而对于<code>伪随机数生成器（PRNG）</code>来说，内部状态的数值来自于模拟的数值，称为<code>种子（seed）</code>。随机数生成器每次生成随机数的时候，内部状态的值都会变化，这样才能产生不一样的随机数，如果每次熵和种子是一样的，生成的随机数也是相同的。</p><h2 id="Hash算法"><a href="#Hash算法" class="headerlink" title="Hash算法"></a>Hash算法</h2><p>由于<code>Hash算法</code>有很多功能，比如<code>摘要算法（Message DigestAlgorithms）、单向散列函数（Cryptographic One-way Hash Functions）</code>。输出值也有多种称呼，比如<code>摘要值、散列、指纹</code>。<code>密码学Hash算法</code>是非常重要的一个算法，是现代密码学中的核心组成部分，其主要特性如下：</p><ul><li>相同的消息总是能得到同样的摘要值，特定的Hash算法，不管消息长度是多少，最终的摘要值<code>长度是相同</code>的。</li><li>不管多长的消息，Hash运算非常快速。</li><li>通过摘要值很难逆向计算出原始消息，Hash算法具备<code>单向性</code>，摘要值是不可逆的。为了逆向计算出原始消息，唯一的方法就是采用暴力攻击、字典攻击、彩虹表，对不同的消息组合进行迭代运算，运算的结果如果匹配该消息的摘要值，表示该Hash算法不应该用于密码学。</li><li>原始消息一旦修改，即使是很轻微的修改，最终的摘要值也会产生变化。</li><li>很难找出两个不同的消息，并且它们的摘要值是相同的。<blockquote><p>密码学Hash算法有很多，比如<code>MD5算法、SHA族类算法</code>，MD5早已被证明是不安全的Hash算法了，目前使用最广泛的Hash算法是SHA族类算法。</p></blockquote></li></ul><h2 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h2><p>通过一个算法和一个<code>密钥（secret key）</code>对<code>明文（plaintext）</code>进行处理，得到的不规则字符就是<code>密文（ciphertext）</code>。对称加密算法有两种类型，分别是<code>块密码算法（block ciphers）</code>和<code>流密码算法（stream ciphers）</code>。<code>AES、DES、3DES</code>等是常见的对称加密算法。</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/653905e353ab4f999f274f09f6bf5658~tplv-k3u1fbpfcp-watermark.image"></p><p>对称加密算法可以用下列公式简单表述：</p><blockquote><p>密文=E（明文，算法，密钥）</p><p>明文=D（密文，算法，密钥）</p></blockquote><p>E和D分别表示加密和解密，通过公式可以了解几个关键点：</p><ul><li>密钥是关键，密钥是一串数字，加密和解密使用同样的一个密钥，如果没有密钥，基于密文是无法获取明文的。</li><li>加密和解密操作（算法）是一个互逆过程，算法的背后就是复杂的数学知识。</li></ul><h2 id="消息验证码"><a href="#消息验证码" class="headerlink" title="消息验证码"></a>消息验证码</h2><p>Hash算法能够完成密码学目标之一的完整性校验，但却不能避免消息被篡改，为避免消息被篡改，需要用到<code>消息验证码（MAC）</code>。消息验证码非常重要，一般结合加密算法一起使用。消息验证码算法具有如下特点：</p><ul><li>证明消息没有被篡改，这和Hash算法类似。</li><li>消息是正确的发送者发送的，也就是说消息是经过验证的。</li></ul><p>通信双方可以维护同一个密钥，只有拥有密钥的通信双方才能生成和验证消息验证码，消息验证码算法需要一个密钥，这和对称加密算法是一样的，通信双方在消息传递之前需要获得同样的密钥。过程图如下：</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/065710df132b47c3bb6192a78582fccb~tplv-k3u1fbpfcp-watermark.image"></p><p>消息认证实际上是对消息本身产生一个冗余的信息－<code>MAC（消息认证码）</code>，消息认证码是利用密钥对要认证的消息产生新的数据块并对数据块加密生成的。它对于要保护的信息来说是唯一和一一对应的。因此可以有效地保护消息的<code>完整性</code>，以及实现发送方消息的不能伪造。</p><h2 id="公开密钥算法（非对称加密）"><a href="#公开密钥算法（非对称加密）" class="headerlink" title="公开密钥算法（非对称加密）"></a>公开密钥算法（非对称加密）</h2><p>公开密钥算法表示密钥可以部分公开，公开密钥算法的密钥是一对，分别是<code>公钥（public key）</code>和<code>私钥（private key）</code>，一般私钥由密钥对的生成方（比如服务器端）持有，避免泄露，而公钥任何人都可以持有，也不怕泄露。公开密钥算法的功能比较多，可以进行<code>加密解密、密钥协商、数字签名</code>。公开密钥算法最重要和最广泛的就是<code>RSA算法</code>。相比对称加密算法来说，公开密钥算法尤其是<code>RSA算法</code>运算非常缓慢，加解密过程如下：</p><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12037d63c7ac4721b189c6a2204d6477~tplv-k3u1fbpfcp-watermark.image"></p><h2 id="密钥协商算法"><a href="#密钥协商算法" class="headerlink" title="密钥协商算法"></a>密钥协商算法</h2><p>在网络通信应用中，密钥的管理和分配是个难题，尤其是生成一个动态密钥更难，而密钥协商算法就可以解决密钥分配、存储、传输等问题。</p><h3 id="RSA密钥协商算法"><a href="#RSA密钥协商算法" class="headerlink" title="RSA密钥协商算法"></a>RSA密钥协商算法</h3><p>通过一个例子看看<code>RSA密钥协商算法</code>如何工作的：</p><ul><li>客户端初始化连接服务器端，服务器发送<code>RSA密钥对的公钥</code>给客户端。</li><li>客户端生成一个<code>随机值</code>，这个值必须是随机的，不能被攻击者猜出，这个值就是<code>会话密钥</code>。</li><li>客户端使用服务器<code>RSA密钥对的公钥</code>加密会话密钥，并发送给服务器端，由于攻击者没有服务器的私钥，所以无法解密会话密钥。</li><li>服务器端用它的<code>私钥</code>解密出会话密钥。</li><li>至此双方完成连接，接下来服务器端和客户端可以使用<code>对称加密算法</code>和<code>会话密钥</code>加密解密数据。</li></ul><h3 id="DH密钥协商算法"><a href="#DH密钥协商算法" class="headerlink" title="DH密钥协商算法"></a>DH密钥协商算法</h3><p>DH算法确切地说，实现的是<code>密钥交换</code>或者<code>密钥协商</code>，DH算法在进行密钥协商的时候，通信双方的任何一方无法独自计算出一个<code>会话密钥</code>，通信双方各自保留一部分关键信息，再将另外一部分信息告诉对方，双方有了全部信息才能<code>共同</code>计算出相同的会话密钥。DH算法处理过程：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3317db293d174c2da7d3bbd326396d05~tplv-k3u1fbpfcp-watermark.image"></p><h2 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h2><p><code>RSA签名算法</code>和<code>DSA签名算法</code>都可以实现数字签名，数字签名技术能够进行身份验证，防止抵赖、防止篡改、防止伪造。数字签名流程如下：</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6bc91aaad5cf4c27aad79cfaa0eb82cd~tplv-k3u1fbpfcp-watermark.image"></p><p>数字签名技术的本质不是为了加密，所以和签名值一同传递的消息是不用加密的，当然也可以对消息加密后再计算签名值。签名验证流程如图：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fafec67388404352a9ffc7a126ad7948~tplv-k3u1fbpfcp-watermark.image"></p><blockquote><p>考虑到公开密钥算法运行是相对缓慢的，数字签名算法建议对消息摘要值进行签名，因为摘要值的长度是固定的，运算的时候速度会比较快。</p></blockquote><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li>《深入浅出HTTPS：从原理到实战》（虞卫东）</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 密码学 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 加密 </tag>
+            
+            <tag> 对称加密 </tag>
+            
+            <tag> 非对称加密 </tag>
+            
+            <tag> 随机数 </tag>
+            
+            <tag> 消息验证码 </tag>
+            
+            <tag> RSA </tag>
+            
+            <tag> DH </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>计算机网络、TCP原理</title>
       <link href="2019/03/21/principle-of-network-tcp/"/>
       <url>2019/03/21/principle-of-network-tcp/</url>
@@ -20,11 +98,11 @@
       
         <tags>
             
+            <tag> 网络 </tag>
+            
             <tag> tcp </tag>
             
             <tag> 三次握手 </tag>
-            
-            <tag> 网络 </tag>
             
         </tags>
       
@@ -33,7 +111,7 @@
     
     
     <entry>
-      <title>Hello hexo</title>
+      <title>hello hexo</title>
       <link href="2019/03/19/hello-hexo/"/>
       <url>2019/03/19/hello-hexo/</url>
       
