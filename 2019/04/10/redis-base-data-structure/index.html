@@ -1,0 +1,596 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>redis-base-data-structure - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,Redis底层数据结构简单动态字符串（SDS）
+相较于C字符串的优点：
+
+常数复杂度获取字符串长度
+杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">redis-base-data-structure</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/Redis"><b>「
+                    </b>REDIS<b> 」</b></a>
+                
+                四月 10, 2019
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/04/10/redis-base-data-structure/" title="redis-base-data-structure" class="">redis-base-data-structure</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    11k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    10 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <h2 id="Redis底层数据结构"><a href="#Redis底层数据结构" class="headerlink" title="Redis底层数据结构"></a>Redis底层数据结构</h2><h3 id="简单动态字符串（SDS）"><a href="#简单动态字符串（SDS）" class="headerlink" title="简单动态字符串（SDS）"></a>简单动态字符串（SDS）</h3><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f99f86da38c04d69b8ec536dc18e2cce~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>相较于C字符串的优点：</p>
+<ul>
+<li>常数复杂度获取字符串长度</li>
+<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
+<li>减少修改字符串时带来的内存重分配次数。SDS采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
+<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。SDS可以保存任意格式的二进制数据。</li>
+<li>兼容部分C字符串函数，避免了不必要的代码重复。</li>
+</ul>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>链表被广泛用于实现Redis的各种功能，比如列表、发布与订阅、慢查询、监视器等。</p>
+<p>listNode结构：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8e12c7c8de42429ea58227a4a6d0c50a~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>多个listNode可以通过prev和next指针组成双端链表。</p>
+<p>list结构：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e0a259d12fb64aeeab93a15e17d45b14~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>list结构为链表提供了表头指针head、表尾指针tail，以及链表长度计数器len，而dup、free和match成员则是用于实现多态链表所需的类型特定函数：</p>
+<ul>
+<li>dup函数用于复制链表节点所保存的值；</li>
+<li>free函数用于释放链表节点所保存的值；</li>
+<li>match函数则用于对比链表节点所保存的值和另一个输入值是否相等。<br>一个list结构和三个listNode结构组成的链表：</li>
+</ul>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/887260df9ff64595af3e3c5e95161b8c~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>链表表头节点的前置节点和表尾节点的后置节点都指向NULL，所以Redis的链表实现是无环链表</p>
+</blockquote>
+<h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><p>Redis的字典使用哈希表作为底层实现，哈希表结构如下：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/68011abde49341be901285c26f318d51~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>一个大小为4的空哈希表（没有包含任何键值对）。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ddd8fe7761a94fb9b93f3f1fb7f19c2f~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>哈希表节点使用dictEntry结构表示，每个dictEntry结构都保存着一个键值对：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2ce0dcb537494dd5beba88a80ea2c2ac~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>key属性保存着键值对中的键，而v属性则保存着键值对中的值，其中键值对的值可以是一个指针，或者是一个uint64_t整数，又或者是一个int64_t整数。</p>
+<p>Redis中的字典的结构：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3a9833d98c574a0b8f71ff43e16ce3f9~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<ul>
+<li>type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。</li>
+<li>privdata属性则保存了需要传给那些类型特定函数的可选参数。</li>
+</ul>
+</blockquote>
+<h4 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h4><p>为了避免rehash对服务器性能造成影响，服务器不是一次性将哈希表中所有键值对全部rehash到新的哈希表，而是分多次、渐进式地将完成rehash。</p>
+<p>以下是哈希表渐进式rehash的详细步骤：</p>
+<ol>
+<li>为ht[1]分配空间，让字典同时持有ht[0]和ht[1]两个哈希表。</li>
+<li>在字典中维持一个索引计数器变量rehashidx，并将它的值设置为0，表示rehash工作正式开始。</li>
+<li>在rehash进行期间，每次对字典执行添加、删除、查找或者更新操作时，程序除了执行指定的操作以外，还会顺带将ht[0]哈希表在rehashidx索引上的所有键值对rehash到ht[1]，当rehash工作完成之后，程序将rehashidx属性的值增一。</li>
+<li>随着字典操作的不断执行，最终在某个时间点上，ht[0]的所有键值对都会被rehash至ht[1]，这时程序将rehashidx属性的值设为-1，表示rehash操作已完成。</li>
+</ol>
+<blockquote>
+<p>在渐进式rehash进行期间，字典的删除（delete）、查找（find）、更新（update）等操作会在两个哈希表上进行。新添加到字典的键值对一律会被保存到ht[1]里面。</p>
+</blockquote>
+<h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><p>跳跃表（skiplist）是一种有序数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。Redis使用跳跃表作为有序集合键的底层实现之一。</p>
+<p>zskiplistNode结构如下：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/65aec15a9cf649d98c5dad5237a75b60~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<ul>
+<li>level：节点中用L1、L2、L3等字样标记节点的各个层，L1代表第一层，L2代表第二层，以此类推。每个层都带有两个属性：前进指针和跨度。前进指针用于访问位于表尾方向的其他节点，而跨度则记录了前进指针所指向节点和当前节点的距离。在上面的图片中，连线上带有数字的箭头就代表前进指针，而那个数字就是跨度。当程序从表头向表尾进行遍历时，访问会沿着层的前进指针进行。</li>
+<li>backward指针：节点中用BW字样标记节点的后退指针，它指向位于当前节点的前一个节点。后退指针在程序从表尾向表头遍历时使用。</li>
+<li>score：各个节点中的1.0、2.0和3.0是节点所保存的分值。在跳跃表中，节点按各自所保存的分值从小到大排列。</li>
+<li>obj：各个节点中的o1、o2和o3是节点所保存的成员对象。</li>
+</ul>
+</blockquote>
+<p>zskiplist结构如下：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2e7238607e6544338799ccc424ec686d~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<ul>
+<li>header：指向跳跃表的表头节点。</li>
+<li>tail：指向跳跃表的表尾节点。</li>
+<li>level：记录目前跳跃表内，层数最大的那个节点的层数（表头节点的层数不计算在内）。</li>
+<li>length：记录跳跃表的长度，也即是，跳跃表目前包含节点的数量（表头节点不计算在内）。</li>
+</ul>
+</blockquote>
+<p>带有zskiplist结构的跳跃表</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12c991edc344472a99551446c4ac15b0~tplv-k3u1fbpfcp-watermark.image"></p>
+<h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><p>整数集合（intset）是集合键的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合键的底层实现。整数集合结构如下：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d155c452e8b94235ab129aaca98d062d~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>升级：每当我们要将一个新元素添加到整数集合里面，并且新元素的类型比整数集合现有所有元素的类型都要长时，整数集合需要先进行升级（upgrade），然后才能将新元素添加到整数集合里面。升级操作为整数集合带来了操作上的灵活性，并且尽可能地节约了内存。不支持降级操作。</p>
+</blockquote>
+<h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><p>压缩列表（ziplist）是列表和哈希的底层实现之一。当一个列表只包含少量列表项，并且每个列表项要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做列表的底层实现。压缩列表是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型（sequential）数据结构。压缩表组成部分：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97d5b5e9025c43f880ee12fc4f9a6c68~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<ul>
+<li>zlbytes：记录整个压缩列表占用的内存字节数。在对压缩列表进行内存重分配或者计算zlend的位置时使用。</li>
+<li>zltails：记录压缩列表表尾结点距离压缩列表的起始地址有多少字节。通过这个偏移量，程序无需遍历整个压缩列表就可以确定表尾结点的地址。</li>
+<li>zllen：记录了压缩列表包含的节点数量。</li>
+<li>entryX：压缩列表所包含的节点。</li>
+<li>zlend：用于标记压缩列表的末端。</li>
+</ul>
+</blockquote>
+<p>下图展示一个压缩列表的示例：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2430bbbc3fc54718980a91f249023e70~tplv-k3u1fbpfcp-watermark.image"></p>
+<p>压缩列表节点：由previous_entry_length、encoding、content三个部分组成。</p>
+<blockquote>
+<ul>
+<li>previous_entry_length：记录了压缩列表中前一个节点的长度。程序可以通过指针减去当前节点的previous_entry_length，来计算出前一个节点的起始地址。</li>
+<li>encoding：记录了节点的content属性所保存数据的类型以及长度。</li>
+<li>content：保存节点的值。节点值可以是一个字节数组或者整数，值的类型和长度由节点的encoding属性决定。</li>
+</ul>
+</blockquote>
+<h4 id="连锁更新"><a href="#连锁更新" class="headerlink" title="连锁更新"></a>连锁更新</h4><p>在一个压缩列表中，有多个连续的、长度介于250字节到253字节之间的节点e1至eN，e1至eN的所有节点的previous_entry_length属性都是1字节长的（因为所有节点的长度都小于254字节）。这时，如果我们将一个长度大于等于254字节的新节点new设置为压缩列表的表头节点，那么new将成为e1的前置节点，后面的e1,、e2、e3的previous_entry_length都需要程序对压缩列表执行空间重分配，扩展其长度。Redis将这种在特殊情况下产生的连续多次空间扩展操作称之为“连锁更新”。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/48bfd730c6e14db2b28f280bbf2c4ca3~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>添加新节点到压缩列表，或者从压缩列表中删除节点，可能会引发连锁更新操作，但这种操作出现的几率并不高。</p>
+</blockquote>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><p>Redis基于底层数据结构创建了一个对象系统，这个系统包含字符串对象、列表对象、哈希对象、集合对象和有序集合对象这五种类型的对象，每种对象都用到了至少一种我们前面所介绍的数据结构。Redis的对象系统还实现了基于引用计数技术的内存回收机制和对象共享机制。</p>
+<p>Redis的对象带有访问时间记录信息，该信息可以用于计算数据库键的空转时长，在服务器启用了maxmemory功能的情况下，空转时长较大的那些键可能会优先被服务器删除。</p>
+<h3 id="对象的类型与编码"><a href="#对象的类型与编码" class="headerlink" title="对象的类型与编码"></a>对象的类型与编码</h3><p>Redis使用对象来表示数据库中的键和值，每次当我们在Redis的数据库中新创建一个键值对时，我们至少会创建两个对象，一个对象用作键值对的键（键对象），另一个对象用作键值对的值（值对象）。键总是一个字符串对象，而值则可以是字符串对象（string）、列表对象（list）、哈希对象（hash）、集合对象（set）或者有序集合对象（zset）的其中一种。Redis中对象（redisObject）结构表示如下：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d53047e5ad04d61ab4f34566f96feb9~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<ul>
+<li>类型：包含字符串对象、列表对象、哈希对象、集合对象、有序集合对象。<code>TYPE key</code>可以查看值对象的类型。</li>
+<li>编码：记录了对象所使用的编码。</li>
+<li>ptr指针：指向对象的底层实现数据结构。</li>
+</ul>
+</blockquote>
+<p>下图展示了每种类型的对象可以使用的编码。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da9e9e16283a4e5a814c7d70c8c912a3~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>使用<code>OBJECT ENCODING key</code>命令可以查看一个数据库键的值对象的编码</p>
+</blockquote>
+<p>通过encoding属性来设定对象所使用的编码，极大地提升了Redis的灵活性和效率，因为Redis可以根据不同的使用场景来为一个对象设置不同的编码，从而优化对象在某一场景下的效率。</p>
+<blockquote>
+<p>在列表对象包含的元素比较少时，Redis使用压缩列表作为列表对象的底层实现：因为压缩列表比双端链表更节约内存，并且在元素数量较少时，在内存中以连续块方式保存的压缩列表比起双端链表可以更快被载入到缓存中。随着列表对象包含的元素越来越多，使用压缩列表来保存元素的优势逐渐消失时，对象就会将底层实现从压缩列表转向功能更强、也更适合保存大量元素的双端链表上面。</p>
+</blockquote>
+<h3 id="字符串对象"><a href="#字符串对象" class="headerlink" title="字符串对象"></a>字符串对象</h3><p>字符串对象的编码可以是<code>int</code>、<code>raw</code>或者<code>embstr</code>。</p>
+<ul>
+<li>如果一个字符串对象保存的是整数值，并且这个整数值可以用long类型来表示，那么字符串对象会将整数值保存在字符串对象结构的ptr属性里面（将void* 转换成long），并将字符串对象的编码设置为int。</li>
+<li>如果字符串对象保存的是一个字符串值，并且这个字符串值的长度大于32字节，那么字符串对象将使用一个简单动态字符串（SDS）来保存这个字符串值，并将对象的编码设置为raw。</li>
+<li>如果字符串对象保存的是一个字符串值，并且这个字符串值的长度小于等于32字节，那么字符串对象将使用embstr编码的方式来保存这个字符串值。</li>
+</ul>
+<blockquote>
+<p><code>embstr</code>编码是专门用于保存短字符串的一种优化编码方式，通过调用一次内存分配函数来分配一块连续的空间，空间中依次包含redisObject和sdshdr两个结构，而<code>raw</code>编码会调用两次内存分配函数来分别创建。释放<code>embstr</code>编码字符串也只需要一次调用。</p>
+</blockquote>
+<p>字符串对象保存各种不同类型的值所使用的编码方式如图所示：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a8812775c3546858e0248623fde6105~tplv-k3u1fbpfcp-watermark.image"></p>
+<h4 id="编码的转换"><a href="#编码的转换" class="headerlink" title="编码的转换"></a>编码的转换</h4><p>int编码的字符串对象和embstr编码的字符串对象在条件满足的情况下，会被转换为raw编码的字符串对象。另外，Redis没有为embstr编码的字符串对象编写任何相应的修改程序，所以embstr编码的字符串对象实际上是只读的。当对embstr编码的字符串对象执行任何修改命令时，程序会先将对象的编码从embstr转换成raw，然后再执行修改命令。embstr编码的字符串对象在执行修改命令之后，总会变成一个raw编码的字符串对象。</p>
+<h4 id="字符串命令的实现"><a href="#字符串命令的实现" class="headerlink" title="字符串命令的实现"></a>字符串命令的实现</h4><p>下图列举了一些字符串命令在不同编码的字符串对象下的实现方法。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9f2b8c81de2840de89f45efa103e3d34~tplv-k3u1fbpfcp-watermark.image"></p>
+<h3 id="列表对象"><a href="#列表对象" class="headerlink" title="列表对象"></a>列表对象</h3><p>列表对象的编码可以是ziplist或者linkedlist。执行以下RPUSH命令，那么服务器将创建一个列表对象作为numbers键的值，下面将分别展示ziplist、linkedlist数据结构。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7d09943f94cc44618955c6256c2954e9~tplv-k3u1fbpfcp-watermark.image"></p>
+<ul>
+<li>ziplist编码对象如图所示：</li>
+</ul>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd27aad45d314372bb17f65404c59d29~tplv-k3u1fbpfcp-watermark.image"></p>
+<ul>
+<li>linkedlist编码的列表对象如图所示：</li>
+</ul>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff154176c78e4c6fa27f6bd2cbcc33bb~tplv-k3u1fbpfcp-watermark.image"></p>
+<blockquote>
+<p>上图简化了字符串对象的表示方式。</p>
+</blockquote>
+<h4 id="编码转换"><a href="#编码转换" class="headerlink" title="编码转换"></a>编码转换</h4><p>当列表对象可以同时满足以下两个条件时，列表对象使用ziplist编码：</p>
+<ul>
+<li>列表对象保存的所有字符串元素的长度都小于64字节；</li>
+<li>列表对象保存的元素数量小于512个；不能满足这两个条件的列表对象需要使用linkedlist编码。</li>
+</ul>
+<blockquote>
+<p>可通过<code>list-max-ziplist-value</code>选项和<code>list-max-ziplist-entries</code>选项修改以上两个条件的上限值</p>
+</blockquote>
+<h3 id="哈希对象"><a href="#哈希对象" class="headerlink" title="哈希对象"></a>哈希对象</h3><p>哈希对象的编码可以是ziplist或者hashtable。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">5 <p>文章</p></a></li>
+                    <li><a href="/categories">7 <p>分类</p></a></li>
+                    <li><a href="/tags">24 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Redis底层数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88SDS%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">简单动态字符串（SDS）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-number">1.2.</span> <span class="toc-text">链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.</span> <span class="toc-text">字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">跳跃表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="toc-number">1.5.</span> <span class="toc-text">整数集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="toc-number">1.6.</span> <span class="toc-text">压缩列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.</span> <span class="toc-text">对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%B1%BB%E5%9E%8B%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="toc-number">2.1.</span> <span class="toc-text">对象的类型与编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.</span> <span class="toc-text">字符串对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.3.</span> <span class="toc-text">列表对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.4.</span> <span class="toc-text">哈希对象</span></a></li></ol></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>

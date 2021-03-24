@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 4 」</p>
+                        <p style="text-align: center">「 5 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -72,6 +72,26 @@
                                         <h2 class="timeline-title">四月 2019</h2>
                                     </div>
                                 </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">四月 10, 2019</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2019/04/10/redis-base-data-structure/">redis-base-data-structure</a>
+                                        <p>
+                                            Redis底层数据结构简单动态字符串（SDS）
+相较于C字符串的优点：
+
+常数复杂度获取字符串长度
+杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。
+减少修改字符串时带来的内存重分配次数。SDS采用空间预分配（增长操作）和惰性释放（缩短操作）
+二进制安全。C字符串只能保存文本数据，而不能保存...
+                                        </p>
+                                    </div>
+                                </li>
+                            
                                 
                                 <li class="timeline-item">
                                     <div class="timeline-info">

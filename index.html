@@ -137,39 +137,48 @@
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/https"><b>「
-                </b>HTTPS<b> 」</b></a>
+            <a href="/categories/Redis"><b>「
+                </b>REDIS<b> 」</b></a>
             
-            四月 03, 2019
+            四月 10, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/04/03/https-detail-explain/" title="HTTP、HTTPS协议详解" class="posttitle">HTTP、HTTPS协议详解</a></h3>
+            <a href="/2019/04/10/redis-base-data-structure/" title="redis-base-data-structure" class="posttitle">redis-base-data-structure</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                5.6k
+                11k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                5 mins.
+                10 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH%E6%8F%A1%E6%89%8B/" rel="tag">DH握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA%E6%8F%A1%E6%89%8B/" rel="tag">RSA握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/SSL/" rel="tag">SSL</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TLS/" rel="tag">TLS</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/http/" rel="tag">http</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/https/" rel="tag">https</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <p>早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多的重要业务往线上转移，网站对用户隐私和安全性也越来越重视。对于防止恶意监听、中间人攻击、恶意劫持篡改，HTTPS是目前较为可行的方案，全站HTTPS逐渐成为主流网站的选择。</p>
-<p>HTTP（HyperText Transfer Protocol，超文本传输协议）,是一种<code>无状态 (stateless)</code> 协议，提供...</p>
+            <h3 id="简单动态字符串（SDS）"><a href="#简单动态字符串（SDS）" class="headerlink" title="简单动态字符串（SDS）"></a>简单动态字符串（SDS）</h3><p></p>
+<p>相较于C字符串的优点：</p>
+<ul>
+<li>常数复杂度获取字符串长度</li>
+<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
+<li>减少修改字符串时带来的内存重分配次数。SDS采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
+<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。SDS可以保存任意格式的二进制数据。</li>
+<li>兼容部分C字符串函数，避免了不必要的代码重复。</li>
+</ul>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>链表被广泛用于实现Redis的各种功能，比如列表、发布与订阅、慢查询、监视器等。</p>
+<p>listNode...</p>
             
-            <span class="read-more"><a href="/2019/04/03/https-detail-explain/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/04/10/redis-base-data-structure/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -190,6 +199,53 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/welcome-cover.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/https">
+                  <b>「 </b>HTTPS<b> 」</b>
+                </a>
+            
+            四月 03, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/04/03/https-detail-explain/" title="HTTP、HTTPS协议详解" class="posttitle">HTTP、HTTPS协议详解</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        5.6k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        5 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH%E6%8F%A1%E6%89%8B/" rel="tag">DH握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA%E6%8F%A1%E6%89%8B/" rel="tag">RSA握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/SSL/" rel="tag">SSL</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TLS/" rel="tag">TLS</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/http/" rel="tag">http</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/https/" rel="tag">https</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多的重要业务往线上转移，网站对用户隐私和安全性也越来越重视。对于防止恶意监听、中间人攻击、恶意劫持篡改，HTTPS是目前较为可行的方案，全站HTTPS逐渐成为主流网站的选择。</p>
+<p>HTTP（HyperText Transfer Protocol，超文本传输协议）,是一种<code>无状态 (stateless)</code> 协议，提供...</p>
+            
+            <span class="read-more"><a href="/2019/04/03/https-detail-explain/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
 <div class="post" id="post">
     <div class="post-cover animated fadeIn" style="
             background-image:
