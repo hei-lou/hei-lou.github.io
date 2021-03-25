@@ -13,8 +13,8 @@
     <meta name="description" content="路上随记,Redis底层数据结构简单动态字符串（SDS）
 相较于C字符串的优点：
 
-常数复杂度获取字符串长度
-杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间,"> 
+常数复杂度获取字符串长度。
+杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空,"> 
     <meta name="author" content="hei-lou"> 
     <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -103,13 +103,13 @@
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    11k
+                    18k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    10 mins.
+                    16 mins.
                 </span>
                 
                 
@@ -122,7 +122,7 @@
             </p>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/quicklist/" rel="tag">quicklist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/skiplist/" rel="tag">skiplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/ziplist/" rel="tag">ziplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
             
         </div>
     </div>
@@ -146,17 +146,17 @@
             <h2 id="Redis底层数据结构"><a href="#Redis底层数据结构" class="headerlink" title="Redis底层数据结构"></a>Redis底层数据结构</h2><h3 id="简单动态字符串（SDS）"><a href="#简单动态字符串（SDS）" class="headerlink" title="简单动态字符串（SDS）"></a>简单动态字符串（SDS）</h3><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f99f86da38c04d69b8ec536dc18e2cce~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>相较于C字符串的优点：</p>
 <ul>
-<li>常数复杂度获取字符串长度</li>
-<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
-<li>减少修改字符串时带来的内存重分配次数。SDS采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
-<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。SDS可以保存任意格式的二进制数据。</li>
+<li>常数复杂度获取字符串长度。</li>
+<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，<code>SDS</code>修改时，API会自动将<code>SDS</code>的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
+<li>减少修改字符串时带来的内存重分配次数。<code>SDS</code>采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
+<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。<code>SDS</code>可以保存任意格式的二进制数据。</li>
 <li>兼容部分C字符串函数，避免了不必要的代码重复。</li>
 </ul>
 <h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>链表被广泛用于实现Redis的各种功能，比如列表、发布与订阅、慢查询、监视器等。</p>
-<p>listNode结构：</p>
+<p><code>listNode</code>结构：</p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8e12c7c8de42429ea58227a4a6d0c50a~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>多个listNode可以通过prev和next指针组成双端链表。</p>
-<p>list结构：</p>
+<p><code>list</code>结构：</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e0a259d12fb64aeeab93a15e17d45b14~tplv-k3u1fbpfcp-watermark.image"></p>
 <p>list结构为链表提供了表头指针head、表尾指针tail，以及链表长度计数器len，而dup、free和match成员则是用于实现多态链表所需的类型特定函数：</p>
 <ul>
@@ -179,8 +179,8 @@
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3a9833d98c574a0b8f71ff43e16ce3f9~tplv-k3u1fbpfcp-watermark.image"></p>
 <blockquote>
 <ul>
-<li>type属性是一个指向dictType结构的指针，每个dictType结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。</li>
-<li>privdata属性则保存了需要传给那些类型特定函数的可选参数。</li>
+<li><code>type</code>属性是一个指向<code>dictType</code>结构的指针，每个<code>dictType</code>结构保存了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置不同的类型特定函数。</li>
+<li><code>privdata</code>属性则保存了需要传给那些类型特定函数的可选参数。</li>
 </ul>
 </blockquote>
 <h4 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h4><p>为了避免rehash对服务器性能造成影响，服务器不是一次性将哈希表中所有键值对全部rehash到新的哈希表，而是分多次、渐进式地将完成rehash。</p>
@@ -194,8 +194,8 @@
 <blockquote>
 <p>在渐进式rehash进行期间，字典的删除（delete）、查找（find）、更新（update）等操作会在两个哈希表上进行。新添加到字典的键值对一律会被保存到ht[1]里面。</p>
 </blockquote>
-<h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><p>跳跃表（skiplist）是一种有序数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。Redis使用跳跃表作为有序集合键的底层实现之一。</p>
-<p>zskiplistNode结构如下：</p>
+<h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><p>跳跃表（<code>skiplist</code>）是一种有序数据结构，它通过在每个节点中维持多个指向其他节点的指针，从而达到快速访问节点的目的。Redis使用跳跃表作为有序集合键的底层实现之一。</p>
+<p><code>zskiplistNode</code>结构如下：</p>
 <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/65aec15a9cf649d98c5dad5237a75b60~tplv-k3u1fbpfcp-watermark.image"></p>
 <blockquote>
 <ul>
@@ -205,7 +205,7 @@
 <li>obj：各个节点中的o1、o2和o3是节点所保存的成员对象。</li>
 </ul>
 </blockquote>
-<p>zskiplist结构如下：</p>
+<p><code>zskiplist</code>结构如下：</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2e7238607e6544338799ccc424ec686d~tplv-k3u1fbpfcp-watermark.image"></p>
 <blockquote>
 <ul>
@@ -217,12 +217,16 @@
 </blockquote>
 <p>带有zskiplist结构的跳跃表</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12c991edc344472a99551446c4ac15b0~tplv-k3u1fbpfcp-watermark.image"></p>
-<h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><p>整数集合（intset）是集合键的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合键的底层实现。整数集合结构如下：</p>
+<h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><p>整数集合（<code>intset</code>）是集合键的底层实现之一，当一个集合只包含整数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合作为集合键的底层实现。整数集合结构如下：</p>
 <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d155c452e8b94235ab129aaca98d062d~tplv-k3u1fbpfcp-watermark.image"></p>
-<blockquote>
-<p>升级：每当我们要将一个新元素添加到整数集合里面，并且新元素的类型比整数集合现有所有元素的类型都要长时，整数集合需要先进行升级（upgrade），然后才能将新元素添加到整数集合里面。升级操作为整数集合带来了操作上的灵活性，并且尽可能地节约了内存。不支持降级操作。</p>
-</blockquote>
-<h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><p>压缩列表（ziplist）是列表和哈希的底层实现之一。当一个列表只包含少量列表项，并且每个列表项要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做列表的底层实现。压缩列表是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型（sequential）数据结构。压缩表组成部分：</p>
+<h4 id="升级"><a href="#升级" class="headerlink" title="升级"></a>升级</h4><p>每当我们要将一个新元素添加到整数集合里面，并且新元素的类型比整数集合现有所有元素的类型都要长时，整数集合需要先进行升级（upgrade），然后才能将新元素添加到整数集合里面。升级操作为整数集合带来了操作上的灵活性，并且尽可能地节约了内存。不支持降级操作。</p>
+<p>升级整数集合并添加新元素共分为三步进行：</p>
+<ol>
+<li>根据新元素的类型，扩展整数集合底层数组的空间大小，并为新元素分配空间。</li>
+<li>将底层数组现有的所有元素都转换成与新元素相同的类型，并将类型转换后的元素放置到正确的位上，而且在放置元素的过程中，需要继续维持底层数组的有序性质不变。</li>
+<li>将新元素添加到底层数组里面。</li>
+</ol>
+<h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><p>压缩列表（<code>ziplist</code>）是列表和哈希的底层实现之一。当一个列表只包含少量列表项，并且每个列表项要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做列表的底层实现。压缩列表是Redis为了节约内存而开发的，是由一系列特殊编码的连续内存块组成的顺序型（sequential）数据结构。压缩表组成部分：</p>
 <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97d5b5e9025c43f880ee12fc4f9a6c68~tplv-k3u1fbpfcp-watermark.image"></p>
 <blockquote>
 <ul>
@@ -235,7 +239,7 @@
 </blockquote>
 <p>下图展示一个压缩列表的示例：</p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2430bbbc3fc54718980a91f249023e70~tplv-k3u1fbpfcp-watermark.image"></p>
-<p>压缩列表节点：由previous_entry_length、encoding、content三个部分组成。</p>
+<p>压缩列表节点：<code>由previous_entry_length</code>、<code>encoding</code>、<code>content</code>三个部分组成。</p>
 <blockquote>
 <ul>
 <li>previous_entry_length：记录了压缩列表中前一个节点的长度。程序可以通过指针减去当前节点的previous_entry_length，来计算出前一个节点的起始地址。</li>
@@ -248,14 +252,39 @@
 <blockquote>
 <p>添加新节点到压缩列表，或者从压缩列表中删除节点，可能会引发连锁更新操作，但这种操作出现的几率并不高。</p>
 </blockquote>
+<h3 id="快速列表"><a href="#快速列表" class="headerlink" title="快速列表"></a>快速列表</h3><p><code>quicklist</code>中每一个节点都是一个<code>quicklistNode</code>对象，其数据结构定义为：</p>
+<pre><code>typedef struct quicklistNode &#123;
+    struct quicklistNode *prev;//前一个节点
+    struct quicklistNode *next;//后一个节点
+    unsigned char *zl;//当前指向的ziplist或者quicklistLZF
+    unsigned int sz;//当前ziplist占用字节
+    unsigned int count : 16;//ziplist中存储的元素个数，16字节(最大65535个)
+    unsigned int encoding : 2; //是否采用了LZF压缩算法压缩节点 1：RAW 2:LZF
+    unsigned int container : 2; //存储结构，NONE=1, ZIPLIST=2
+    unsigned int recompress : 1; //当前ziplist是否需要再次压缩(如果前面被解压过则为true，表示需要再次被压缩)
+    unsigned int attempted_compress : 1;//测试用 
+    unsigned int extra : 10; //后期留用
+&#125; quicklistNode;
+</code></pre>
+<pre><code>typedef struct quicklist &#123;
+    quicklistNode *head;//列表头节点
+    quicklistNode *tail;//列表尾节点
+    unsigned long count;//ziplist中一共存储了多少元素，即:每一个quicklistNode内的count相加
+    unsigned long len; //双向链表的长度，即quicklistNode的数量
+    int fill : 16;//填充因子
+    unsigned int compress : 16;//压缩深度 0-不压缩
+&#125; quicklist;
+</code></pre>
+<p>根据这两个结构，我们可以得到Redis3.2之后的列表对象的一个简图：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cf3e20fef98e48868db4a2a48670ec51~tplv-k3u1fbpfcp-watermark.image"></p>
 <h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><p>Redis基于底层数据结构创建了一个对象系统，这个系统包含字符串对象、列表对象、哈希对象、集合对象和有序集合对象这五种类型的对象，每种对象都用到了至少一种我们前面所介绍的数据结构。Redis的对象系统还实现了基于引用计数技术的内存回收机制和对象共享机制。</p>
 <p>Redis的对象带有访问时间记录信息，该信息可以用于计算数据库键的空转时长，在服务器启用了maxmemory功能的情况下，空转时长较大的那些键可能会优先被服务器删除。</p>
 <h3 id="对象的类型与编码"><a href="#对象的类型与编码" class="headerlink" title="对象的类型与编码"></a>对象的类型与编码</h3><p>Redis使用对象来表示数据库中的键和值，每次当我们在Redis的数据库中新创建一个键值对时，我们至少会创建两个对象，一个对象用作键值对的键（键对象），另一个对象用作键值对的值（值对象）。键总是一个字符串对象，而值则可以是字符串对象（string）、列表对象（list）、哈希对象（hash）、集合对象（set）或者有序集合对象（zset）的其中一种。Redis中对象（redisObject）结构表示如下：</p>
 <p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d53047e5ad04d61ab4f34566f96feb9~tplv-k3u1fbpfcp-watermark.image"></p>
 <blockquote>
 <ul>
-<li>类型：包含字符串对象、列表对象、哈希对象、集合对象、有序集合对象。<code>TYPE key</code>可以查看值对象的类型。</li>
-<li>编码：记录了对象所使用的编码。</li>
+<li>类型：包含字符串对象、列表对象、哈希对象、集合对象、有序集合对象。可使用<code>TYPE key</code>命令查看值对象的类型。</li>
+<li>编码：记录了对象所使用的编码。可使用<code>OBJECT ENCODING key</code>查看值对象的编码。</li>
 <li>ptr指针：指向对象的底层实现数据结构。</li>
 </ul>
 </blockquote>
@@ -279,10 +308,18 @@
 </blockquote>
 <p>字符串对象保存各种不同类型的值所使用的编码方式如图所示：</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a8812775c3546858e0248623fde6105~tplv-k3u1fbpfcp-watermark.image"></p>
-<h4 id="编码的转换"><a href="#编码的转换" class="headerlink" title="编码的转换"></a>编码的转换</h4><p>int编码的字符串对象和embstr编码的字符串对象在条件满足的情况下，会被转换为raw编码的字符串对象。另外，Redis没有为embstr编码的字符串对象编写任何相应的修改程序，所以embstr编码的字符串对象实际上是只读的。当对embstr编码的字符串对象执行任何修改命令时，程序会先将对象的编码从embstr转换成raw，然后再执行修改命令。embstr编码的字符串对象在执行修改命令之后，总会变成一个raw编码的字符串对象。</p>
+<h4 id="编码的转换"><a href="#编码的转换" class="headerlink" title="编码的转换"></a>编码的转换</h4><ul>
+<li>int编码的字符串对象和embstr编码的字符串对象在条件满足的情况下，会被转换为raw编码的字符串对象。</li>
+<li>Redis没有为embstr编码的字符串对象编写任何相应的修改程序，所以embstr编码的字符串对象实际上是只读的。</li>
+<li>当对修改embstr编码的字符串对象时，会先将对象的编码从embstr转换成raw，然后再执行修改命令。</li>
+<li>embstr编码的字符串对象在修改之后，总会变成一个raw编码的字符串对象。</li>
+</ul>
 <h4 id="字符串命令的实现"><a href="#字符串命令的实现" class="headerlink" title="字符串命令的实现"></a>字符串命令的实现</h4><p>下图列举了一些字符串命令在不同编码的字符串对象下的实现方法。</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9f2b8c81de2840de89f45efa103e3d34~tplv-k3u1fbpfcp-watermark.image"></p>
-<h3 id="列表对象"><a href="#列表对象" class="headerlink" title="列表对象"></a>列表对象</h3><p>列表对象的编码可以是ziplist或者linkedlist。执行以下RPUSH命令，那么服务器将创建一个列表对象作为numbers键的值，下面将分别展示ziplist、linkedlist数据结构。</p>
+<h3 id="列表对象"><a href="#列表对象" class="headerlink" title="列表对象"></a>列表对象</h3><p>在Redis3.2之前，列表对象的编码可以是<code>ziplist</code>或者<code>linkedlist</code>。在Redis3.2之后，统一用<code>quicklist</code>来存储列表对象。执行<code>RPUSH</code>命令，那么服务器将创建一个列表对象作为numbers键的值，下面将分别展示<code>ziplist</code>、<code>linkedlist</code>数据结构。</p>
+<blockquote>
+<p>quicklist存储了一个双向列表，每个列表的节点是一个ziplist，所以实际上quicklist就是linkedlist和ziplist的结合</p>
+</blockquote>
 <p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7d09943f94cc44618955c6256c2954e9~tplv-k3u1fbpfcp-watermark.image"></p>
 <ul>
 <li>ziplist编码对象如图所示：</li>
@@ -303,7 +340,90 @@
 <blockquote>
 <p>可通过<code>list-max-ziplist-value</code>选项和<code>list-max-ziplist-entries</code>选项修改以上两个条件的上限值</p>
 </blockquote>
-<h3 id="哈希对象"><a href="#哈希对象" class="headerlink" title="哈希对象"></a>哈希对象</h3><p>哈希对象的编码可以是ziplist或者hashtable。</p>
+<h3 id="哈希对象"><a href="#哈希对象" class="headerlink" title="哈希对象"></a>哈希对象</h3><p>哈希对象的编码可以是<code>ziplist</code>或者<code>hashtable</code>。</p>
+<ul>
+<li><code>ziplist</code>编码的哈希对象使用压缩列表作为底层实现，新的键、值会以两个相邻的压缩列表节点推入到压缩列表表尾。举个例子，如果我们执行以下命令：</li>
+</ul>
+<pre><code>redis&gt; HSET profile name tom
+redis&gt; HSET profile age 25
+redis&gt; HSET profile career Programmer
+</code></pre>
+<p>对象所使用的压缩列表如图</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ebb3785199e440d69f446ecaa6141982~tplv-k3u1fbpfcp-watermark.image"></p>
+<ul>
+<li><code>hashtable</code>编码的哈希对象使用字典作为底层实现，哈希对象中的每个键值对都使用一个字典键值对来保存。还是拿上面的命令举例，其结构如图所示：</li>
+</ul>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fe04b94992694c7f856268f2a26269a6~tplv-k3u1fbpfcp-watermark.image"></p>
+<h4 id="编码转换-1"><a href="#编码转换-1" class="headerlink" title="编码转换"></a>编码转换</h4><p>当哈希对象可以同时满足以下两个条件时，哈希对象使用<code>ziplist</code>编码，否则使用<code>hashtable</code>编码。</p>
+<ul>
+<li>哈希对象保存的所有键值对的键和值的字符串长度都小于64字节；</li>
+<li>哈希对象保存的键值对数量小于512个。</li>
+</ul>
+<blockquote>
+<p>可通过<code>hash-max-ziplist-value</code>选项和<code>hash-max-ziplist-entries</code>选项修改以上两个条件的上限值</p>
+</blockquote>
+<h3 id="集合对象"><a href="#集合对象" class="headerlink" title="集合对象"></a>集合对象</h3><p>集合对象的编码可以是<code>intset</code>或者<code>hashtable</code>。</p>
+<ul>
+<li>intset编码的集合对象包含的所有元素都被保存在整数集合里面；</li>
+<li>hashtable编码的集合对象使用字典作为底层实现，字典的每个键都是一个字符串对象，每个字符串对象包含了一个集合元素，而字典的值则全部被设置为NULL。</li>
+</ul>
+<p>下图分别为intset编码集合对象以及hashtable编码集合对象结构：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8f9d8c0f0cea474f934670daf7efcc0b~tplv-k3u1fbpfcp-watermark.image"></p>
+<h4 id="编码的转换-1"><a href="#编码的转换-1" class="headerlink" title="编码的转换"></a>编码的转换</h4><p>当集合对象可以同时满足以下两个条件时，对象使用intset编码，否则使用hashtable编码：</p>
+<ul>
+<li>集合对象保存的所有元素都是整数值；</li>
+<li>集合对象保存的元素数量不超过512个。</li>
+</ul>
+<blockquote>
+<p>可通过<code>set-max-intset-entries</code>选项修改以上条件上限值</p>
+</blockquote>
+<h3 id="有序集合对象"><a href="#有序集合对象" class="headerlink" title="有序集合对象"></a>有序集合对象</h3><p>有序集合的编码可以是<code>ziplist</code>或者<code>skiplist</code>。</p>
+<ul>
+<li>ziplist编码的有序集合，使用压缩列表作为底层实现，每个集合元素使用两个紧挨在一起的压缩列表节点来保存，第一个节点保存元素的成员（member），而第二个元素则保存元素的分值（score）。集合元素按分值从小到大进行排序。</li>
+<li>skiplist编码的有序集合对象使用zset结构作为底层实现，一个zset结构同时包含一个字典（<code>dict</code>）和一个跳跃表（<code>zsl</code>）。这两种数据结构都会通过指针来共享相同元素的成员和分值，不会浪费额外的内存。</li>
+</ul>
+<blockquote>
+<ul>
+<li><code>zsl跳跃表</code>按分值从小到大保存了所有集合元素：跳跃表节点的object属性保存了元素的成员，score属性则保存了元素的分值，以便程序可以对有序集合进行范围型操作，比如<code>ZRANK</code>、<code>ZRANGE</code>等命令。</li>
+<li><code>dict字典</code>为有序集合创建了一个从成员到分值的映射：字典的键保存了元素的成员，值保存了元素的分值。通过这个字典，程序可以用O（1）复杂度查找给定成员的分值，比如<code>ZSCORE</code>命令。</li>
+</ul>
+</blockquote>
+<h4 id="编码的转换-2"><a href="#编码的转换-2" class="headerlink" title="编码的转换"></a>编码的转换</h4><p>当有序集合对象可以同时满足以下两个条件时，对象使用ziplist编码，否则使用skiplist编码：</p>
+<ul>
+<li>有序集合保存的元素数量小于128个；</li>
+<li>有序集合保存的所有元素成员的长度都小于64字节。</li>
+</ul>
+<blockquote>
+<p>可通过<code>zset-max-ziplist-entries</code>和<code>zset-max-ziplist-value</code>选项修改以上两个条件的上限值</p>
+</blockquote>
+<h3 id="类型检查与命令多态"><a href="#类型检查与命令多态" class="headerlink" title="类型检查与命令多态"></a>类型检查与命令多态</h3><p>Redis中用于操作键的命令基本上可以分为两种类型：</p>
+<ul>
+<li>可以对任何类型的键执行（<code>命令多态</code>），比如说DEL、EXPIRE、RENAME、TYPE、OBJECT等。redis会根据键的值对象所使用的编码来选择正确的命令。</li>
+<li>只能对特定类型的键执行，比如SET、GET、RPUSH、LPOP、ZADD、ZCARD等。redis通过redisObject结构的type属性来检查键的值对象是否为执行命令所需的类型，如不匹配则不执行。（<code>类型检查</code>）</li>
+</ul>
+<h3 id="内存回收与对象共享"><a href="#内存回收与对象共享" class="headerlink" title="内存回收与对象共享"></a>内存回收与对象共享</h3><ul>
+<li>Redis通过在对象系统中构建了一个引用计数技术实现的内存回收机制。每个对象的引用计数信息由<code>redisObject</code>结构的<code>refcount</code>属性记录</li>
+<li>Redis会在初始化服务器时，创建0-9999的字符串对象，当服务器需要用到值为0到9999的字符串对象时，服务器就会使用这些共享对象，而不是新创建对象。</li>
+</ul>
+<blockquote>
+<p>可以通过修改redis.h/REDIS_SHARED_INTEGERS来修改创建共享字符串对象的数量</p>
+</blockquote>
+<h4 id="为什么Redis不共享包含字符串的对象？"><a href="#为什么Redis不共享包含字符串的对象？" class="headerlink" title="为什么Redis不共享包含字符串的对象？"></a>为什么Redis不共享包含字符串的对象？</h4><p>一个共享对象保存的值越复杂，验证共享对象和目标对象是否相同所需的复杂度就会越高，消耗的CPU时间也会越多。</p>
+<ul>
+<li>如果共享对象是保存字符串值的字符串对象，那么验证操作的复杂度为O（N）；</li>
+<li>如果共享对象是包含了多个值（或者对象的）对象，比如列表对象或者哈希对象，那么验证操作的复杂度将会是O（N²）。</li>
+</ul>
+<p>因此，尽管共享更复杂的对象可以节约更多的内存，但受到CPU时间的限制，Redis只对包含整数值的字符串对象进行共享。</p>
+<h4 id="为什么Redis引用计数不会出现循环引用？"><a href="#为什么Redis引用计数不会出现循环引用？" class="headerlink" title="为什么Redis引用计数不会出现循环引用？"></a>为什么Redis引用计数不会出现循环引用？</h4><p>redis对象之间没有深层次的嵌套，顶多有一个指向底层的实现数据结构的指针，并且redis只共享0-9999的数值字符串对象，对于别的对象，ptr指针是不会去寻找是否有相同的，然后指向，所以不存在循环引用。</p>
+<h3 id="对象的空转时长"><a href="#对象的空转时长" class="headerlink" title="对象的空转时长"></a>对象的空转时长</h3><p><code>redisObject</code>除了前面介绍过的<code>type</code>、<code>encoding</code>、<code>ptr</code>和<code>refcount</code>四个属性之外，还包含最后一个属性为<code>lru</code>属性，当用于LRU时表示最后一次访问时间，当用于LFU时，高16位记录分钟级别的访问时间，低8位记录访问频率0到255。</p>
+<p>当服务器打开了<code>maxmemory</code>选项，并且服务器用于回收内存的算法为<code>volatile-lru</code>或者<code>allkeys-lru</code>时，当服务器占用的内存数超过maxmemory所设置的上限值时，空转时长较高的那部分键会优先被服务器释放，从而回收内存。</p>
+<blockquote>
+<p>Bitmap、Stream、Geo、HyperLogLog待更新</p>
+</blockquote>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Redis设计与实现》（黄健宏）</li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/zwx900102/article/details/109595508">https://blog.csdn.net/zwx900102/article/details/109595508</a></li>
+</ul>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -349,9 +469,9 @@
                     </dl>
                 </div>
                 <ul>
-                    <li><a href="/">5 <p>文章</p></a></li>
+                    <li><a href="/">6 <p>文章</p></a></li>
                     <li><a href="/categories">7 <p>分类</p></a></li>
-                    <li><a href="/tags">24 <p>标签</p></a></li>
+                    <li><a href="/tags">32 <p>标签</p></a></li>
                 </ul>
             </div>
             
@@ -360,7 +480,7 @@
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Redis底层数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88SDS%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">简单动态字符串（SDS）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-number">1.2.</span> <span class="toc-text">链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.</span> <span class="toc-text">字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">跳跃表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="toc-number">1.5.</span> <span class="toc-text">整数集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="toc-number">1.6.</span> <span class="toc-text">压缩列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.</span> <span class="toc-text">对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%B1%BB%E5%9E%8B%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="toc-number">2.1.</span> <span class="toc-text">对象的类型与编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.</span> <span class="toc-text">字符串对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.3.</span> <span class="toc-text">列表对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.4.</span> <span class="toc-text">哈希对象</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Redis底层数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88SDS%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">简单动态字符串（SDS）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-number">1.2.</span> <span class="toc-text">链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8"><span class="toc-number">1.3.</span> <span class="toc-text">字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="toc-number">1.4.</span> <span class="toc-text">跳跃表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="toc-number">1.5.</span> <span class="toc-text">整数集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="toc-number">1.6.</span> <span class="toc-text">压缩列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%88%97%E8%A1%A8"><span class="toc-number">1.7.</span> <span class="toc-text">快速列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.</span> <span class="toc-text">对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%B1%BB%E5%9E%8B%E4%B8%8E%E7%BC%96%E7%A0%81"><span class="toc-number">2.1.</span> <span class="toc-text">对象的类型与编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.</span> <span class="toc-text">字符串对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.3.</span> <span class="toc-text">列表对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.4.</span> <span class="toc-text">哈希对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.5.</span> <span class="toc-text">集合对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.6.</span> <span class="toc-text">有序集合对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E6%A3%80%E6%9F%A5%E4%B8%8E%E5%91%BD%E4%BB%A4%E5%A4%9A%E6%80%81"><span class="toc-number">2.7.</span> <span class="toc-text">类型检查与命令多态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6%E4%B8%8E%E5%AF%B9%E8%B1%A1%E5%85%B1%E4%BA%AB"><span class="toc-number">2.8.</span> <span class="toc-text">内存回收与对象共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%A9%BA%E8%BD%AC%E6%97%B6%E9%95%BF"><span class="toc-number">2.9.</span> <span class="toc-text">对象的空转时长</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
                 </div>
             </div>
             

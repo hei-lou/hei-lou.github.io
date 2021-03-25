@@ -149,34 +149,34 @@
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                11k
+                18k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                10 mins.
+                16 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/quicklist/" rel="tag">quicklist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/skiplist/" rel="tag">skiplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/ziplist/" rel="tag">ziplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
             <h3 id="简单动态字符串（SDS）"><a href="#简单动态字符串（SDS）" class="headerlink" title="简单动态字符串（SDS）"></a>简单动态字符串（SDS）</h3><p></p>
 <p>相较于C字符串的优点：</p>
 <ul>
-<li>常数复杂度获取字符串长度</li>
-<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，SDS修改时，API会自动将SDS的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
-<li>减少修改字符串时带来的内存重分配次数。SDS采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
-<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。SDS可以保存任意格式的二进制数据。</li>
+<li>常数复杂度获取字符串长度。</li>
+<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，<code>SDS</code>修改时，API会自动将<code>SDS</code>的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
+<li>减少修改字符串时带来的内存重分配次数。<code>SDS</code>采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
+<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。<code>SDS</code>可以保存任意格式的二进制数据。</li>
 <li>兼容部分C字符串函数，避免了不必要的代码重复。</li>
 </ul>
 <h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>链表被广泛用于实现Redis的各种功能，比如列表、发布与订阅、慢查询、监视器等。</p>
-<p>listNode...</p>
+<p><code>listNode...</code></p>
             
             <span class="read-more"><a href="/2019/04/10/redis-base-data-structure/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>

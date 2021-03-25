@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>redis专题-必知必会的基础知识 - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,Redis有哪些优缺点？优点
+
+读写性能优异， Redis能读的速度是110000次/s，写的速度是81000次/s。
+支持数据持久化，支持AOF和RDB两种持久化方式。
+支持事务，Redis的所有,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">redis专题-必知必会的基础知识</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/Redis"><b>「
+                    </b>REDIS<b> 」</b></a>
+                
+                四月 15, 2019
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/04/15/redis-basic-knowledge/" title="redis专题-必知必会的基础知识" class="">redis专题-必知必会的基础知识</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    7.6k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    7 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/AOF/" rel="tag">AOF</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RDB/" rel="tag">RDB</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis%E9%9B%86%E7%BE%A4/" rel="tag">redis集群</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="tag">分布式锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%93%A8%E5%85%B5/" rel="tag">哨兵</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <h2 id="Redis有哪些优缺点？"><a href="#Redis有哪些优缺点？" class="headerlink" title="Redis有哪些优缺点？"></a>Redis有哪些优缺点？</h2><p>优点</p>
+<ul>
+<li>读写性能优异， Redis能读的速度是110000次/s，写的速度是81000次/s。</li>
+<li>支持数据持久化，支持AOF和RDB两种持久化方式。</li>
+<li>支持事务，Redis的所有操作都是原子性的，同时Redis还支持对几个操作合并后的原子性执行。</li>
+<li>数据结构丰富，除了支持string类型的value外还支持hash、set、zset、list等数据结构。</li>
+<li>支持主从复制，主机会自动将数据同步到从机，可以进行读写分离。<br>缺点</li>
+<li>数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场景主要局限在较小数据量的高性能操作和运算上。</li>
+<li>Redis 不具备自动容错和恢复功能，主机从机的宕机都会导致前端部分读写请求失败，需要等待机器重启或者手动切换前端的IP才能恢复。</li>
+<li>主机宕机，宕机前有部分数据未能及时同步到从机，切换IP后还会引入数据不一致的问题，降低了系统的可用性。</li>
+<li>Redis 较难支持在线扩容，在集群容量达到上限时在线扩容会变得很复杂。</li>
+</ul>
+<h2 id="Redis为什么这么快？"><a href="#Redis为什么这么快？" class="headerlink" title="Redis为什么这么快？"></a>Redis为什么这么快？</h2><ul>
+<li>完全基于内存，绝大部分请求是纯粹的内存操作，非常快速。</li>
+<li>数据结构简单，读取速度快。比如SDS、双端链表、压缩链表、跳跃链表。</li>
+<li>处理网络请求采用单线程，避免了不必要的上下文切换和竞争条件。<blockquote>
+<p>Redis 4.0 开始，用异步线程处理一些耗时操作。如，异步线程实现惰性删除（解决大KEY删除阻塞主线程）、异步 AOF （解决磁盘 IO 紧张时，fsync 执行一次很慢）等等。</p>
+</blockquote>
+</li>
+<li>使用多路 I/O 复用模型，非阻塞 IO。</li>
+<li>使用底层模型不同，它们之间底层实现方式以及与客户端之间通信的应用协议不一样，Redis 直接自己构建了 VM 机制 ，因为一般的系统调用系统函数的话，会浪费一定的时间去移动和请求。</li>
+</ul>
+<h2 id="Redis中有多少数据库？"><a href="#Redis中有多少数据库？" class="headerlink" title="Redis中有多少数据库？"></a>Redis中有多少数据库？</h2><p>Redis服务器默认会创建16个数据库，可通过配置的database选项修改。默认情况下，Redis客户端的目标数据库为0号数据库。</p>
+<h2 id="Redis数据结构？"><a href="#Redis数据结构？" class="headerlink" title="Redis数据结构？"></a>Redis数据结构？</h2><ul>
+<li>基本数据类型：string、list、set、zset、hash</li>
+<li>高级数据结构： Bitmap、HyperLogLog、GEO<blockquote>
+<p>Redis Module：BloomFilter、RedisSearch、Redis-ML、JSON。Stream功能（5.0新增）</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Redis使用场景"><a href="#Redis使用场景" class="headerlink" title="Redis使用场景"></a>Redis使用场景</h2><ul>
+<li>数据缓存</li>
+<li>会话缓存</li>
+<li>时效性数据</li>
+<li>访问频率</li>
+<li>计数器</li>
+<li>社交列表</li>
+<li>记录用户判定信息</li>
+<li>交集、并集和差集</li>
+<li>热门列表与排行榜</li>
+<li>最新动态</li>
+<li>消息队列</li>
+<li>分布式锁</li>
+</ul>
+<h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><p>Redis 提供了两种方式，实现数据的持久化到硬盘。Redis启动会优先加载AOF文件，当未开启AOF时，才会加载RDB文件（未开启也不会加载）。</p>
+<p><strong>RDB 持久化（全量）</strong>，fork 一个子进程，将内存中指定时间间隔内的数据集快照写入临时文件，成功后，再替换之前的文件，用二进制压缩存储。通过配置<code>save</code>参数、<code>save</code>（阻塞）、<code>bgsave</code>、<code>shutdown</code>、<code>flushall</code>命令触发。</p>
+<ul>
+<li><p>优点：灵活设置备份频率和周期，适合冷备份，数据集的时候易恢复，子进程持久化不会影响主进程IO。</p>
+</li>
+<li><p>缺点：丢失数据窗口大，当数据集较大时，fork子进程可能会导致整个服务器停止服务几百毫秒，甚至是 1 秒钟</p>
+</li>
+</ul>
+<blockquote>
+<p>不建议在主 Redis 节点开启 RDB 功能，会带来一定时间的阻塞，特别是数据量大的时候</p>
+</blockquote>
+<p><strong>AOF持久化（增量）</strong>，以协议格式将被执行的写命令追加到服务器状态的aof_buf缓冲区，然后根据对应的策略向硬盘中同步数据。随着文件越来越大，需要定期对AOF文件进行重写（fork子进程来完成）。配置<code>appendonly yes</code>开启AOF。</p>
+<blockquote>
+<p>AOF文件的加载需要先创建一个伪客户端，然后把命令一条条发送给Redis服务端，服务端再完整执行一遍相应的命令。</p>
+</blockquote>
+<ul>
+<li><p>写入策略：配置<code>appendsync</code> ，每秒同步（<code>everysec</code>），等到缓冲区满才同步（<code>no</code>），每次发生数据变更立即同步（<code>always</code>）。</p>
+</li>
+<li><p>重写机制：通过<code>auto-aof-rewrite-min-size</code>、<code>auto-aof-rewrite-percentage</code>配置重写时机。重写只会保留最终数据，多条写命令会合并为一条，已经超时的数据不会写入文件。重写过程中父进程执行的命令会通过管道按批次发送给子进程，由子进程重写回放。子进程退出后只有少量命令还累计在父进程，父进程只需回放少量命令即可。</p>
+</li>
+<li><p>优点：更高的数据安全性，采用append模式没有磁盘寻址的开销，写入性能非常高，而且也不会破坏已经保存的数据。</p>
+</li>
+<li><p>缺点：AOF文件通常要大于RDB文件，大数据集恢复是其速度慢于RDB，AOF这种较为复杂的基于命令日志/merge/回放的方式容易出bug</p>
+</li>
+</ul>
+<blockquote>
+<p>在 Redis4.0 版本开始，允许使用<code>RDB-AOF</code>混合持久化方式(5.0默认开启)。优化重写机制，重写后新的AOF文件前半段是RDB格式全量数据，后半段是AOF格式增量数据。在 Redis 实例重启时，会使用RDB持久化文件重新构建内存，再使用AOF重放近期的操作指令来实现完整恢复重启之前的状态。</p>
+</blockquote>
+<h2 id="Redis数据过期策略"><a href="#Redis数据过期策略" class="headerlink" title="Redis数据过期策略"></a>Redis数据过期策略</h2><ul>
+<li>定时删除：在设置键的过期时间的同时，创建一个定时器（timer），让定时器在键的过期时间来临时，立即执行对键的删除操作。对CPU不友好。</li>
+<li>惰性删除：放任键过期不管，但是每次从键空间中获取键时，都检查取得的键是否过期，如果过期的话，就删除该键；如果没有过期，就返回该键。</li>
+<li>定期删除：在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字典中随机检查一部分键的过期时间，并删除其中的过期键。</li>
+</ul>
+<blockquote>
+<p>expires字典会保存所有设置了过期时间的key的过期时间数据，其中，key是指向键空间中的某个键的指针，value是该键的毫秒精度的UNIX时间戳表示的过期时间。Redis中同时使用了惰性过期和定期过期两种过期策略。</p>
+</blockquote>
+<h2 id="Redis数据淘汰策略"><a href="#Redis数据淘汰策略" class="headerlink" title="Redis数据淘汰策略"></a>Redis数据淘汰策略</h2><p>Redis内存数据集大小上升到一定大小的时候，就会进行数据淘汰策略。Redis 提供了以下8种数据淘汰策略：</p>
+<ul>
+<li>全局的键空间选择性移除<ul>
+<li>noeviction：新写入操作会报错。（默认）</li>
+<li>allkeys-lru：在键空间中，移除最久未使用的key。（这个是最常用的）</li>
+<li>allkeys-random：在键空间中，随机移除某个key。</li>
+<li>allkeys-lfu：在键空间中，移除最少使用频次的key（4.0的）</li>
+</ul>
+</li>
+<li>设置过期时间的键空间选择性移除<ul>
+<li>volatile-lru：在设置了过期时间的键空间中，移除最久未使用的key。</li>
+<li>volatile-random：在设置了过期时间的键空间中，随机移除某个key。</li>
+<li>volatile-ttl：在设置了过期时间的键空间中，有更早过期时间的key优先移除。</li>
+<li>volatile-lfu：在设置了过期时间的键空间中，移除最少使用频次的key（4.0的）</li>
+</ul>
+</li>
+</ul>
+<p>LRU：并不是一个严格的 LRU 实现，通过采样一小部分键，然后在采样键中回收最适合(拥有最久未被访问时间)的那个。</p>
+<blockquote>
+<p>MySQL里有2000w数据，Redis中只存20w的数据，如何保证Redis中的数据都是热点数据？选择 allkeys-lru 策略。如果在 Redis 4.0 版本，可以考虑使用 volatile-lfu</p>
+</blockquote>
+<h3 id="如果有大量的-key-需要设置同一时间过期，一般需要注意什么？"><a href="#如果有大量的-key-需要设置同一时间过期，一般需要注意什么？" class="headerlink" title="如果有大量的 key 需要设置同一时间过期，一般需要注意什么？"></a>如果有大量的 key 需要设置同一时间过期，一般需要注意什么？</h3><p>如果大量的 key 过期时间设置的过于集中，一般需要在时间上加一个随机值，使得过期时间分散一些。调大 hz 参数。</p>
+<h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>Redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。没有隔离级别的概念。事务中任意命令执行失败，其余命令仍会被执行。</p>
+<p>通过<code>MULTI</code>命令开启一个事务，在该语句之后执行的命令，都将被视为事务之内的操作，最后我们可以通过执行 <code>EXEC</code>/<code>DISCARD</code>命令来提交/回滚该事务内的所有操作。开启事务后，所有语句，发送给 Redis Server ，都会暂存在 Server 中。在事务开启之前，如果客户端与服务器之间出现通讯故障并导致网络断开，其后所有待执行的语句都将不会被服务器执行。</p>
+<h3 id="如何实现-Redis-CAS-操作？"><a href="#如何实现-Redis-CAS-操作？" class="headerlink" title="如何实现 Redis CAS 操作？"></a>如何实现 Redis CAS 操作？</h3><p>在 Redis 的事务中，<code>WATCH</code>命令可用于提供CAS功能。</p>
+<h2 id="Redis主从同步"><a href="#Redis主从同步" class="headerlink" title="Redis主从同步"></a>Redis主从同步</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cfd437e239af4ddfa337ec55869596ca~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="Redis哨兵"><a href="#Redis哨兵" class="headerlink" title="Redis哨兵"></a>Redis哨兵</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/127e179b7d9345ad96c731026b31048c~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h2><p>redis cluster采用数据分片的哈希槽来进行数据存储和数据的读取。redis cluster的新增和删除节点都需要手动来分配槽区。redis cluster执行读写操作的都是master节点。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c4ce2d862fac4edfb35d9dd0a8b94a31~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a>Redis实现分布式锁</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9e845198a3547f38ce460cedd579c9f~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="高频面试题"><a href="#高频面试题" class="headerlink" title="高频面试题"></a>高频面试题</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f69c23f2b0934183bf492ba0906dc996~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="如何使用-Redis-实现消息队列？"><a href="#如何使用-Redis-实现消息队列？" class="headerlink" title="如何使用 Redis 实现消息队列？"></a>如何使用 Redis 实现消息队列？</h2><p>一般使用 list 结构作为队列，rpush 生产消息，lpop 消费消息。当 lpop 没有消息的时候，要适当 sleep 一会再重试。还可使用blpop，在没有消息的时候，它会阻塞住直到消息到来。使用 pub / sub 主题订阅者模式，可以实现 1:N 的消息队列。但是在消费者下线的情况下，生产的消息会丢失。</p>
+<p>延时队列： 使用 sortedset ，拿时间戳作为 score ，消息内容作为 key 调用 zadd 来生产消息，消费者用 zrangebyscore 指令获取 N 秒之前的数据轮询进行处理。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>《Redis设计与实现》（黄健宏）</li>
+<li><a target="_blank" rel="noopener" href="https://www.processon.com/view/5f7fc48b1e085307a07da543#map">https://www.processon.com/view/5f7fc48b1e085307a07da543#map</a></li>
+<li><a target="_blank" rel="noopener" href="http://svip.iocoder.cn/Redis/Interview/">http://svip.iocoder.cn/Redis/Interview/</a></li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">6 <p>文章</p></a></li>
+                    <li><a href="/categories">7 <p>分类</p></a></li>
+                    <li><a href="/tags">32 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%9C%89%E5%93%AA%E4%BA%9B%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">Redis有哪些优缺点？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E5%BF%AB%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">Redis为什么这么快？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%B8%AD%E6%9C%89%E5%A4%9A%E5%B0%91%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">Redis中有多少数据库？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">Redis数据结构？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">5.</span> <span class="toc-text">Redis使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">6.</span> <span class="toc-text">Redis持久化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%95%B0%E6%8D%AE%E8%BF%87%E6%9C%9F%E7%AD%96%E7%95%A5"><span class="toc-number">7.</span> <span class="toc-text">Redis数据过期策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%95%B0%E6%8D%AE%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="toc-number">8.</span> <span class="toc-text">Redis数据淘汰策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%A7%E9%87%8F%E7%9A%84-key-%E9%9C%80%E8%A6%81%E8%AE%BE%E7%BD%AE%E5%90%8C%E4%B8%80%E6%97%B6%E9%97%B4%E8%BF%87%E6%9C%9F%EF%BC%8C%E4%B8%80%E8%88%AC%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">8.1.</span> <span class="toc-text">如果有大量的 key 需要设置同一时间过期，一般需要注意什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1"><span class="toc-number">9.</span> <span class="toc-text">Redis事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0-Redis-CAS-%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="toc-number">9.1.</span> <span class="toc-text">如何实现 Redis CAS 操作？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="toc-number">10.</span> <span class="toc-text">Redis主从同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%93%A8%E5%85%B5"><span class="toc-number">11.</span> <span class="toc-text">Redis哨兵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E9%9B%86%E7%BE%A4"><span class="toc-number">12.</span> <span class="toc-text">Redis集群</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81"><span class="toc-number">13.</span> <span class="toc-text">Redis实现分布式锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-number">14.</span> <span class="toc-text">高频面试题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-Redis-%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9F"><span class="toc-number">15.</span> <span class="toc-text">如何使用 Redis 实现消息队列？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">16.</span> <span class="toc-text">参考</span></a></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>
