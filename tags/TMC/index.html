@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tag: TCC - Enjoy it</title>
+    <title>Tag: TMC - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
@@ -149,7 +149,7 @@
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                3.1k
+                3k
             </span>
             
             
@@ -162,22 +162,18 @@
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TCC/" rel="tag">TCC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TMC/" rel="tag">TMC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
             <p>热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。</p>
 <ol>
-<li><p>凭借业务经验，进行预估哪些是热key</p>
-</li>
-<li><p>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</p>
-</li>
-<li><p>在Proxy层做收集<br> </p>
-</li>
-<li><p>用redis自带命令、</p>
-<ul>
+<li>凭借业务经验，进行预估哪些是热key</li>
+<li>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</li>
+<li>在Proxy层做收集<br> </li>
+<li>用redis自带命令<ul>
 <li>monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。</li>
-<li>hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis...</li></ul></li></ol>
+<li>hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时...</li></ul></li></ol>
             
             <span class="read-more"><a href="/2019/04/20/redis-hot-key/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
