@@ -157,9 +157,9 @@
 <li><p>利用二级缓存<br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。</p>
 </li>
 <li><p>备份热key<br>在key上加上随机数，在多个redis上都存一份。<br><img src="https://img-blog.csdnimg.cn/20210326221531530.png"></p>
-<h2 id="业内解决方案"><a href="#业内解决方案" class="headerlink" title="业内解决方案"></a>业内解决方案</h2><h5 id="有赞透明多级缓存解决方案（TMC）"><a href="#有赞透明多级缓存解决方案（TMC）" class="headerlink" title="有赞透明多级缓存解决方案（TMC）"></a>有赞透明多级缓存解决方案（TMC）</h5><p><img src="https://img-blog.csdnimg.cn/20210326222300277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
 </li>
 </ol>
+<h2 id="业内解决方案"><a href="#业内解决方案" class="headerlink" title="业内解决方案"></a>业内解决方案</h2><h5 id="有赞透明多级缓存解决方案（TMC）"><a href="#有赞透明多级缓存解决方案（TMC）" class="headerlink" title="有赞透明多级缓存解决方案（TMC）"></a>有赞透明多级缓存解决方案（TMC）</h5><p><img src="https://img-blog.csdnimg.cn/20210326222300277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
 <ul>
 <li>Jedis-Client： Java 应用与缓存服务端交互的直接入口，接口定义与原生 Jedis-Client 无异；</li>
 <li>Hermes-SDK：自研“热点发现+本地缓存”功能的SDK封装， Jedis-Client 通过与它交互来集成相应能力；</li>
@@ -170,8 +170,10 @@
 <blockquote>
 <p>源自：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000017142556">https://segmentfault.com/a/1190000017142556</a></p>
 </blockquote>
-<h5 id="读写分离架构"><a href="#读写分离架构" class="headerlink" title="读写分离架构"></a>读写分离架构</h5><p><img src="https://img-blog.csdnimg.cn/20210326222822520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"><br>架构中个节点的作用：<br>1）SLB层做负载均衡<br>2）Proxy层做读写分离自动路由<br>3）Master负责写<br>4）ReadOnly节点负责读请求<br>5）Slave节点和Master节点做高可用</p>
-<h5 id="热点数据解决方案"><a href="#热点数据解决方案" class="headerlink" title="热点数据解决方案"></a>热点数据解决方案</h5><p><img src="https://img-blog.csdnimg.cn/20210326222902854.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"><br>Proxy架构的主要优点有：<br>1）Proxy缓存热点，读能力可水平扩展<br>2）DB自动计算热点Key<br>3）对客户端完全透明，不需要做任何兼容</p>
+<h5 id="读写分离架构"><a href="#读写分离架构" class="headerlink" title="读写分离架构"></a>读写分离架构</h5><p><img src="https://img-blog.csdnimg.cn/20210326222822520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
+<p>架构中个节点的作用：<br>1）SLB层做负载均衡<br>2）Proxy层做读写分离自动路由<br>3）Master负责写<br>4）ReadOnly节点负责读请求<br>5）Slave节点和Master节点做高可用</p>
+<h5 id="热点数据解决方案"><a href="#热点数据解决方案" class="headerlink" title="热点数据解决方案"></a>热点数据解决方案</h5><p><img src="https://img-blog.csdnimg.cn/20210326222902854.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
+<p>Proxy架构的主要优点有：<br>1）Proxy缓存热点，读能力可水平扩展<br>2）DB自动计算热点Key<br>3）对客户端完全透明，不需要做任何兼容</p>
 <p>DB计算热点时，主要运用的方法和优势有：<br>1）基于统计阀值的热点统计。<br>2） 基于统计周期的热点统计。<br>3） 基于版本号实现的无需重置初值统计方法。</p>
 <blockquote>
 <p>源自：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/404817">https://developer.aliyun.com/article/404817</a></p>
