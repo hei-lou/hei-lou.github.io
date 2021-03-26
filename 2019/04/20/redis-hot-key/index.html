@@ -84,7 +84,7 @@
             animation-duration: 1.2s;
             background-image: 
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-                url(/img/6.jpg) ">
+                url(/img/4.jpg) ">
         </div>
         <div class="else">
             <p class="animated fadeInDown">
@@ -94,7 +94,7 @@
                 
                 四月 20, 2019
             </p>
-            <h3 class="post-title animated fadeInDown"><a href="/2019/04/20/redis-big-key/" title="redis专题-热点key解决方案" class="">redis专题-热点key解决方案</a>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/04/20/redis-hot-key/" title="redis专题-热点key解决方案" class="">redis专题-热点key解决方案</a>
             </h3>
             
             <p class="post-count animated fadeInDown">
@@ -120,7 +120,7 @@
             </p>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TCC/" rel="tag">TCC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/big-key/" rel="tag">big key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TCC/" rel="tag">TCC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
             
         </div>
     </div>
@@ -143,19 +143,20 @@
         <div class="content markdown animated fadeIn">
             <h2 id="热Key问题"><a href="#热Key问题" class="headerlink" title="热Key问题"></a>热Key问题</h2><p>热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。</p>
 <h2 id="如何发现热key"><a href="#如何发现热key" class="headerlink" title="如何发现热key"></a>如何发现热key</h2><ol>
-<li>凭借业务经验，进行预估哪些是热key</li>
-<li>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</li>
-<li>在Proxy层做收集<br> <img src="https://img-blog.csdnimg.cn/2021032622085766.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></li>
-<li>用redis自带命令</li>
-</ol>
+<li><p>凭借业务经验，进行预估哪些是热key</p>
+</li>
+<li><p>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</p>
+</li>
+<li><p>在Proxy层做收集<br> <img src="https://img-blog.csdnimg.cn/2021032622085766.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
+</li>
+<li><p>用redis自带命令、</p>
 <ul>
 <li>monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。</li>
 <li>hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。</li>
 </ul>
-<ol start="5">
-<li>自己抓包评估</li>
-</ol>
-<h2 id="热key解决"><a href="#热key解决" class="headerlink" title="热key解决"></a>热key解决</h2><ol>
+</li>
+<li><p>自己抓包评估</p>
+<h2 id="热key解决"><a href="#热key解决" class="headerlink" title="热key解决"></a>热key解决</h2></li>
 <li><p>利用二级缓存<br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。</p>
 </li>
 <li><p>   备份热key<br>在key上加上随机数，在多个redis上都存一份。<br><img src="https://img-blog.csdnimg.cn/20210326221531530.png"></p>
@@ -225,7 +226,7 @@
                 <ul>
                     <li><a href="/">7 <p>文章</p></a></li>
                     <li><a href="/categories">7 <p>分类</p></a></li>
-                    <li><a href="/tags">35 <p>标签</p></a></li>
+                    <li><a href="/tags">34 <p>标签</p></a></li>
                 </ul>
             </div>
             
