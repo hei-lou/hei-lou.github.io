@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 6 」</p>
+                        <p style="text-align: center">「 7 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -72,6 +72,28 @@
                                         <h2 class="timeline-title">四月 2019</h2>
                                     </div>
                                 </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">四月 20, 2019</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2019/04/20/redis-big-key/">redis专题-热点key解决方案</a>
+                                        <p>
+                                            热Key问题热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。
+如何发现热key
+凭借业务经验，进行预估哪些是热key
+在客户端进行收集 在操作redis之前，加入一行代码进行数据统计。
+在Proxy层做收集 
+用redis自带命令
+
+
+monitor命令，该命令可以实时抓取出redis...
+                                        </p>
+                                    </div>
+                                </li>
+                            
                                 
                                 <li class="timeline-item">
                                     <div class="timeline-info">

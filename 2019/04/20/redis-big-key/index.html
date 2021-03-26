@@ -5,12 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HTTP、HTTPS协议详解 - Enjoy it</title>
+    <title>redis专题-热点key解决方案 - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
-    <meta name="description" content="路上随记,概述早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多,"> 
+    <meta name="description" content="路上随记,热Key问题热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。
+如何发现热key
+凭借业务经,"> 
     <meta name="author" content="hei-lou"> 
     <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -57,7 +59,7 @@
     <div class="navigation animated fadeIn fast delay-1s">
         <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
         <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
-        <h3 class="subtitle">HTTP、HTTPS协议详解</h3>
+        <h3 class="subtitle">redis专题-热点key解决方案</h3>
         <div class="social">
             <!--        <div class="like-icon">-->
             <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
@@ -82,30 +84,30 @@
             animation-duration: 1.2s;
             background-image: 
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-                url(/img/7.jpg) ">
+                url(/img/6.jpg) ">
         </div>
         <div class="else">
             <p class="animated fadeInDown">
                 
-                <a href="/categories/https"><b>「
-                    </b>HTTPS<b> 」</b></a>
+                <a href="/categories/Redis"><b>「
+                    </b>REDIS<b> 」</b></a>
                 
-                四月 03, 2019
+                四月 20, 2019
             </p>
-            <h3 class="post-title animated fadeInDown"><a href="/2019/04/03/https-detail-explain/" title="HTTP、HTTPS协议详解" class="">HTTP、HTTPS协议详解</a>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/04/20/redis-big-key/" title="redis专题-热点key解决方案" class="">redis专题-热点key解决方案</a>
             </h3>
             
             <p class="post-count animated fadeInDown">
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    5.6k
+                    3.1k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    5 mins.
+                    3 mins.
                 </span>
                 
                 
@@ -118,7 +120,7 @@
             </p>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH%E6%8F%A1%E6%89%8B/" rel="tag">DH握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA%E6%8F%A1%E6%89%8B/" rel="tag">RSA握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/SSL/" rel="tag">SSL</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TLS/" rel="tag">TLS</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/http/" rel="tag">http</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/https/" rel="tag">https</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TCC/" rel="tag">TCC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/big-key/" rel="tag">big key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
             
         </div>
     </div>
@@ -139,74 +141,43 @@
 <div class="article">
     <div class='main'>
         <div class="content markdown animated fadeIn">
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多的重要业务往线上转移，网站对用户隐私和安全性也越来越重视。对于防止恶意监听、中间人攻击、恶意劫持篡改，HTTPS是目前较为可行的方案，全站HTTPS逐渐成为主流网站的选择。</p>
-<h2 id="HTTP简介"><a href="#HTTP简介" class="headerlink" title="HTTP简介"></a>HTTP简介</h2><p>HTTP（HyperText Transfer Protocol，超文本传输协议）,是一种<code>无状态 (stateless)</code> 协议，提供了一组规则和标准，从而让信息能够在互联网上进行传播。在HTTP中，客户端通过Socket创建一个TCP/IP连接，并连接到服务器，完成信息交换后，就会关闭TCP连接。（后来通过<code>Connection: Keep-Alive</code>实现长连接）</p>
-<h3 id="HTTP消息组成："><a href="#HTTP消息组成：" class="headerlink" title="HTTP消息组成："></a>HTTP消息组成：</h3><ul>
-<li>请求行或响应行</li>
-<li>HTTP头部</li>
-<li>HTML实体，包括请求实体和响应实体<br>HTTP请求结构，响应结构如图所示：</li>
-</ul>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d0bd30cac2a4faeadfb2ef8953a843e~tplv-k3u1fbpfcp-watermark.image"></p>
-<h4 id="1-HTTP头部"><a href="#1-HTTP头部" class="headerlink" title="1. HTTP头部"></a>1. HTTP头部</h4><p>HTTP头部由一系列的键值对组成，允许客户端向服务器端发送一些附加信息或者客户端自身的信息，如：<code>accept、accept-encoding、cookie</code>等。http头后面必须有一个空行</p>
-<h4 id="2-请求行"><a href="#2-请求行" class="headerlink" title="2. 请求行"></a>2. 请求行</h4><p>请求行由方法、URL、HTTP版本组成。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/20491a699b7b4e4c946d006228d85b58~tplv-k3u1fbpfcp-watermark.image"></p>
-<h4 id="3-响应行"><a href="#3-响应行" class="headerlink" title="3. 响应行"></a>3. 响应行</h4><p>响应行由HTTP版本、状态码、信息提示符组成。<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a24151074aa544d4996bd291f81a4866~tplv-k3u1fbpfcp-watermark.image"></p>
-<h3 id="HTTP2-0和HTTP1-X相比的新特性"><a href="#HTTP2-0和HTTP1-X相比的新特性" class="headerlink" title="HTTP2.0和HTTP1.X相比的新特性"></a>HTTP2.0和HTTP1.X相比的新特性</h3><ul>
-<li><p>新的二进制格式，HTTP1.x的解析是基于文本。基于文本协议的格式解析存在天然缺陷，文本的表现形式有多样性，要做到健壮性考虑的场景必然很多，二进制则不同，只认0和1的组合。基于这种考虑HTTP2.0的协议解析决定采用二进制格式，实现方便且健壮。</p>
-</li>
-<li><p>多路复用，所有请求共享一个连接。每个请求会对应一个id，这样，一个连接上可以有多个请求，每个连接的请求可以随机的混杂在一起，接收方可以根据请求的<code>id</code>将请求再归属到各自不同的服务端请求里面。</p>
-</li>
-<li><p>header压缩，HTTP1.x的<code>header</code>带有大量信息，而且每次都要重复发送，HTTP2.0使用encoder来减少需要传输的header大小，通讯双方各自cache一份<code>header fields</code>表，既避免了重复header的传输，又减小了需要传输的大小。</p>
-</li>
-<li><p>服务端推送，同<code>SPDY</code>一样，HTTP2.0也具有<code>server push</code>功能。</p>
-</li>
-</ul>
-<h3 id="HTTP安全问题"><a href="#HTTP安全问题" class="headerlink" title="HTTP安全问题"></a>HTTP安全问题</h3><ul>
-<li>通信使用明文(不加密),内容可能会被窃听</li>
-<li>不验证通信方的身份,因此有可能遭遇伪装</li>
-<li>无法证明报文的完整性,所以有可能已遭篡改</li>
-</ul>
-<h2 id="HTTPS协议"><a href="#HTTPS协议" class="headerlink" title="HTTPS协议"></a>HTTPS协议</h2><p>HTTPS 是最流行的 HTTP 安全形式。使用 HTTPS 时，所有的 HTTP 请求和响应数据在发送到网络之前，都要进行加密。 HTTPS 在 HTTP 下面提供了一个传输级的密码安全层——可以使用 SSL，也可以使用其后继者——传输层安全(TLS)。</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6501ef57e7024c32a816f84b9d6e4085~tplv-k3u1fbpfcp-watermark.image"></p>
-<p>相关术语</p>
-<ul>
-<li>密钥：改变密码行为的数字化参数。</li>
-<li>对称密钥加密系统：编、解码使用相同密钥的算法。</li>
-<li>不对称密钥加密系统：编、解码使用不同密钥的算法。</li>
-<li>公开密钥加密系统：一种能够使数百万计算机便捷地发送机密报文的系统。</li>
-<li>数字签名：用来验证报文未被伪造或篡改的校验和。</li>
-<li>数字证书：由一个可信的组织验证和签发的识别信息。</li>
-<li>密钥协商算法：解决动态密钥分配、存储、传输等问题</li>
-</ul>
-<h3 id="TLS-SSL协议"><a href="#TLS-SSL协议" class="headerlink" title="TLS/SSL协议"></a>TLS/SSL协议</h3><p>TLS/SSL协议包含以下一些关键步骤：</p>
-<ul>
-<li>传输的数据必须具有<code>机密性</code>和<code>完整性</code>，一般采用<code>对称加密算法</code>和<code>HMAC算法</code>，这两个算法需要一系列的<code>密钥块（key_block）</code>，比如对称加密算法的密钥、HMAC算法的密钥，如果是AES-128-CBC-PKCS#7加密标准，还需要初始化向量。</li>
-<li>所有的加密块都由<code>主密钥（Master Secret）</code>生成，主密钥就是会话密钥，使用密码衍生算法将主密钥转换为多个密码快。</li>
-<li>主密钥来自<code>预备主密钥（Premaster Secret）</code>，预备主密钥采用同样的密码衍生算法转换为主密钥，预备主密钥采用RSA或者DH（ECDH）算法协商而来。不管采用哪种密钥协商算法，服务器必须有一对密钥（可以是RSA或者ECDSA密钥），公钥发给客户端，私钥自己保留。不同的密钥协商算法，服务器密钥对的作用也是不同的。</li>
-<li>通过这些关键步骤，好像TLS/SSL协议的任务已经结束，但这种方案会遇到中间人攻击，这是TLS/SSL协议无法解决的问题，必须结合<code>PKI</code>的技术进行解决，PKI的核心是证书，证书背后的密码学算法是<code>数字签名</code>技术。对于客户端来说，需要校验证书，确保接收到的服务器公钥是经过认证的，不存在伪造，也就是客户端需要对服务器的身份进行验证。</li>
-</ul>
-<p>TLS/SSL协议核心就三大步骤：<code>认证、密钥协商、数据加密</code>。</p>
-<h3 id="RSA握手"><a href="#RSA握手" class="headerlink" title="RSA握手"></a>RSA握手</h3><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6147f92dc7184d5895d364509f2ea63f~tplv-k3u1fbpfcp-watermark.image"></p>
-<p>握手阶段分成五步：</p>
-<ol>
-<li>客户端给出协议版本号、生成的<code>随机数（Client random）</code>，以及客户端支持的加密方法。</li>
-<li>服务端确认双方使用的加密方法，并给出数字证书、以及一个服务器生成的随机数。</li>
-<li>客户端确认数字证书有效，然后生成一个新的<code>随机数（Premaster secret）</code>，并使用数字证书中的公钥，加密这个随机数，发给服务器。</li>
-<li>服务器使用自己的私钥，获取客户端发来的<code>随机数（Premaster secret）</code>。</li>
-<li>双方根据约定的加密方法，使用前面的三个随机数，生成<code>会话密钥（session key）</code>，用来加密接下来的对话过程。</li>
+            <h2 id="热Key问题"><a href="#热Key问题" class="headerlink" title="热Key问题"></a>热Key问题</h2><p>热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。</p>
+<h2 id="如何发现热key"><a href="#如何发现热key" class="headerlink" title="如何发现热key"></a>如何发现热key</h2><ol>
+<li>凭借业务经验，进行预估哪些是热key</li>
+<li>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</li>
+<li>在Proxy层做收集<br> <img src="https://img-blog.csdnimg.cn/2021032622085766.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></li>
+<li>用redis自带命令</li>
 </ol>
-<p>握手阶段有三点需要注意：</p>
-<ol>
-<li>生成对话密钥一共需要<code>三个随机数</code>。</li>
-<li>握手之后的对话使用<code>对话密钥（session key）</code>加密（对称加密），服务器的<code>公钥</code>和<code>私钥</code>只用于<code>加密和解密对话密钥（session key）</code>（非对称加密），无其他作用。</li>
-<li>服务器<code>公钥</code>放在服务器的<code>数字证书</code>之中。</li>
-</ol>
-<h3 id="DH握手"><a href="#DH握手" class="headerlink" title="DH握手"></a>DH握手</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4668c8c48f9f43ca9c46d5b14b9b0af5~tplv-k3u1fbpfcp-watermark.image"></p>
-<p>RSA整个握手阶段都不加密，都是明文的。因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于<code>第三个随机数（Premaster secret）</code>能不能被破解。为了足够安全，我们可以考虑把握手阶段的算法从默认的<code>RSA</code>算法，改为 <code>Diffie-Hellman</code>算法（简称DH算法）。采用DH算法后，<code>Premaster secret</code>不需要传递，双方只要交换各自的参数，就可以算出这个随机数。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li>《深入浅出HTTPS：从原理到实战》（虞卫东）</li>
-<li><a target="_blank" rel="noopener" href="https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/">https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/</a></li>
-<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000011675421">https://segmentfault.com/a/1190000011675421</a></li>
+<ul>
+<li>monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。</li>
+<li>hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。</li>
 </ul>
+<ol start="5">
+<li>自己抓包评估</li>
+</ol>
+<h2 id="热key解决"><a href="#热key解决" class="headerlink" title="热key解决"></a>热key解决</h2><ol>
+<li><p>利用二级缓存<br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。</p>
+</li>
+<li><p>   备份热key<br>在key上加上随机数，在多个redis上都存一份。<br><img src="https://img-blog.csdnimg.cn/20210326221531530.png"></p>
+<h2 id="业内解决方案"><a href="#业内解决方案" class="headerlink" title="业内解决方案"></a>业内解决方案</h2><h5 id="有赞透明多级缓存解决方案（TMC）"><a href="#有赞透明多级缓存解决方案（TMC）" class="headerlink" title="有赞透明多级缓存解决方案（TMC）"></a>有赞透明多级缓存解决方案（TMC）</h5><p><img src="https://img-blog.csdnimg.cn/20210326222300277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"></p>
+</li>
+</ol>
+<ul>
+<li>Jedis-Client： Java 应用与缓存服务端交互的直接入口，接口定义与原生 Jedis-Client 无异；</li>
+<li>Hermes-SDK：自研“热点发现+本地缓存”功能的SDK封装， Jedis-Client 通过与它交互来集成相应能力；</li>
+<li>Hermes服务端集群：接收 Hermes-SDK 上报的缓存访问数据，进行热点探测，将热点 key 推送给 Hermes-SDK 做本地缓存；</li>
+<li>缓存集群：由代理层和存储层组成，为应用客户端提供统一的分布式缓存服务入口；</li>
+<li>基础组件： etcd 集群、 Apollo 配置中心，为 TMC 提供“集群推送”和“统一配置”能力；<blockquote>
+<p>源自：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000017142556">https://segmentfault.com/a/1190000017142556</a></p>
+</blockquote>
+</li>
+</ul>
+<h5 id="读写分离架构"><a href="#读写分离架构" class="headerlink" title="读写分离架构"></a>读写分离架构</h5><p><img src="https://img-blog.csdnimg.cn/20210326222822520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"><br>架构中个节点的作用：<br>1）SLB层做负载均衡<br>2）Proxy层做读写分离自动路由<br>3）Master负责写<br>4）ReadOnly节点负责读请求<br>5）Slave节点和Master节点做高可用</p>
+<h5 id="热点数据解决方案"><a href="#热点数据解决方案" class="headerlink" title="热点数据解决方案"></a>热点数据解决方案</h5><p><img src="https://img-blog.csdnimg.cn/20210326222902854.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzU2MjM1NjMw,size_16,color_FFFFFF,t_70"><br>  Proxy架构的主要优点有：<br>  1）Proxy缓存热点，读能力可水平扩展<br>  2）DB自动计算热点Key<br>  3）对客户端完全透明，不需要做任何兼容</p>
+<p>  DB计算热点时，主要运用的方法和优势有：<br>  1）基于统计阀值的热点统计。<br>  2） 基于统计周期的热点统计。<br>  3） 基于版本号实现的无需重置初值统计方法。</p>
+<blockquote>
+<p>源自：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/404817">https://developer.aliyun.com/article/404817</a></p>
+</blockquote>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -263,7 +234,7 @@
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E7%AE%80%E4%BB%8B"><span class="toc-number">2.</span> <span class="toc-text">HTTP简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E6%B6%88%E6%81%AF%E7%BB%84%E6%88%90%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">HTTP消息组成：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP2-0%E5%92%8CHTTP1-X%E7%9B%B8%E6%AF%94%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">HTTP2.0和HTTP1.X相比的新特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">2.3.</span> <span class="toc-text">HTTP安全问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS%E5%8D%8F%E8%AE%AE"><span class="toc-number">3.</span> <span class="toc-text">HTTPS协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TLS-SSL%E5%8D%8F%E8%AE%AE"><span class="toc-number">3.1.</span> <span class="toc-text">TLS&#x2F;SSL协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSA%E6%8F%A1%E6%89%8B"><span class="toc-number">3.2.</span> <span class="toc-text">RSA握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DH%E6%8F%A1%E6%89%8B"><span class="toc-number">3.3.</span> <span class="toc-text">DH握手</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">参考</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%ADKey%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">热Key问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8F%91%E7%8E%B0%E7%83%ADkey"><span class="toc-number">2.</span> <span class="toc-text">如何发现热key</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%ADkey%E8%A7%A3%E5%86%B3"><span class="toc-number">3.</span> <span class="toc-text">热key解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%86%85%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">业内解决方案</span></a></li></ol>
                 </div>
             </div>
             
