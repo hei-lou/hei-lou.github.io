@@ -248,12 +248,12 @@
 <h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>Redis事务就是一次性、顺序性、排他性的执行一个队列中的一系列命令。没有隔离级别的概念。事务中任意命令执行失败，其余命令仍会被执行。</p>
 <p>通过<code>MULTI</code>命令开启一个事务，在该语句之后执行的命令，都将被视为事务之内的操作，最后我们可以通过执行 <code>EXEC</code>/<code>DISCARD</code>命令来提交/回滚该事务内的所有操作。开启事务后，所有语句，发送给 Redis Server ，都会暂存在 Server 中。在事务开启之前，如果客户端与服务器之间出现通讯故障并导致网络断开，其后所有待执行的语句都将不会被服务器执行。</p>
 <h3 id="如何实现-Redis-CAS-操作？"><a href="#如何实现-Redis-CAS-操作？" class="headerlink" title="如何实现 Redis CAS 操作？"></a>如何实现 Redis CAS 操作？</h3><p>在 Redis 的事务中，<code>WATCH</code>命令可用于提供CAS功能。</p>
-<h2 id="Redis主从同步"><a href="#Redis主从同步" class="headerlink" title="Redis主从同步"></a>Redis主从同步</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cfd437e239af4ddfa337ec55869596ca~tplv-k3u1fbpfcp-watermark.image"></p>
-<h2 id="Redis哨兵"><a href="#Redis哨兵" class="headerlink" title="Redis哨兵"></a>Redis哨兵</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/127e179b7d9345ad96c731026b31048c~tplv-k3u1fbpfcp-watermark.image"></p>
+<h2 id="Redis主从同步"><a href="#Redis主从同步" class="headerlink" title="Redis主从同步"></a>Redis主从同步</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cfd437e239af4ddfa337ec55869596ca~tplv-k3u1fbpfcp-zoom-1.image"></p>
+<h2 id="Redis哨兵"><a href="#Redis哨兵" class="headerlink" title="Redis哨兵"></a>Redis哨兵</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/127e179b7d9345ad96c731026b31048c~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="Redis集群"><a href="#Redis集群" class="headerlink" title="Redis集群"></a>Redis集群</h2><p>redis cluster采用数据分片的哈希槽来进行数据存储和数据的读取。redis cluster的新增和删除节点都需要手动来分配槽区。redis cluster执行读写操作的都是master节点。</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c4ce2d862fac4edfb35d9dd0a8b94a31~tplv-k3u1fbpfcp-watermark.image"></p>
-<h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a>Redis实现分布式锁</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9e845198a3547f38ce460cedd579c9f~tplv-k3u1fbpfcp-watermark.image"></p>
-<h2 id="高频面试题"><a href="#高频面试题" class="headerlink" title="高频面试题"></a>高频面试题</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f69c23f2b0934183bf492ba0906dc996~tplv-k3u1fbpfcp-watermark.image"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c4ce2d862fac4edfb35d9dd0a8b94a31~tplv-k3u1fbpfcp-zoom-1.image"></p>
+<h2 id="Redis实现分布式锁"><a href="#Redis实现分布式锁" class="headerlink" title="Redis实现分布式锁"></a>Redis实现分布式锁</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9e845198a3547f38ce460cedd579c9f~tplv-k3u1fbpfcp-zoom-1.image"></p>
+<h2 id="高频面试题"><a href="#高频面试题" class="headerlink" title="高频面试题"></a>高频面试题</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f69c23f2b0934183bf492ba0906dc996~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="如何使用-Redis-实现消息队列？"><a href="#如何使用-Redis-实现消息队列？" class="headerlink" title="如何使用 Redis 实现消息队列？"></a>如何使用 Redis 实现消息队列？</h2><p>一般使用 list 结构作为队列，rpush 生产消息，lpop 消费消息。当 lpop 没有消息的时候，要适当 sleep 一会再重试。还可使用blpop，在没有消息的时候，它会阻塞住直到消息到来。使用 pub / sub 主题订阅者模式，可以实现 1:N 的消息队列。但是在消费者下线的情况下，生产的消息会丢失。</p>
 <p>延时队列： 使用 sortedset ，拿时间戳作为 score ，消息内容作为 key 调用 zadd 来生产消息，消费者用 zrangebyscore 指令获取 N 秒之前的数据轮询进行处理。</p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
