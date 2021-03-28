@@ -161,7 +161,7 @@ park()方法，对当前线程执行阻塞操作，直到获取到可用许可�
 <li><p>unpark(Thread)方法，将指定线程的许可置为可用，也就相当于唤醒了该线程。</p>
 </li>
 </ul>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/595760109ebf41a6912cdd6634c0e7e1~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/595760109ebf41a6912cdd6634c0e7e1~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="许可机制"><a href="#许可机制" class="headerlink" title="许可机制"></a>许可机制</h2><p>对于LockSupport使用的许可可看成是一种二元信号，该信号分有许可和无许可两种状态。每个线程都对应一个信号变量，当线程调用park时其实就是去获取许可，如果能成功获取到许可则能够往下执行，否则则阻塞直到成功获取许可为止。而当线程调用unpark时则是释放许可，供线程去获取。park/unpark方式的执行顺序不影响唤醒，不会造成死锁。</p>
 <h2 id="park-对立中断的响应"><a href="#park-对立中断的响应" class="headerlink" title="park 对立中断的响应"></a>park 对立中断的响应</h2><p>park方法支持中断，也就是说一个线程调用park方法进入阻塞后，如果该线程被中断则能够解除阻塞立即返回。但需要注意的是，它不会抛出中断异常，所以我们不必去捕获InterruptedException。</p>
 <h2 id="Thread-sleep-和LockSupport-park-的区别"><a href="#Thread-sleep-和LockSupport-park-的区别" class="headerlink" title="Thread.sleep()和LockSupport.park()的区别"></a>Thread.sleep()和LockSupport.park()的区别</h2><ul>
@@ -222,7 +222,7 @@ park()方法，对当前线程执行阻塞操作，直到获取到可用许可�
                 </div>
                 <ul>
                     <li><a href="/">14 <p>文章</p></a></li>
-                    <li><a href="/categories">16 <p>分类</p></a></li>
+                    <li><a href="/categories">12 <p>分类</p></a></li>
                     <li><a href="/tags">53 <p>标签</p></a></li>
                 </ul>
             </div>

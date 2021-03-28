@@ -143,7 +143,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
             <h2 id="intern方法有什么用"><a href="#intern方法有什么用" class="headerlink" title="intern方法有什么用"></a>intern方法有什么用</h2><p>String.intern() 方法可以使得所有含相同内容的字符串都共享同一个内存对象。</p>
 <p>JVM 中，存在一个字符串常量池，字符串的值都存放在这个池中。当调用 intern 方法时，如果字符串常量池中已经存在该字符串，那么返回池中的字符串；否则将此字符串添加到字符串常量池中，并返回字符串的引用。</p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>JDK1.6 中，常量池在方法区。JDK1.7 中，常量池移到堆区了。</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51bb977cd06f4654b4ba05c66d775d61~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51bb977cd06f4654b4ba05c66d775d61~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h3 id="JDK1-6"><a href="#JDK1-6" class="headerlink" title="JDK1.6"></a>JDK1.6</h3><ul>
 <li>字符串常量池有该字符串，则返回字符串常量池中的引用。</li>
 <li>字符串常量池没有该字符串，会拷贝字符串至字符串常量池。</li>
@@ -176,7 +176,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
     System.out.println(&quot;str7.intern() == str7: &quot; + (str7.intern() == str7));
 </code></pre>
 <p>1.8与1.6输出结果：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/59b9af923244433897eb3a1890516547~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/59b9af923244433897eb3a1890516547~tplv-k3u1fbpfcp-zoom-1.image"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -223,7 +223,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
                 </div>
                 <ul>
                     <li><a href="/">14 <p>文章</p></a></li>
-                    <li><a href="/categories">16 <p>分类</p></a></li>
+                    <li><a href="/categories">12 <p>分类</p></a></li>
                     <li><a href="/tags">53 <p>标签</p></a></li>
                 </ul>
             </div>

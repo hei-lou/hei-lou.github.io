@@ -89,8 +89,8 @@ state属性在AQS中维持了一个volatile修饰的单一共享状态,">
         <div class="else">
             <p class="animated fadeInDown">
                 
-                <a href="/categories/AQS"><b>「
-                    </b>AQS<b> 」</b></a>
+                <a href="/categories/并发"><b>「
+                    </b>并发<b> 」</b></a>
                 
                 八月 10, 2019
             </p>
@@ -142,14 +142,14 @@ state属性在AQS中维持了一个volatile修饰的单一共享状态,">
     <div class='main'>
         <div class="content markdown animated fadeIn">
             <h2 id="AQS的类图结构"><a href="#AQS的类图结构" class="headerlink" title="AQS的类图结构"></a>AQS的类图结构</h2><p>AQS全称是AbstractQueuedSynchronizer，即抽象同步队列。下面看一下AQS的类图结构：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d0dbf4618d94f21b2ec8a164b94ee5f~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d0dbf4618d94f21b2ec8a164b94ee5f~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="state属性"><a href="#state属性" class="headerlink" title="state属性"></a>state属性</h2><p>在AQS中维持了一个volatile修饰的单一共享状态state，来实现同步器同步。其更新采用乐观锁思想的CAS算法。</p>
 <h2 id="CLH队列"><a href="#CLH队列" class="headerlink" title="CLH队列"></a>CLH队列</h2><p>CLH(Craig, Landin, and Hagersten locks) 同步队列 是一个FIFO双向队列，其内部通过节点head和tail记录队首和队尾元素，队列元素的类型为Node。AQS依赖它来完成同步状态state的管理，当前线程如果获取同步状态失败时，AQS则会将当前线程已经等待状态等信息构造成一个节点（Node）并将其加入到CLH同步队列，同时会阻塞当前线程，当同步状态释放时，会把首节点唤醒（公平锁），使其再次尝试获取同步状态。</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3dc33acab7cd4d3f93eb7e0d39401e41~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3dc33acab7cd4d3f93eb7e0d39401e41~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h3 id="Node节点"><a href="#Node节点" class="headerlink" title="Node节点"></a>Node节点</h3><p>CLH同步队列中，一个节点表示一个线程，它保存着线程的引用（thread）、状态（waitStatus）、前驱节点（prev）、后继节点（next），condition队列的后续节点（nextWaiter）如下图：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17356b0676d04ae89af1aa71a882cc54~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17356b0676d04ae89af1aa71a882cc54~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <p>waitStatus几种状态状态：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5695bba83d344806ac51f95f22fed27d~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5695bba83d344806ac51f95f22fed27d~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h3 id="入列"><a href="#入列" class="headerlink" title="入列"></a>入列</h3><p>CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：</p>
 <pre><code>//构造Node
 private Node addWaiter(Node mode) &#123;
@@ -217,7 +217,7 @@ private Node addWaiter(Node mode) &#123;
 &#125;
 </code></pre>
 <p>acquire方法流程如下：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9492d932f01c44079f545e836e202597~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9492d932f01c44079f545e836e202597~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="独占与共享模式"><a href="#独占与共享模式" class="headerlink" title="独占与共享模式"></a>独占与共享模式</h2><p>AQS支持两种同步模式:独占式和共享式。</p>
 <h3 id="独占式"><a href="#独占式" class="headerlink" title="独占式"></a>独占式</h3><p>同一时刻仅有一个线程持有同步状态，如ReentrantLock。又可分为公平锁和非公平锁。</p>
 <ul>
@@ -272,7 +272,7 @@ private Node addWaiter(Node mode) &#123;
                 </div>
                 <ul>
                     <li><a href="/">14 <p>文章</p></a></li>
-                    <li><a href="/categories">16 <p>分类</p></a></li>
+                    <li><a href="/categories">12 <p>分类</p></a></li>
                     <li><a href="/tags">53 <p>标签</p></a></li>
                 </ul>
             </div>

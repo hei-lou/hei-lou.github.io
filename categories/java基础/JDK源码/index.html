@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Category: https - Enjoy it</title>
+    <title>Category: JDK源码 - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
@@ -130,46 +130,66 @@
             animation-duration: 2.8s;
             background-image:
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.56), #100e17),
-                url(/img/7.jpg);">
+                url(/img/1.jpg);">
         </div>
     </div>
     
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/https"><b>「
-                </b>HTTPS<b> 」</b></a>
+            <a href="/categories/java基础"><b>「
+                </b>JAVA基础<b> 」</b></a>
             
-            四月 23, 2019
+            七月 05, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/04/23/https-detail-explain/" title="HTTP、HTTPS协议详解" class="posttitle">HTTP、HTTPS协议详解</a></h3>
+            <a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="java基础之HashMap与ConcurrentHashMap重点解读" class="posttitle">java基础之HashMap与ConcurrentHashMap重点解读</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                5.6k
+                3.4k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                5 mins.
+                3 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH%E6%8F%A1%E6%89%8B/" rel="tag">DH握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA%E6%8F%A1%E6%89%8B/" rel="tag">RSA握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/SSL/" rel="tag">SSL</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TLS/" rel="tag">TLS</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/http/" rel="tag">http</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/https/" rel="tag">https</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/concurrenthashmap/" rel="tag">concurrenthashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%A9%E5%AE%B9/" rel="tag">扩容</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%B0%E5%8A%A8%E5%87%BD%E6%95%B0/" rel="tag">扰动函数</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <p>早期以信息发布为主的Web 1.0时代，HTTP已可以满足绝大部分需要。证书费用、服务器的计算资源都比较昂贵，作为HTTP安全扩展的HTTPS，通常只应用在登录、交易等少数环境中。但随着越来越多的重要业务往线上转移，网站对用户隐私和安全性也越来越重视。对于防止恶意监听、中间人攻击、恶意劫持篡改，HTTPS是目前较为可行的方案，全站HTTPS逐渐成为主流网站的选择。</p>
-<p>HTTP（HyperText Transfer Protocol，超文本传输协议）,是一种<code>无状态 (stateless)</code> 协议，提供...</p>
+            <table>
+<thead>
+<tr>
+<th>HashMap</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>底层结构</td>
+<td>1. JDK1.8之前：数组+链表<br>2. JDK1.8：数组+链表/红黑树<br>链表与红黑树之间的转换：<br>链表-&gt;红黑树：链表长度大于等于8且数组长度（hash桶）大于等于64的时候<br>红黑树-&gt;链表：红黑树的节点数量小于等于6的时候退化为链表</td>
+</tr>
+<tr>
+<td>元素特性</td>
+<td>key、value可以为null，只能有一个key为null的键值对，允许有多个value为null的键值对</td>
+</tr>
+<tr>
+<td>hash桶的数量</td>
+<td>默认16，加载因子默认0.75（HashMap也许是按照lazy-load原则，在首次put元素时在resize()方法中初始化）</td>
+</tr>
+<tr>
+<td>扰动函数</td>
+<td>1. JDK1.8之...</td></tr></tbody></table>
             
-            <span class="read-more"><a href="/2019/04/23/https-detail-explain/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
