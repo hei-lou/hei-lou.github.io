@@ -5,13 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Java基础之intern方法 - Enjoy it</title>
+    <title>redis专题-热点key解决方案 - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
-    <meta name="description" content="路上随记,intern方法有什么用String.intern() 方法可以使得所有含相同内容的字符串都共享同一个内存对象。
-JVM 中，存在一个字符串常量池，字符串的值都存放在这个池中。当调用 intern ,"> 
+    <meta name="description" content="路上随记,热Key问题热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。
+如何发现热key
+凭借业务经,"> 
     <meta name="author" content="hei-lou"> 
     <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -58,7 +59,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
     <div class="navigation animated fadeIn fast delay-1s">
         <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
         <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
-        <h3 class="subtitle">Java基础之intern方法</h3>
+        <h3 class="subtitle">redis专题-热点key解决方案</h3>
         <div class="social">
             <!--        <div class="like-icon">-->
             <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
@@ -83,24 +84,24 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
             animation-duration: 1.2s;
             background-image: 
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-                url(/img/3.jpg) ">
+                url(/img/4.jpg) ">
         </div>
         <div class="else">
             <p class="animated fadeInDown">
                 
-                <a href="/categories/java基础"><b>「
-                    </b>JAVA基础<b> 」</b></a>
+                <a href="/categories/Redis"><b>「
+                    </b>REDIS<b> 」</b></a>
                 
-                四月 28, 2019
+                六月 05, 2019
             </p>
-            <h3 class="post-title animated fadeInDown"><a href="/2019/04/28/string-intern/" title="Java基础之intern方法" class="">Java基础之intern方法</a>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/06/05/redis-hot-key/" title="redis专题-热点key解决方案" class="">redis专题-热点key解决方案</a>
             </h3>
             
             <p class="post-count animated fadeInDown">
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    2.3k
+                    2.5k
                 </span>
                 
                 
@@ -119,7 +120,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
             </p>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/intern/" rel="tag">intern</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/string/" rel="tag">string</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/" rel="tag">常量池</a></li></ul>
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TMC/" rel="tag">TMC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hot-key/" rel="tag">hot key</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li></ul>
             
         </div>
     </div>
@@ -140,43 +141,43 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
 <div class="article">
     <div class='main'>
         <div class="content markdown animated fadeIn">
-            <h2 id="intern方法有什么用"><a href="#intern方法有什么用" class="headerlink" title="intern方法有什么用"></a>intern方法有什么用</h2><p>String.intern() 方法可以使得所有含相同内容的字符串都共享同一个内存对象。</p>
-<p>JVM 中，存在一个字符串常量池，字符串的值都存放在这个池中。当调用 intern 方法时，如果字符串常量池中已经存在该字符串，那么返回池中的字符串；否则将此字符串添加到字符串常量池中，并返回字符串的引用。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>JDK1.6 中，常量池在方法区。JDK1.7 中，常量池移到堆区了。</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51bb977cd06f4654b4ba05c66d775d61~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
-<h3 id="JDK1-6"><a href="#JDK1-6" class="headerlink" title="JDK1.6"></a>JDK1.6</h3><ul>
-<li>字符串常量池有该字符串，则返回字符串常量池中的引用。</li>
-<li>字符串常量池没有该字符串，会拷贝字符串至字符串常量池。</li>
+            <h2 id="热Key问题"><a href="#热Key问题" class="headerlink" title="热Key问题"></a>热Key问题</h2><p>热key问题就是，突然有几十万的请求去访问redis上的某个特定key。那么，这样会造成流量过于集中，达到物理网卡上限，从而导致这台redis的服务器宕机。</p>
+<h2 id="如何发现热key"><a href="#如何发现热key" class="headerlink" title="如何发现热key"></a>如何发现热key</h2><ol>
+<li>凭借业务经验，进行预估哪些是热key</li>
+<li>在客户端进行收集<br> 在操作redis之前，加入一行代码进行数据统计。</li>
+<li>在Proxy层做收集<br> <img src="https://img-blog.csdnimg.cn/2021032622085766.png"></li>
+<li>用redis自带命令<ul>
+<li>monitor命令，该命令可以实时抓取出redis服务器接收到的命令，然后写代码统计出热key是啥。但是该命令在高并发的条件下，有内存增暴增的隐患，还会降低redis的性能。</li>
+<li>hotkeys参数，redis 4.0.3提供了redis-cli的热点key发现功能，执行redis-cli时加上–hotkeys选项即可。但是该参数在执行的时候，如果key比较多，执行起来比较慢。</li>
 </ul>
-<h3 id="JDK1-7"><a href="#JDK1-7" class="headerlink" title="JDK1.7"></a>JDK1.7</h3><ul>
-<li>字符串常量池有该字符串，则返回字符串常量池中的引用。</li>
-<li>字符串常量池没有该字符串，生成一个对该字符串的引用在字符串常量池</li>
+</li>
+<li>自己抓包评估</li>
+</ol>
+<h2 id="热key解决"><a href="#热key解决" class="headerlink" title="热key解决"></a>热key解决</h2><ol>
+<li><p>利用二级缓存<br>比如利用ehcache，或者一个HashMap都可以。在你发现热key以后，把热key加载到系统的JVM中。</p>
+</li>
+<li><p>备份热key<br>在key上加上随机数，在多个redis上都存一份。<br><img src="https://img-blog.csdnimg.cn/20210326221531530.png"></p>
+</li>
+</ol>
+<h2 id="业内解决方案"><a href="#业内解决方案" class="headerlink" title="业内解决方案"></a>业内解决方案</h2><h5 id="有赞透明多级缓存解决方案（TMC）"><a href="#有赞透明多级缓存解决方案（TMC）" class="headerlink" title="有赞透明多级缓存解决方案（TMC）"></a>有赞透明多级缓存解决方案（TMC）</h5><p><img src="https://img-blog.csdnimg.cn/20210326222300277.png"></p>
+<ul>
+<li>Jedis-Client： Java 应用与缓存服务端交互的直接入口，接口定义与原生 Jedis-Client 无异；</li>
+<li>Hermes-SDK：自研“热点发现+本地缓存”功能的SDK封装， Jedis-Client 通过与它交互来集成相应能力；</li>
+<li>Hermes服务端集群：接收 Hermes-SDK 上报的缓存访问数据，进行热点探测，将热点 key 推送给 Hermes-SDK 做本地缓存；</li>
+<li>缓存集群：由代理层和存储层组成，为应用客户端提供统一的分布式缓存服务入口；</li>
+<li>基础组件： etcd 集群、 Apollo 配置中心，为 TMC 提供“集群推送”和“统一配置”能力；</li>
 </ul>
-<h2 id="show-code"><a href="#show-code" class="headerlink" title="show code"></a>show code</h2><pre><code>    String str1 = &quot;java&quot;;
-    String str2 = &quot;java&quot;;
-    System.out.println(&quot;str1==str2:&quot; + (str1 == str2));
-
-    String str3 = new String(&quot;java&quot;);
-    System.out.println(&quot;str1==str3: &quot; + (str1 == str3));
-    System.out.println(&quot;str1==str3.intern(): &quot; + (str1 == str3.intern()));
-    System.out.println(&quot;str2==str3.intern(): &quot; + (str2 == str3.intern()));
-
-    String str4 = new String(&quot;java&quot;);
-    System.out.println(&quot;str3==str4: &quot; + (str3 == str4));
-    System.out.println(&quot;str3.intern()==str4.intern(): &quot; + (str3.intern() == str4.intern()));
-
-
-    String str5 = new StringBuilder(&quot;String&quot;).append(&quot;intern&quot;).toString();
-    System.out.println(&quot;str5.intern() == str5: &quot; + (str5.intern() == str5));
-
-    String str6 = new String(new StringBuilder(&quot;hei&quot;).append(&quot;lou&quot;).toString());
-    System.out.println(&quot;str6.intern() == str6: &quot; + (str6.intern() == str6));
-
-    String str7 = new String(&quot;hei&quot;);
-    System.out.println(&quot;str7.intern() == str7: &quot; + (str7.intern() == str7));
-</code></pre>
-<p>1.8与1.6输出结果：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/59b9af923244433897eb3a1890516547~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<blockquote>
+<p>源自：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000017142556">https://segmentfault.com/a/1190000017142556</a></p>
+</blockquote>
+<h5 id="读写分离架构"><a href="#读写分离架构" class="headerlink" title="读写分离架构"></a>读写分离架构</h5><p><img src="https://img-blog.csdnimg.cn/20210326222822520.png"></p>
+<p>架构中个节点的作用：<br>1）SLB层做负载均衡<br>2）Proxy层做读写分离自动路由<br>3）Master负责写<br>4）ReadOnly节点负责读请求<br>5）Slave节点和Master节点做高可用</p>
+<h5 id="热点数据解决方案"><a href="#热点数据解决方案" class="headerlink" title="热点数据解决方案"></a>热点数据解决方案</h5><p><img src="https://img-blog.csdnimg.cn/20210326222902854.png"></p>
+<p>Proxy架构的主要优点有：<br>1）Proxy缓存热点，读能力可水平扩展<br>2）DB自动计算热点Key<br>3）对客户端完全透明，不需要做任何兼容</p>
+<p>DB计算热点时，主要运用的方法和优势有：<br>1）基于统计阀值的热点统计。<br>2） 基于统计周期的热点统计。<br>3） 基于版本号实现的无需重置初值统计方法。</p>
+<blockquote>
+<p>源自：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/404817">https://developer.aliyun.com/article/404817</a></p>
+</blockquote>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -233,7 +234,7 @@ JVM 中，存在一个字符串常量池，字符串的值都存放在这个池�
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#intern%E6%96%B9%E6%B3%95%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">intern方法有什么用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK1-6"><span class="toc-number">2.1.</span> <span class="toc-text">JDK1.6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK1-7"><span class="toc-number">2.2.</span> <span class="toc-text">JDK1.7</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#show-code"><span class="toc-number">3.</span> <span class="toc-text">show code</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%ADKey%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">热Key问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8F%91%E7%8E%B0%E7%83%ADkey"><span class="toc-number">2.</span> <span class="toc-text">如何发现热key</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%ADkey%E8%A7%A3%E5%86%B3"><span class="toc-number">3.</span> <span class="toc-text">热key解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E5%86%85%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">4.</span> <span class="toc-text">业内解决方案</span></a></li></ol>
                 </div>
             </div>
             
