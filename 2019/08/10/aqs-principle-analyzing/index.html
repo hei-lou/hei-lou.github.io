@@ -151,7 +151,7 @@ state属性在AQS中维持了一个volatile修饰的单一共享状态,">
 <p>waitStatus几种状态状态：</p>
 <p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5695bba83d344806ac51f95f22fed27d~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h3 id="入列"><a href="#入列" class="headerlink" title="入列"></a>入列</h3><p>CLH队列入列就是tail指向新节点、新节点的prev指向当前最后的节点，当前最后一个节点的next指向当前节点。addWaiter方法如下：</p>
-<pre><code>//构造Node
+<pre><code class="java">//构造Node
 private Node addWaiter(Node mode) &#123;
     Node node = new Node(Thread.currentThread(), mode);
     // Try the fast path of enq; backup to full enq on failure
@@ -170,7 +170,7 @@ private Node addWaiter(Node mode) &#123;
 &#125;
 </code></pre>
 <p>addWaiter设置尾节点失败的话，调用enq(Node node)方法设置尾节点，enq方法如下：</p>
-<pre><code>private Node enq(final Node node) &#123;
+<pre><code class="java">private Node enq(final Node node) &#123;
     //死循环
     for (;;) &#123;
         Node t = tail;
@@ -189,7 +189,7 @@ private Node addWaiter(Node mode) &#123;
 &#125;
 </code></pre>
 <h3 id="出列"><a href="#出列" class="headerlink" title="出列"></a>出列</h3><p>首节点的线程释放同步状态后，将会唤醒它的后继节点（next），而后继节点将会在获取同步状态成功时将自己设置为首节点。可以看以下源码：</p>
-<pre><code>private void unparkSuccessor(Node node) &#123;
+<pre><code class="java">private void unparkSuccessor(Node node) &#123;
     /*
      * If status is negative (i.e., possibly needing signal) try
      * to clear in anticipation of signalling.  It is OK if this
@@ -271,9 +271,9 @@ private Node addWaiter(Node mode) &#123;
                     </dl>
                 </div>
                 <ul>
-                    <li><a href="/">14 <p>文章</p></a></li>
-                    <li><a href="/categories">12 <p>分类</p></a></li>
-                    <li><a href="/tags">53 <p>标签</p></a></li>
+                    <li><a href="/">15 <p>文章</p></a></li>
+                    <li><a href="/categories">13 <p>分类</p></a></li>
+                    <li><a href="/tags">54 <p>标签</p></a></li>
                 </ul>
             </div>
             

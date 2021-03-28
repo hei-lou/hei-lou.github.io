@@ -5,19 +5,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>前后端分离 , 如何保证接口安全性 ？ - Enjoy it</title>
+    <title>Tag: jdk16 - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
-    <meta name="description" content="路上随记,服务端
-HTTP 请求中的来源识别
-
-数据加密
- 采用https协议，保障数据传输过程中的安全
-
-数据签名
- 将要提交的数据，通过某种方式组合成一个字符串，然后通过 MD5 算法生成一个签名。如果觉,"> 
+    <meta name="description" content="路上随记,"> 
     <meta name="author" content="hei-lou"> 
     <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -57,78 +50,133 @@ HTTP 请求中的来源识别
     </div>
     <span id="config-title" style="display:none">Enjoy it</span>
     <div id="loader"></div>
-    <div id="single">
-    <div class="scrollbar gradient-bg-rev"></div>
-<div id="top" style="display: block;">
-    <div class="bar" style="width: 0;"></div>
-    <div class="navigation animated fadeIn fast delay-1s">
-        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
-        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
-        <h3 class="subtitle">前后端分离 , 如何保证接口安全性 ？</h3>
-        <div class="social">
-            <!--        <div class="like-icon">-->
-            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
-            <!--        </div>-->
-            <div>
-                <div class="share">
-                    
-                        <a href="javascript:;" class="iconfont icon-share1"></a>
-                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
-                    
-                </div>
-            </div>
+    <div class="nav">
+    <ul id="menu-menu" class="menu">
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/whoami/" title="ABOUT" external="false">ABOUT</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/categories/" title="CATEGORIES" external="false">CATEGORIES</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/tags/" title="TAGS" external="false">TAGS</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/archives/" title="ARCHIVES" external="false">ARCHIVES</a>
+        </li>
+        
+    </ul>
+    <p class="copyright" id="copyright">
+        &copy; 2021 hei-lou.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+    </p>
+</div>
+
+<div id="container">
+    
+<div class="search-box">
+    <form class="site-search-form">
+        <span class="iconfont icon-search"></span>
+        <input type="text" id="local-search-input" class="st-search-input" />
+        <div class="iconfont icon-cross search-box-close"></div>
+    </form>
+    <div class="search-scrollable">
+        <div id="local-search-result" class="local-search-result-cls" data-initialise="首次搜索，正在载入索引文件，请稍后……"
+            data-start="输入关键词搜索。" data-empty="没有找到内容，请尝试更换检索词。">
+            <span>输入关键词搜索。</span>
         </div>
     </div>
 </div>
-
-    <div class="section">
-        <div class=article-header-wrapper>
-    <div class="article-header">
-        <div class="article-cover animated fadeIn" style="
-            animation-delay: 600ms;
-            animation-duration: 1.2s;
-            background-image: 
-                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-                url(/img/2.jpg) ">
+<div id="header">
+    <div>
+        <div class="logo animated fadeInDown">
+            <img src="/img/favicon.png" alt="">
+            <a class="image-logo" href="/"></a>
         </div>
-        <div class="else">
-            <p class="animated fadeInDown">
-                
-                <a href="/categories/系统设计"><b>「
-                    </b>系统设计<b> 」</b></a>
-                
-                九月 03, 2019
-            </p>
-            <h3 class="post-title animated fadeInDown"><a href="/2019/09/03/interface-security-design/" title="前后端分离 , 如何保证接口安全性 ？" class="">前后端分离 , 如何保证接口安全性 ？</a>
-            </h3>
+        <ul id="menu-menu" class="menu text-menu">
             
-            <p class="post-count animated fadeInDown">
-                
-                <span>
-                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    1.4k
-                </span>
-                
-                
-                <span>
-                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    1 mins.
-                </span>
-                
-                
-                
-                <span id="busuanzi_container_page_pv">
-                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
-                    <span id="busuanzi_value_page_pv">12530</span>
-                </span>
-                
-            </p>
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/whoami/" title="ABOUT" external="false" class="menu-link">ABOUT</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/categories/" title="CATEGORIES" external="false" class="menu-link">CATEGORIES</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/tags/" title="TAGS" external="false" class="menu-link">TAGS</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/archives/" title="ARCHIVES" external="false" class="menu-link">ARCHIVES</a>
+            </li>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/" rel="tag">接口设计</a></li></ul>
+            <li class="animated fadeInDown search-bar iconfont icon-search"></li>
             
+        </ul>
+        <div class="iconfont icon-menu switchmenu gradient-text animated fadeInDown"></div>
+    </div>
+</div>
+<div id="screen">
+    <div id="mark">
+        <div class="cover animated fadeIn" style="
+            animation-delay: 900ms;
+            animation-duration: 2.8s;
+            background-image:
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.56), #100e17),
+                url(/img/8.jpg);">
         </div>
     </div>
+    
+    <div id="post0" class="else">
+        <p class="animated fadeInDown">
+            
+            <a href="/categories/JDK"><b>「
+                </b>JDK<b> 」</b></a>
+            
+            三月 20, 2021
+        </p>
+        <h3 class="post-title animated fadeInDown">
+            <a href="/2021/03/20/jdk16-new-features/" title="JAVA 16新特性" class="posttitle">JAVA 16新特性</a></h3>
+        
+        <p class="post-count animated fadeInDown">
+            
+            <span>
+                <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                3.4k
+            </span>
+            
+            
+            <span>
+                <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                3 mins.
+            </span>
+            
+            
+        </p>
+        
+        
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/jdk16/" rel="tag">jdk16</a></li></ul>
+        
+        <div class="md-content animated fadeIn">
+            
+            <p>当我们还深陷 Java 8 版本之际，这边最新版本 Java 16 已经于3.16正式发布。与 Java 15 一样，作为短期版本，Oracle 仅提供 6 个月的支持。下面让我们来看看JDK16主要新特性吧。</p>
+<h4 id="Vector-API-孵化"><a href="#Vector-API-孵化" class="headerlink" title="Vector API(孵化)"></a>Vector API(孵化)</h4><p>提升了Java在CPU向量计算的性能，这是对大规模的张量计算的支持，提升了Java在AI领域的能力。</p>
+<h4 id="启用了新的C-特性"><a href="#启用了新的C-特性" class="headerlink" title="启用了新的C++特性"></a>启用了新的C++特性</h4><p>允许在JDK中C++源代码中使用 C ++ 14的新特性。</p>
+<h4 id="从-Mercurial-迁移到-Git"><a href="#从-Mercurial-迁移到-Git" class="headerlink" title="从 Mercurial 迁移到 Git"></a>从 Mercurial 迁移到 Git</h4><p>Git目前已经成为代码版本管理领域的绝对统治者，现在Java顺应潮流也使用Git进行源代码管理。</p>
+<h4 id="迁移到GitHub"><a href="#迁移到GitHub" class="headerlink" title="迁移到GitHub"></a>迁移到GitHub</h4><p>OpenJDK的代码现在...</p>
+            
+            <span class="read-more"><a href="/2021/03/20/jdk16-new-features/" title="查看全文" class="posttitle">查看全文</a>
+                <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+    
 </div>
 
 <div class="screen-gradient-after">
@@ -136,123 +184,21 @@ HTTP 请求中的来源识别
         <div class="screen-gradient-content-inside">
             <div class="bold-underline-links screen-gradient-sponsor">
                 <p>
-                    <span class="animated fadeIn delay-1s"></span>
+                    <span class="typed-text"></span>
                 </p>
             </div>
         </div>
     </div>
 </div>
 
-<div class="article">
-    <div class='main'>
-        <div class="content markdown animated fadeIn">
-            <h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><ol>
-<li><p><strong>HTTP 请求中的来源识别</strong></p>
-</li>
-<li><p><strong>数据加密</strong></p>
-<p> 采用https协议，保障数据传输过程中的安全</p>
-</li>
-<li><p><strong>数据签名</strong></p>
-<p> 将要提交的数据，通过某种方式组合成一个字符串，然后通过 MD5 算法生成一个签名。如果觉得单纯的 MD5 不够安全的话，还可以在 MD5 的时候加盐和加 hash 。</p>
-</li>
-<li><p><strong>时间戳</strong></p>
-<p> 在参数中加上当前请求的时间戳，服务端拿到这个请求后会拿当前的时间和请求中的时间做比较，比如在 5 分钟之内的才会流转到后面的业务处理，在 5 分钟以外的直接返回错误码。时间戳机制主要用来应对攻击者直接拿包进行非法的 DDOS 攻击。</p>
-</li>
-<li><p><strong>AppID/Token</strong></p>
-<p> 服务端为了验证合法的调用用户，可以添加一个 AppID，或者给登录用户设置token。</p>
-</li>
-<li><p><strong>参数整体加密</strong></p>
-<p> 采用对称加密或者公开密钥算法对请求做一次整体加密，防止在浏览器的 network 中进行抓包。具体做法为：</p>
-<ul>
-<li>前端生成随机数作为签名key，用于对请求数据进行对称加密</li>
-<li>前端使用RSA的公钥对key进行加密</li>
-<li>将公钥作为头传递给服务器</li>
-</ul>
-</li>
-<li><p><strong>限流</strong></p>
-<p> 服务端针对接口进行限流，限流的算法常见的有这么几种：令牌桶限流、漏桶限流、计数器限流。</p>
-</li>
-<li><p><strong>黑名单</strong></p>
-</li>
-</ol>
-<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><ol>
-<li><p><strong>压缩</strong></p>
-<p> 代码压缩，去除 JavaScript 代码中不必要的空格、换行等内容，把一些可能公用的代码进行处理实现共享，最后输出的结果都压缩为一行或者几行内容，降低代码可读性。</p>
-</li>
-<li><p><strong>混淆</strong></p>
-<p> JavaScript 混淆器大致有两种:通过正则替换实现的混淆器、通过语法树替换实现的混淆器。</p>
-</li>
-<li><p><strong>加密</strong></p>
-<p> 将一些核心逻辑使用诸如 C/C++ 语言来编写，并通过 JavaScript 调用执行，从而起到二进制级别的防护作用。其加密的方式现在有 Emscripten 和 WebAssembly 等。</p>
-</li>
-</ol>
-
-            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
-            <audio id="audio" loop="1" preload="auto" controls="controls"
-                data-autoplay="false">
-                <source type="audio/mpeg" src="">
-            </audio>
-            
-            <ul id="audio-list" style="display:none">
-                
-                
-                <li title='0' data-url='/statics/maque.mp3'></li>
-                
-                    
-            </ul>
-            
-            
-            
-    <div id='gitalk-container' class="comment link"
-        data-ae='true'
-        data-ci='6b227afc1a8f90f99af6'
-        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
-        data-r='hei-lou.github.io'
-        data-o='hei-lou'
-        data-a='hei-lou'
-        data-d=''
-    >留言</div>
-
-
-            
-            
-        </div>
-        <div class="sidebar">
-            <div class="box animated fadeInRight">
-                <div class="subbox">
-                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
-                    <p>hei-lou</p>
-                    <span>Think like an artist, develop like an artisan</span>
-                    <dl>
-                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
-                                    class=" iconfont icon-github"></span></a></dd>
-                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
-                                    class=" iconfont icon-email-fill"></span></a></dd>
-                    </dl>
-                </div>
-                <ul>
-                    <li><a href="/">15 <p>文章</p></a></li>
-                    <li><a href="/categories">13 <p>分类</p></a></li>
-                    <li><a href="/tags">54 <p>标签</p></a></li>
-                </ul>
-            </div>
-            
-            
-            
-            <div class="box sticky animated fadeInRight faster">
-                <div id="toc" class="subbox">
-                    <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="toc-number">1.</span> <span class="toc-text">服务端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">2.</span> <span class="toc-text">客户端</span></a></li></ol>
-                </div>
-            </div>
-            
-            
-        </div>
+    <div id="primary">
+        
     </div>
+    
 </div>
+<div id="preview"></div>
 
-    </div>
-</div>
+
     <div id="back-to-top" class="animated fadeIn faster">
         <div class="flow"></div>
         <span class="percentage animated fadeIn faster">0%</span>

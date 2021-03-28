@@ -253,7 +253,7 @@
 <p>添加新节点到压缩列表，或者从压缩列表中删除节点，可能会引发连锁更新操作，但这种操作出现的几率并不高。</p>
 </blockquote>
 <h3 id="快速列表"><a href="#快速列表" class="headerlink" title="快速列表"></a>快速列表</h3><p><code>quicklist</code>中每一个节点都是一个<code>quicklistNode</code>对象，其数据结构定义为：</p>
-<pre><code>typedef struct quicklistNode &#123;
+<pre><code class="c++">typedef struct quicklistNode &#123;
     struct quicklistNode *prev;//前一个节点
     struct quicklistNode *next;//后一个节点
     unsigned char *zl;//当前指向的ziplist或者quicklistLZF
@@ -266,7 +266,7 @@
     unsigned int extra : 10; //后期留用
 &#125; quicklistNode;
 </code></pre>
-<pre><code>typedef struct quicklist &#123;
+<pre><code class="c++">typedef struct quicklist &#123;
     quicklistNode *head;//列表头节点
     quicklistNode *tail;//列表尾节点
     unsigned long count;//ziplist中一共存储了多少元素，即:每一个quicklistNode内的count相加
@@ -344,7 +344,7 @@
 <ul>
 <li><code>ziplist</code>编码的哈希对象使用压缩列表作为底层实现，新的键、值会以两个相邻的压缩列表节点推入到压缩列表表尾。举个例子，如果我们执行以下命令：</li>
 </ul>
-<pre><code>redis&gt; HSET profile name tom
+<pre><code class="bash">redis&gt; HSET profile name tom
 redis&gt; HSET profile age 25
 redis&gt; HSET profile career Programmer
 </code></pre>
@@ -469,9 +469,9 @@ redis&gt; HSET profile career Programmer
                     </dl>
                 </div>
                 <ul>
-                    <li><a href="/">14 <p>文章</p></a></li>
-                    <li><a href="/categories">12 <p>分类</p></a></li>
-                    <li><a href="/tags">53 <p>标签</p></a></li>
+                    <li><a href="/">15 <p>文章</p></a></li>
+                    <li><a href="/categories">13 <p>分类</p></a></li>
+                    <li><a href="/tags">54 <p>标签</p></a></li>
                 </ul>
             </div>
             
