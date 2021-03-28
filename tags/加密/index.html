@@ -137,42 +137,48 @@
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/密码学"><b>「
-                </b>密码学<b> 」</b></a>
+            <a href="/categories/系统设计"><b>「
+                </b>系统设计<b> 」</b></a>
             
-            四月 02, 2019
+            九月 03, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/04/02/cryptography-preliminary-learn/" title="密码学初探" class="posttitle">密码学初探</a></h3>
+            <a href="/2019/09/03/interface-security-design/" title="前后端分离 , 如何保证接口安全性 ？" class="posttitle">前后端分离 , 如何保证接口安全性 ？</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                5.6k
+                1.4k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                5 mins.
+                1 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH/" rel="tag">DH</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA/" rel="tag">RSA</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">对称加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%AA%8C%E8%AF%81%E7%A0%81/" rel="tag">消息验证码</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%95%B0/" rel="tag">随机数</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">非对称加密</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%AE%89%E5%85%A8/" rel="tag">安全</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1/" rel="tag">接口设计</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <p>密码学有着严格的规范，其算法的实现原理是公开的。密码学算法是相对安全的，主要解决四个问题：</p>
-<ul>
-<li>机密性（隐私性）：在网络中传递的数据如果具备机密性，只有拥有密钥的才能解释这些数据，密钥是加密算法的关键。</li>
-<li>完整性：接收方能够确保接收到的数据就是发送方发送的原始数据，在密码学中，主要使用消息验证码（<code>MAC</code>）算法保证完整性。</li>
-<li>身份验证：通信双方必须确保对端就是要通信的对象。在密码学中，一般使用数字签名技术...</li></ul>
+            <ol>
+<li><p><strong>HTTP 请求中的来源识别</strong></p>
+</li>
+<li><p><strong>数据加密</strong></p>
+<p> 采用https协议，保障数据传输过程中的安全</p>
+</li>
+<li><p><strong>数据签名</strong></p>
+<p> 将要提交的数据，通过某种方式组合成一个字符串，然后通过 MD5 算法生成一个签名。如果觉得单纯的 MD5 不够安全的话，还可以在 MD5 的时候加盐和加 hash 。</p>
+</li>
+<li><p><strong>时间戳</strong></p>
+<p> 在参数中加上当前请求的时间戳，服务端拿到这个请求后会拿当前的时间和请求中的时间做比较，比如在 5 分钟之内的才会流转...</p></li></ol>
             
-            <span class="read-more"><a href="/2019/04/02/cryptography-preliminary-learn/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/09/03/interface-security-design/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -193,6 +199,60 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/2.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/密码学">
+                  <b>「 </b>密码学<b> 」</b>
+                </a>
+            
+            四月 02, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/04/02/cryptography-preliminary-learn/" title="密码学初探" class="posttitle">密码学初探</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        5.6k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        5 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH/" rel="tag">DH</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA/" rel="tag">RSA</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">对称加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%AA%8C%E8%AF%81%E7%A0%81/" rel="tag">消息验证码</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%95%B0/" rel="tag">随机数</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">非对称加密</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>密码学有着严格的规范，其算法的实现原理是公开的。密码学算法是相对安全的，主要解决四个问题：</p>
+<ul>
+<li>机密性（隐私性）：在网络中传递的数据如果具备机密性，只有拥有密钥的才能解释这些数据，密钥是加密算法的关键。</li>
+<li>完整性：接收方能够确保接收到的数据就是发送方发送的原始数据，在密码学中，主要使用消息验证码（<code>MAC</code>）算法保证完整性。</li>
+<li>身份验证：通信双方必须确保对端就是要通信的对象。在密码学中，一般使用数字签名技术确认身份。</li>
+<li>不可抵赖性：在密码学中，数字签名技术能够避免抵赖。</li>
+</ul>
+<blockquote>
+<p>OpenSSL：是<code>SSL</code>和<code>TLS...</code></p></blockquote>
+            
+            <span class="read-more"><a href="/2019/04/02/cryptography-preliminary-learn/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
     </div>
     
 </div>
