@@ -5,12 +5,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DirectByteBuffer原理探究 - Enjoy it</title>
+    <title>并发编程之伪共享 - Enjoy it</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
-    <meta name="description" content="路上随记,DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建,"> 
+    <meta name="description" content="路上随记,Cache为了解决计算机系统中主内存与CPU之间运行速度差问题，会在CPU与主内存之间添加一级或者多级高速缓冲存储器（Cache）。在Cache内部是按行存储的，其中每一行称为一个Cache行。Ca,"> 
     <meta name="author" content="hei-lou"> 
     <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -57,7 +57,7 @@
     <div class="navigation animated fadeIn fast delay-1s">
         <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
         <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
-        <h3 class="subtitle">DirectByteBuffer原理探究</h3>
+        <h3 class="subtitle">并发编程之伪共享</h3>
         <div class="social">
             <!--        <div class="like-icon">-->
             <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
@@ -82,30 +82,30 @@
             animation-duration: 1.2s;
             background-image: 
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-                url(/img/4.jpg) ">
+                url(/img/2.jpg) ">
         </div>
         <div class="else">
             <p class="animated fadeInDown">
                 
-                <a href="/categories/NIO"><b>「
-                    </b>NIO<b> 」</b></a>
+                <a href="/categories/并发"><b>「
+                    </b>并发<b> 」</b></a>
                 
-                五月 11, 2020
+                三月 21, 2020
             </p>
-            <h3 class="post-title animated fadeInDown"><a href="/2020/05/11/direct-byte-buffer/" title="DirectByteBuffer原理探究" class="">DirectByteBuffer原理探究</a>
+            <h3 class="post-title animated fadeInDown"><a href="/2020/03/21/false-sharing/" title="并发编程之伪共享" class="">并发编程之伪共享</a>
             </h3>
             
             <p class="post-count animated fadeInDown">
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    1.5k
+                    1.8k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    1 mins.
+                    2 mins.
                 </span>
                 
                 
@@ -118,7 +118,7 @@
             </p>
             
             
-            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DirectByteBuffer/" rel="tag">DirectByteBuffer</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/NIO/" rel="tag">NIO</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%99%9A%E5%BC%95%E7%94%A8/" rel="tag">虚引用</a></li></ul>
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%BC%AA%E5%85%B1%E4%BA%AB/" rel="tag">伪共享</a></li></ul>
             
         </div>
     </div>
@@ -139,14 +139,25 @@
 <div class="article">
     <div class='main'>
         <div class="content markdown animated fadeIn">
-            <p>DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建、使用、销毁等逻辑均由Unsafe提供的堆外内存API来实现。</p>
-<h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>下图为DirectByteBuffer构造函数，创建DirectByteBuffer的时候，通过Unsafe.allocateMemory分配内存、Unsafe.setMemory进行内存初始化，而后构建Cleaner对象用于跟踪DirectByteBuffer对象的垃圾回收，以实现当<br>DirectByteBuffer被垃圾回收时，分配的堆外内存一起被释放。</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f42140b9c1b141229073e5c6a987944a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
-<h2 id="堆外内存释放"><a href="#堆外内存释放" class="headerlink" title="堆外内存释放"></a>堆外内存释放</h2><p>Cleaner继承自Java四大引用类型之一的虚引用PhantomReference（众所周知，无法通过虚引用获取与之关联的对象实例，且当对象仅被虚引用引用时，在任何发生GC的时候，其均可被回收），通常PhantomReference与引用队列ReferenceQueue结合使用，可以实现虚引用关联对象被垃圾回收时能够进行系统通知、资源清理等功能。</p>
-<p>如下图所示，当某个被Cleaner引用的对象将被回收时，JVM垃圾收集器会将此对象的引用放入到对象引用中的pending链表中，等待Reference-Handler进行相关处理。其中，Reference-Handler为一个拥有最高优先级的守护线程，会循环不断的处理pending链表中的对象引用，执行Cleaner的clean方法进行相关清理工作。</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4582074d22a94f78a8b4459bfcd1ce80~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
-<p>所以当DirectByteBuffer仅被Cleaner引用（即为虚引用）时，其可以在任意GC时段被回收。当DirectByteBuffer实例对象被回收时，在Reference-Handler线程操作中，会调用Cleaner的clean方法根据创建Cleaner时传入的Deallocator来进行堆外内存的释放。</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dddc8021c9df4477ad5386a2d0b709a9~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+            <h2 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h2><p>为了解决计算机系统中主内存与CPU之间运行速度差问题，会在CPU与主内存之间添加一级或者多级高速缓冲存储器（Cache）。在Cache内部是按行存储的，其中每一行称为一个Cache行。Cache行是Cache与主内存进行数据交换的单位，Cache行的大小一般为2的幂次数字节。</p>
+<h2 id="数据访问"><a href="#数据访问" class="headerlink" title="数据访问"></a>数据访问</h2><p>当CPU访问某个变量时，首先会去看CPU Cache内是否有该变量，如果有则直接从中获取，否则就去主内存里面获取该变量，然后把该变量所在内存区域的一个Cache行大小的内存复制到Cache中。同一时间只能有一个线程操作缓存行。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/521a99030d16446595772c72bc1a2d36~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<h2 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a>伪共享</h2><p>当多个线程同时修改一个缓存行里面的多个变量时，由于同时只能有一个线程操作缓存行，所以相比将每个变量放到一个缓存行，性能会有所下降，这就是伪共享。伪共享的产生是因为多个变量被放入了一个缓存行中，并且多个线程同时去写入缓存行中不同的变量。那么为何多个变量会被放入一个缓存行呢？其实是因为缓存与内存交换数据的单位就是缓存行，当CPU要访问的变量没有在缓存中找到时，根据程序运行的局部性原理，会把该变量所在内存中大小为缓存行的内存放入缓存行。</p>
+<h2 id="如何避免伪共享"><a href="#如何避免伪共享" class="headerlink" title="如何避免伪共享"></a>如何避免伪共享</h2><p>在JDK 8之前一般都是通过字节填充的方式来避免该问题，也就是创建一个变量时使用填充字段填充该变量所在的缓存行，这样就避免了将多个变量存放在同一个缓存行中，例如如下代码：</p>
+<pre><code class="java">public final class FilledLong&#123;
+    public volatile long value = 0l;
+    public long p1, p2, p3, p4, p5, p6;
+&#125;
+</code></pre>
+<p>假如缓存行为64字节，那么我们在FilledLong类里面填充了6个long类型的变量，每个long类型变量占用8字节，加上value变量的8字节总共56字节。另外，这里FilledLong是一个类对象，而类对象的字节码的对象头占用8字节，所以一个FilledLong对象实际会占用64字节的内存，这正好可以放入一个缓存行。</p>
+<p>JDK 8提供了一个sun.misc.Contended注解，用来解决伪共享问题。将上面代码修改为如下。</p>
+<pre><code class="java、">@Contended
+public final class FilledLong&#123;
+    public volatile long value = 0l;
+    public long p1, p2, p3, p4, p5, p6;
+&#125;
+</code></pre>
+<p>需要注意的是，在默认情况下，@Contended注解只用于Java核心类，比如rt包下的类。如果用户类路径下的类需要使用这个注解，则需要添加JVM参数：-XX:-RestrictContended。填充的宽度默认为128，要自定义宽度则可以设置-XX:ContendedPaddingWidth参数。</p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -203,7 +214,7 @@
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">构造函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%E9%87%8A%E6%94%BE"><span class="toc-number">2.</span> <span class="toc-text">堆外内存释放</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Cache"><span class="toc-number">1.</span> <span class="toc-text">Cache</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE"><span class="toc-number">2.</span> <span class="toc-text">数据访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%AA%E5%85%B1%E4%BA%AB"><span class="toc-number">3.</span> <span class="toc-text">伪共享</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E4%BC%AA%E5%85%B1%E4%BA%AB"><span class="toc-number">4.</span> <span class="toc-text">如何避免伪共享</span></a></li></ol>
                 </div>
             </div>
             

@@ -61,8 +61,8 @@
     
     <entry>
       <title>DirectByteBuffer原理探究</title>
-      <link href="2020/05/11/direct-byte-buffer/"/>
-      <url>2020/05/11/direct-byte-buffer/</url>
+      <link href="2020/05/08/direct-byte-buffer/"/>
+      <url>2020/05/08/direct-byte-buffer/</url>
       
         <content type="html"><![CDATA[<p>DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建、使用、销毁等逻辑均由Unsafe提供的堆外内存API来实现。</p><h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>下图为DirectByteBuffer构造函数，创建DirectByteBuffer的时候，通过Unsafe.allocateMemory分配内存、Unsafe.setMemory进行内存初始化，而后构建Cleaner对象用于跟踪DirectByteBuffer对象的垃圾回收，以实现当<br>DirectByteBuffer被垃圾回收时，分配的堆外内存一起被释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f42140b9c1b141229073e5c6a987944a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><h2 id="堆外内存释放"><a href="#堆外内存释放" class="headerlink" title="堆外内存释放"></a>堆外内存释放</h2><p>Cleaner继承自Java四大引用类型之一的虚引用PhantomReference（众所周知，无法通过虚引用获取与之关联的对象实例，且当对象仅被虚引用引用时，在任何发生GC的时候，其均可被回收），通常PhantomReference与引用队列ReferenceQueue结合使用，可以实现虚引用关联对象被垃圾回收时能够进行系统通知、资源清理等功能。</p><p>如下图所示，当某个被Cleaner引用的对象将被回收时，JVM垃圾收集器会将此对象的引用放入到对象引用中的pending链表中，等待Reference-Handler进行相关处理。其中，Reference-Handler为一个拥有最高优先级的守护线程，会循环不断的处理pending链表中的对象引用，执行Cleaner的clean方法进行相关清理工作。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4582074d22a94f78a8b4459bfcd1ce80~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>所以当DirectByteBuffer仅被Cleaner引用（即为虚引用）时，其可以在任意GC时段被回收。当DirectByteBuffer实例对象被回收时，在Reference-Handler线程操作中，会调用Cleaner的clean方法根据创建Cleaner时传入的Deallocator来进行堆外内存的释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dddc8021c9df4477ad5386a2d0b709a9~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>]]></content>
       
@@ -81,31 +81,6 @@
             <tag> NIO </tag>
             
             <tag> 虚引用 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>并发编程之伪共享</title>
-      <link href="2020/04/11/false-sharing/"/>
-      <url>2020/04/11/false-sharing/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h2><p>为了解决计算机系统中主内存与CPU之间运行速度差问题，会在CPU与主内存之间添加一级或者多级高速缓冲存储器（Cache）。在Cache内部是按行存储的，其中每一行称为一个Cache行。Cache行是Cache与主内存进行数据交换的单位，Cache行的大小一般为2的幂次数字节。</p><h2 id="数据访问"><a href="#数据访问" class="headerlink" title="数据访问"></a>数据访问</h2><p>当CPU访问某个变量时，首先会去看CPU Cache内是否有该变量，如果有则直接从中获取，否则就去主内存里面获取该变量，然后把该变量所在内存区域的一个Cache行大小的内存复制到Cache中。同一时间只能有一个线程操作缓存行。</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/521a99030d16446595772c72bc1a2d36~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><h2 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a>伪共享</h2><p>当多个线程同时修改一个缓存行里面的多个变量时，由于同时只能有一个线程操作缓存行，所以相比将每个变量放到一个缓存行，性能会有所下降，这就是伪共享。伪共享的产生是因为多个变量被放入了一个缓存行中，并且多个线程同时去写入缓存行中不同的变量。那么为何多个变量会被放入一个缓存行呢？其实是因为缓存与内存交换数据的单位就是缓存行，当CPU要访问的变量没有在缓存中找到时，根据程序运行的局部性原理，会把该变量所在内存中大小为缓存行的内存放入缓存行。</p><h2 id="如何避免伪共享"><a href="#如何避免伪共享" class="headerlink" title="如何避免伪共享"></a>如何避免伪共享</h2><p>在JDK 8之前一般都是通过字节填充的方式来避免该问题，也就是创建一个变量时使用填充字段填充该变量所在的缓存行，这样就避免了将多个变量存放在同一个缓存行中，例如如下代码：</p><pre><code class="java">public final class FilledLong&#123;    public volatile long value = 0l;    public long p1, p2, p3, p4, p5, p6;&#125;</code></pre><p>假如缓存行为64字节，那么我们在FilledLong类里面填充了6个long类型的变量，每个long类型变量占用8字节，加上value变量的8字节总共56字节。另外，这里FilledLong是一个类对象，而类对象的字节码的对象头占用8字节，所以一个FilledLong对象实际会占用64字节的内存，这正好可以放入一个缓存行。</p><p>JDK 8提供了一个sun.misc.Contended注解，用来解决伪共享问题。将上面代码修改为如下。</p><pre><code class="java、">@Contendedpublic final class FilledLong&#123;    public volatile long value = 0l;    public long p1, p2, p3, p4, p5, p6;&#125;</code></pre><p>需要注意的是，在默认情况下，@Contended注解只用于Java核心类，比如rt包下的类。如果用户类路径下的类需要使用这个注解，则需要添加JVM参数：-XX:-RestrictContended。填充的宽度默认为128，要自定义宽度则可以设置-XX:ContendedPaddingWidth参数。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 并发 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 伪共享 </tag>
             
         </tags>
       
@@ -139,9 +114,34 @@
     
     
     <entry>
+      <title>并发编程之伪共享</title>
+      <link href="2020/03/21/false-sharing/"/>
+      <url>2020/03/21/false-sharing/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h2><p>为了解决计算机系统中主内存与CPU之间运行速度差问题，会在CPU与主内存之间添加一级或者多级高速缓冲存储器（Cache）。在Cache内部是按行存储的，其中每一行称为一个Cache行。Cache行是Cache与主内存进行数据交换的单位，Cache行的大小一般为2的幂次数字节。</p><h2 id="数据访问"><a href="#数据访问" class="headerlink" title="数据访问"></a>数据访问</h2><p>当CPU访问某个变量时，首先会去看CPU Cache内是否有该变量，如果有则直接从中获取，否则就去主内存里面获取该变量，然后把该变量所在内存区域的一个Cache行大小的内存复制到Cache中。同一时间只能有一个线程操作缓存行。</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/521a99030d16446595772c72bc1a2d36~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><h2 id="伪共享"><a href="#伪共享" class="headerlink" title="伪共享"></a>伪共享</h2><p>当多个线程同时修改一个缓存行里面的多个变量时，由于同时只能有一个线程操作缓存行，所以相比将每个变量放到一个缓存行，性能会有所下降，这就是伪共享。伪共享的产生是因为多个变量被放入了一个缓存行中，并且多个线程同时去写入缓存行中不同的变量。那么为何多个变量会被放入一个缓存行呢？其实是因为缓存与内存交换数据的单位就是缓存行，当CPU要访问的变量没有在缓存中找到时，根据程序运行的局部性原理，会把该变量所在内存中大小为缓存行的内存放入缓存行。</p><h2 id="如何避免伪共享"><a href="#如何避免伪共享" class="headerlink" title="如何避免伪共享"></a>如何避免伪共享</h2><p>在JDK 8之前一般都是通过字节填充的方式来避免该问题，也就是创建一个变量时使用填充字段填充该变量所在的缓存行，这样就避免了将多个变量存放在同一个缓存行中，例如如下代码：</p><pre><code class="java">public final class FilledLong&#123;    public volatile long value = 0l;    public long p1, p2, p3, p4, p5, p6;&#125;</code></pre><p>假如缓存行为64字节，那么我们在FilledLong类里面填充了6个long类型的变量，每个long类型变量占用8字节，加上value变量的8字节总共56字节。另外，这里FilledLong是一个类对象，而类对象的字节码的对象头占用8字节，所以一个FilledLong对象实际会占用64字节的内存，这正好可以放入一个缓存行。</p><p>JDK 8提供了一个sun.misc.Contended注解，用来解决伪共享问题。将上面代码修改为如下。</p><pre><code class="java、">@Contendedpublic final class FilledLong&#123;    public volatile long value = 0l;    public long p1, p2, p3, p4, p5, p6;&#125;</code></pre><p>需要注意的是，在默认情况下，@Contended注解只用于Java核心类，比如rt包下的类。如果用户类路径下的类需要使用这个注解，则需要添加JVM参数：-XX:-RestrictContended。填充的宽度默认为128，要自定义宽度则可以设置-XX:ContendedPaddingWidth参数。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 并发 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 伪共享 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>并发编程之volatile</title>
-      <link href="2020/03/20/volatile/"/>
-      <url>2020/03/20/volatile/</url>
+      <link href="2020/03/08/volatile/"/>
+      <url>2020/03/08/volatile/</url>
       
         <content type="html"><![CDATA[<h2 id="内存可见性问题"><a href="#内存可见性问题" class="headerlink" title="内存可见性问题"></a>内存可见性问题</h2><p>我们首先来看看在多线程下处理共享变量时Java的内存模型：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd51315c24634a6aa87594664440015c~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>Java内存模型规定，将所有的变量都存放在主内存中，当线程使用变量时，会把主内存里面的变量复制到自己的工作空间或者叫作工作内存，线程读写变量时操作的是自己工作内存中的变量。</p><h2 id="synchronized关键字"><a href="#synchronized关键字" class="headerlink" title="synchronized关键字"></a>synchronized关键字</h2><p>synchronized块是Java提供的一种原子性内置锁，线程的执行代码在进入synchronized代码块前会自动获取内部锁，这时候其他线程访问该同步代码块时会被阻塞挂起。拿到内部锁的线程会在正常退出同步代码块或者抛出异常后或者在同步块内调用了该内置锁资源的wait系列方法时释放该内置锁。内置锁是排它锁，也就是当一个线程获取这个锁后，其他线程必须等待该线程释放锁后才能获取该锁。</p><p>另外，由于Java中的线程是与操作系统的原生线程一一对应的，所以当阻塞一个线程时，需要从用户态切换到内核态执行阻塞操作，这是很耗时的操作，而synchronized的使用就会导致上下文切换。</p><h3 id="synchronized的内存语义"><a href="#synchronized的内存语义" class="headerlink" title="synchronized的内存语义"></a>synchronized的内存语义</h3><p>进入synchronized块的内存语义是把在synchronized块内使用到的变量从线程的工作内存中清除，这样在synchronized块内使用到该变量时就不会从线程的工作内存中获取，而是直接从主内存中获取。退出synchronized块的内存语义是把在synchronized块内对共享变量的修改刷新到主内存。</p><h2 id="volatile关键字"><a href="#volatile关键字" class="headerlink" title="volatile关键字"></a>volatile关键字</h2><p>当一个变量被声明为volatile时，线程在写入变量时不会把值缓存在寄存器或者其他地方，而是会把值刷新回主内存。当其他线程读取该共享变量时，会从主内存重新获取最新值，而不是使用当前线程的工作内存中的值。volatile虽然提供了可见性保证，但并不保证操作的原子性。</p><h3 id="volatile实现原理"><a href="#volatile实现原理" class="headerlink" title="volatile实现原理"></a>volatile实现原理</h3><p>在生成汇编代码时会在volatile修饰的共享变量进行写操作的时候会多出Lock前缀的指令。这个Lock指令主要有这两个方面的影响：</p><ul><li>将当前处理器缓存行的数据写回系统内存；</li><li>这个写回内存的操作会使得其他CPU里缓存了该内存地址的数据无效</li></ul>]]></content>
       
