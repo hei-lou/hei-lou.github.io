@@ -61,8 +61,8 @@
     
     <entry>
       <title>DirectByteBuffer原理探究</title>
-      <link href="2020/05/08/direct-byte-buffer/"/>
-      <url>2020/05/08/direct-byte-buffer/</url>
+      <link href="2020/05/09/direct-byte-buffer/"/>
+      <url>2020/05/09/direct-byte-buffer/</url>
       
         <content type="html"><![CDATA[<p>DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建、使用、销毁等逻辑均由Unsafe提供的堆外内存API来实现。</p><h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>下图为DirectByteBuffer构造函数，创建DirectByteBuffer的时候，通过Unsafe.allocateMemory分配内存、Unsafe.setMemory进行内存初始化，而后构建Cleaner对象用于跟踪DirectByteBuffer对象的垃圾回收，以实现当<br>DirectByteBuffer被垃圾回收时，分配的堆外内存一起被释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f42140b9c1b141229073e5c6a987944a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><h2 id="堆外内存释放"><a href="#堆外内存释放" class="headerlink" title="堆外内存释放"></a>堆外内存释放</h2><p>Cleaner继承自Java四大引用类型之一的虚引用PhantomReference（众所周知，无法通过虚引用获取与之关联的对象实例，且当对象仅被虚引用引用时，在任何发生GC的时候，其均可被回收），通常PhantomReference与引用队列ReferenceQueue结合使用，可以实现虚引用关联对象被垃圾回收时能够进行系统通知、资源清理等功能。</p><p>如下图所示，当某个被Cleaner引用的对象将被回收时，JVM垃圾收集器会将此对象的引用放入到对象引用中的pending链表中，等待Reference-Handler进行相关处理。其中，Reference-Handler为一个拥有最高优先级的守护线程，会循环不断的处理pending链表中的对象引用，执行Cleaner的clean方法进行相关清理工作。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4582074d22a94f78a8b4459bfcd1ce80~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>所以当DirectByteBuffer仅被Cleaner引用（即为虚引用）时，其可以在任意GC时段被回收。当DirectByteBuffer实例对象被回收时，在Reference-Handler线程操作中，会调用Cleaner的clean方法根据创建Cleaner时传入的Deallocator来进行堆外内存的释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dddc8021c9df4477ad5386a2d0b709a9~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>]]></content>
       
