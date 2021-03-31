@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Spring之循环依赖的解决方案 - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,循环依赖就是循环引用，就是两个或者多个 bean 相互之间的持有对方，最后形成一个环。例如 A 引用了 B，B 引用了 C，C 引用了 A。
+
+解决循环依赖原型(Prototype)的场景是不支持循,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">Spring之循环依赖的解决方案</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/8.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/Spring"><b>「
+                    </b>SPRING<b> 」</b></a>
+                
+                四月 10, 2020
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2020/04/10/spring-circular-dependency/" title="Spring之循环依赖的解决方案" class="">Spring之循环依赖的解决方案</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    7.9k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    7 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" rel="tag">三级缓存</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" rel="tag">循环依赖</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <p>循环依赖就是循环引用，就是两个或者多个 bean 相互之间的持有对方，最后形成一个环。例如 A 引用了 B，B 引用了 C，C 引用了 A。</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/03f20e99523e40d6aaae2d3120906c5c~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<h2 id="解决循环依赖"><a href="#解决循环依赖" class="headerlink" title="解决循环依赖"></a>解决循环依赖</h2><p>原型(Prototype)的场景是不支持循环依赖的，通常会走到AbstractBeanFactory类中下面的判断，抛出异常。通过构造器注入的循环依赖，也是无法解决的。</p>
+<p>对于 setter 注入造成的依赖可以通过 Spring 容器提前暴露刚完成构造器注入但未完成其他步骤（如 setter 注入）的 bean 来完成。</p>
+<h3 id="Bean创建的几个关键点"><a href="#Bean创建的几个关键点" class="headerlink" title="Bean创建的几个关键点"></a>Bean创建的几个关键点</h3><p>Spring 创建Bean的过程，大致和对象的初始化有点类似吧。有几个关键的步骤</p>
+<ul>
+<li>createBeanInstance ：实例化，此处要强调的是，Bean的早期引用在此出现了。</li>
+<li>populateBean ： 填充属性，此处我们熟悉的@Autowired属性注入就发生在此处</li>
+<li>initializeBean : 调用一些初始化方法，例如init ,afterPropertiesSet</li>
+</ul>
+<h3 id="三级缓存"><a href="#三级缓存" class="headerlink" title="三级缓存"></a>三级缓存</h3><pre><code class="java">/** Cache of singleton objects: bean name --&gt; bean instance */
+private final Map&lt;String, Object&gt; singletonObjects = new ConcurrentHashMap&lt;String, Object&gt;(256);
+
+/** Cache of early singleton objects: bean name --&gt; bean instance */
+private final Map&lt;String, Object&gt; earlySingletonObjects = new HashMap&lt;String, Object&gt;(16);
+
+/** Cache of singleton factories: bean name --&gt; ObjectFactory */
+private final Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = new HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(16);
+</code></pre>
+<ul>
+<li>singletonObjects：第一级缓存（成品缓存），里面存放的都是创建好的成品Bean。</li>
+<li>earlySingletonObjects  : 第二级缓存（半成品缓存），里面存放的都是半成品的Bean。</li>
+<li>singletonFactories ：第三级缓存（单例工厂缓存）， 不同于前两个存的是 Bean对象引用，此缓存存的bean 工厂对象，也就存的是 专门创建Bean的一个工厂对象。此缓存用于解决循环依赖</li>
+</ul>
+<h3 id="创建流程"><a href="#创建流程" class="headerlink" title="创建流程"></a>创建流程</h3><p>在<code>AbstractBeanFactory.doGetBean()</code>方法中获取对象的方法如下：</p>
+<pre><code class="java">protected &lt;T&gt; T doGetBean(final String name, @Nullable final Class&lt;T&gt; requiredType,
+    @Nullable final Object[] args, boolean typeCheckOnly) throws BeansException &#123;
+  // 尝试通过bean名称获取目标bean对象，比如这里的A对象
+  Object sharedInstance = getSingleton(beanName);
+  
+  // 我们这里的目标对象都是单例的
+  if (mbd.isSingleton()) &#123;
+    // 这里就尝试创建目标对象，第二个参数传的就是一个ObjectFactory类型的对象，这里是使用Java8的lamada
+    // 表达式书写的，只要上面的getSingleton()方法返回值为空，则会调用这里的getSingleton()方法来创建
+    // 目标对象
+    sharedInstance = getSingleton(beanName, () -&gt; &#123;
+      try &#123;
+        // 尝试创建目标对象
+        return createBean(beanName, mbd, args);
+      &#125; catch (BeansException ex) &#123;
+        throw ex;
+      &#125;
+    &#125;);
+  &#125;
+  return (T) bean;
+&#125;
+</code></pre>
+<p>获取对象实例，如果对象不存在就通过<code>getSingleton()</code>方法创建实例。这个方法里面有两个名称为getSingleton的方法，第一个<code>getSingleton</code>是从缓存中查找bean，如果缓存未命中，则走第二个<code>getSingleton</code>，尝试创建目标对象并注入依赖。先看第一个<code>getSingleton</code>的源码：</p>
+<pre><code class="java">@Nullable
+protected Object getSingleton(String beanName, boolean allowEarlyReference) &#123;
+  // 尝试从缓存中获取成品的目标对象，如果存在，则直接返回
+  Object singletonObject = this.singletonObjects.get(beanName);
+  // 如果缓存中不存在目标对象，则判断当前对象是否已经处于创建过程中，在前面的讲解中，第一次尝试获取A对象
+  // 的实例之后，就会将A对象标记为正在创建中，因而最后再尝试获取A对象的时候，这里的if判断就会为true
+  if (singletonObject == null &amp;&amp; isSingletonCurrentlyInCreation(beanName)) &#123;
+    synchronized (this.singletonObjects) &#123;
+      singletonObject = this.earlySingletonObjects.get(beanName);
+      if (singletonObject == null &amp;&amp; allowEarlyReference) &#123;
+        // 这里的singletonFactories是一个Map，其key是bean的名称，而值是一个ObjectFactory类型的
+        // 对象，这里对于A和B而言，调用图其getObject()方法返回的就是A和B对象的实例，无论是否是半成品
+        ObjectFactory&lt;?&gt; singletonFactory = this.singletonFactories.get(beanName);
+        if (singletonFactory != null) &#123;
+          // 获取目标对象的实例
+          singletonObject = singletonFactory.getObject();
+          this.earlySingletonObjects.put(beanName, singletonObject);
+          this.singletonFactories.remove(beanName);
+        &#125;
+      &#125;
+    &#125;
+  &#125;
+  return singletonObject;
+&#125;
+</code></pre>
+<p>首先从一级缓存<code>singletonObjects</code>获取目标对象，若不存在且目标对象被标记为创建中，从二级缓存<code>earlySingletonObjects</code>中获取bean。如果不存在，继续访问三级缓存<code>singletonFactories</code>，得到bean工厂对象，通过工厂对象获取目标对象。将目标对象放入二级缓存，删除三级缓存。</p>
+<p>第二个getSingleton方法</p>
+<pre><code class="java">public Object getSingleton(String beanName, ObjectFactory&lt;?&gt; singletonFactory) &#123;
+    synchronized (this.singletonObjects) &#123;
+
+        // ......
+        
+        // 调用 getObject 方法创建 bean 实例
+        singletonObject = singletonFactory.getObject();
+        newSingleton = true;
+
+        if (newSingleton) &#123;
+            // 添加 bean 到 singletonObjects 缓存中，并从其他集合中将 bean 相关记录移除
+            addSingleton(beanName, singletonObject);
+        &#125;
+
+        // ......
+        
+        // 返回 singletonObject
+        return (singletonObject != NULL_OBJECT ? singletonObject : null);
+    &#125;
+&#125;
+</code></pre>
+<p>该方法的主要逻辑是调用<code>singletonFactory</code>的<code>getObject()</code>方法创建目标对象，然后将bean放入缓存中。由于在<code>doGetBean</code>中调用<code>getSingleton</code>时第二个参数是用匿名内部类的方式传参，<code>getObject</code>方法实际上调用的是<code>createBean</code>方法，而<code>createBean</code>又调用了<code>doCreateBean</code>。</p>
+<pre><code class="java">protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final Object[] args)
+        throws BeanCreationException &#123;
+
+    BeanWrapper instanceWrapper = null;
+
+    // ......
+
+    // ☆ 创建 bean 对象，并将 bean 对象包裹在 BeanWrapper 对象中返回
+    instanceWrapper = createBeanInstance(beanName, mbd, args);
+    
+    // 从 BeanWrapper 对象中获取 bean 对象，这里的 bean 指向的是一个原始的对象
+    final Object bean = (instanceWrapper != null ? instanceWrapper.getWrappedInstance() : null);
+
+    /*
+     * earlySingletonExposure 用于表示是否”提前暴露“原始对象的引用，用于解决循环依赖。
+     * 对于单例 bean，该变量一般为 true。
+     */ 
+    boolean earlySingletonExposure = (mbd.isSingleton() &amp;&amp; this.allowCircularReferences &amp;&amp;
+            isSingletonCurrentlyInCreation(beanName));
+    if (earlySingletonExposure) &#123;
+        // ☆ 添加 bean 工厂对象到 singletonFactories 缓存中
+        addSingletonFactory(beanName, new ObjectFactory&lt;Object&gt;() &#123;
+            @Override
+            public Object getObject() throws BeansException &#123;
+                /* 
+                 * 获取原始对象的早期引用，在 getEarlyBeanReference 方法中，会执行 AOP 
+                 * 相关逻辑。若 bean 未被 AOP 拦截，getEarlyBeanReference 原样返回 
+                 * bean，所以大家可以把 
+                 *      return getEarlyBeanReference(beanName, mbd, bean) 
+                 * 等价于：
+                 *      return bean;
+                 */
+                return getEarlyBeanReference(beanName, mbd, bean);
+            &#125;
+        &#125;);
+    &#125;
+
+    Object exposedObject = bean;
+
+    // ......
+    
+    // ☆ 填充属性，解析依赖
+    populateBean(beanName, mbd, instanceWrapper);
+
+    // ......
+
+    // 返回 bean 实例
+    return exposedObject;
+&#125;
+
+protected void addSingletonFactory(String beanName, ObjectFactory&lt;?&gt; singletonFactory) &#123;
+    synchronized (this.singletonObjects) &#123;
+        if (!this.singletonObjects.containsKey(beanName)) &#123;
+            // 将 singletonFactory 添加到 singletonFactories 缓存中
+            this.singletonFactories.put(beanName, singletonFactory);
+
+            // 从其他缓存中移除相关记录，即使没有
+            this.earlySingletonObjects.remove(beanName);
+            this.registeredSingletons.add(beanName);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>方法的主要逻辑如下</p>
+<ul>
+<li>用createBeanInstance创建目标对象</li>
+<li>将对象添加到singletonFactories缓存中</li>
+<li>populateBean注入依赖</li>
+</ul>
+<p>实例化过程如下：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/44f7f90fa18f4dc2b4b797cccf1d9356~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p>关键点：</p>
+<ul>
+<li>A绑定到ObjectFactory 注册到工厂缓存singletonFactory中，</li>
+<li>B在填充A时，先查成品缓存有没有，再查半成品缓存有没有，最后看工厂缓存有没有单例工厂类，有A的ObjectFactory。调用getObject ，执行扩展逻辑，可能返回的代理引用，也可能返回原始引用。</li>
+<li>成功获取到A的早期引用，将A放入到半成品缓存中，B填充A引用完毕。</li>
+<li>循环依赖问题都解决了。</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">19 <p>文章</p></a></li>
+                    <li><a href="/categories">15 <p>分类</p></a></li>
+                    <li><a href="/tags">59 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="toc-number">1.</span> <span class="toc-text">解决循环依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E5%88%9B%E5%BB%BA%E7%9A%84%E5%87%A0%E4%B8%AA%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">1.1.</span> <span class="toc-text">Bean创建的几个关键点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="toc-number">1.2.</span> <span class="toc-text">三级缓存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">创建流程</span></a></li></ol></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>

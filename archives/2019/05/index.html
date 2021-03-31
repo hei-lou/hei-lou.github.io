@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 15 」</p>
+                        <p style="text-align: center">「 19 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -100,6 +100,103 @@ Vector API(孵化)提升了Java在CPU向量计算的性能，这是对大规模�
                                             关于博客在老早以前，自己就有搭建一个博客的想法，中途也尝试自己动手操作过，但是好几次都半途而废了。在自己的想法中，一个博客需要一套管理系统，自己没那么多时间。最近在晚上搜寻的时候，发现了一个惊为天人的博客，其UI甚合我意，于是一番操作下发现了这个Hexo，以及那个深得我心的主题-obsidian。
 Hexo
 Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">四月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">四月 10, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/04/10/spring-circular-dependency/">Spring之循环依赖的解决方案</a>
+                                        <p>
+                                            循环依赖就是循环引用，就是两个或者多个 bean 相互之间的持有对方，最后形成一个环。例如 A 引用了 B，B 引用了 C，C 引用了 A。
+
+解决循环依赖原型(Prototype)的场景是不支持循环依赖的，通常会走到AbstractBeanFactory类中下面的判断，抛出异常。通过构造器注入的循环依赖，也是无法解决的。
+对于 setter 注入造成的依赖可以通过 Spring 容器提前暴...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">十二月 2019</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">十二月 25, 2019</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2019/12/25/threadlocal-introduce/">并发编程之ThreadLocal解读</a>
+                                        <p>
+                                            ThreadLocal实例的弱引用对象会作为key存放在ThreadLocalMap中，然后set方法加入的值就作为ThreadLocalMap中的value。它提供了线程本地变量，可以保证访问到的变量属于当前线程。
+属性private final int threadLocalHashCode = nextHashCode();
+
+//用于计算threadLocal的hash值，每个对象一...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">十二月 05, 2019</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2019/12/05/ConcurrentHashMap-source-code/">源码系列-ConcurrentHashMap源码</a>
+                                        <p>
+                                            结构
+JDK1.8 的实现摒弃了Segment的概念，直接用Node数组 + 链表 + 红黑树的数据结构来实现，并发控制使用Synchronized和CAS来操作，
+sizeCtl用来控制table的初始化和扩容的操作，不同的值有不同的含义。
+
+table未初始化时：sizeCtl = 0或者 sizeCtl= capacity;
+table正在初始化：sizeCtl = -1;
+table...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">十月 2019</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">十月 10, 2019</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2019/10/10/hashmap-source-code/">源码系列-HashMap源码</a>
+                                        <p>
+                                            类图首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。
+
+下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。
+存储结构从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：
+
+引入了红黑树是因为它查找...
                                         </p>
                                     </div>
                                 </li>

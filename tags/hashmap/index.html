@@ -130,66 +130,50 @@
             animation-duration: 2.8s;
             background-image:
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.56), #100e17),
-                url(/img/1.jpg);">
+                url(/img/8.jpg);">
         </div>
     </div>
     
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/java基础"><b>「
-                </b>JAVA基础<b> 」</b></a>
+            <a href="/categories/源码"><b>「
+                </b>源码<b> 」</b></a>
             
-            七月 05, 2019
+            十月 10, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="java基础之HashMap与ConcurrentHashMap重点解读" class="posttitle">java基础之HashMap与ConcurrentHashMap重点解读</a></h3>
+            <a href="/2019/10/10/hashmap-source-code/" title="源码系列-HashMap源码" class="posttitle">源码系列-HashMap源码</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                3.4k
+                10k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                3 mins.
+                9 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/concurrenthashmap/" rel="tag">concurrenthashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%A9%E5%AE%B9/" rel="tag">扩容</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%B0%E5%8A%A8%E5%87%BD%E6%95%B0/" rel="tag">扰动函数</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/resize/" rel="tag">resize</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <table>
-<thead>
-<tr>
-<th>HashMap</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>底层结构</td>
-<td>1. JDK1.8之前：数组+链表<br>2. JDK1.8：数组+链表/红黑树<br>链表与红黑树之间的转换：<br>链表-&gt;红黑树：链表长度大于等于8且数组长度（hash桶）大于等于64的时候<br>红黑树-&gt;链表：红黑树的节点数量小于等于6的时候退化为链表</td>
-</tr>
-<tr>
-<td>元素特性</td>
-<td>key、value可以为null，只能有一个key为null的键值对，允许有多个value为null的键值对</td>
-</tr>
-<tr>
-<td>hash桶的数量</td>
-<td>默认16，加载因子默认0.75（HashMap也许是按照lazy-load原则，在首次put元素时在resize()方法中初始化）</td>
-</tr>
-<tr>
-<td>扰动函数</td>
-<td>1. JDK1.8之...</td></tr></tbody></table>
+            <p>首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。</p>
+<p></p>
+<p>下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。</p>
+<p>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：</p>
+<p></p>
+<p>引入了红黑树是因为它查找、插入、删除的平均时间复杂度为O(log(n))。这是因为当产生hash碰撞时，数据会挂载（尾插），形成链表。链表空间上不连续，逻辑上连续，增删元素快，只需处理节点间的引用，时间复杂度为O(1)，查询慢，需要遍历所有节...</p>
             
-            <span class="read-more"><a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/10/10/hashmap-source-code/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -210,6 +194,69 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/1.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/java基础">
+                  <b>「 </b>JAVA基础<b> 」</b>
+                </a>
+            
+            七月 05, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="java基础之HashMap与ConcurrentHashMap重点解读" class="posttitle">java基础之HashMap与ConcurrentHashMap重点解读</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        3.4k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        3 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/concurrenthashmap/" rel="tag">concurrenthashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%A9%E5%AE%B9/" rel="tag">扩容</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%89%B0%E5%8A%A8%E5%87%BD%E6%95%B0/" rel="tag">扰动函数</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <table>
+<thead>
+<tr>
+<th>HashMap</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>底层结构</td>
+<td>1. JDK1.8之前：数组+链表<br>2. JDK1.8：数组+链表/红黑树<br>链表与红黑树之间的转换：<br>链表-&gt;红黑树：链表长度大于等于8且数组长度（hash桶）大于等于64的时候<br>红黑树-&gt;链表：红黑树的节点数量小于等于6的时候退化为链表</td>
+</tr>
+<tr>
+<td>元素特性</td>
+<td>key、value可以为null，只能有一个key为null的键值对，允许有多个value为null的键值对</td>
+</tr>
+<tr>
+<td>hash桶的数量</td>
+<td>默认16，加载因子默认0.75（HashMap也许是按照lazy-...</td></tr></tbody></table>
+            
+            <span class="read-more"><a href="/2019/07/05/hashmap-concurrenthashmap-key-point/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
     </div>
     
 </div>

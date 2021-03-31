@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>源码系列-HashMap源码 - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,类图首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。
+
+下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">源码系列-HashMap源码</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/8.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/源码"><b>「
+                    </b>源码<b> 」</b></a>
+                
+                十月 10, 2019
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/10/10/hashmap-source-code/" title="源码系列-HashMap源码" class="">源码系列-HashMap源码</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    10k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    9 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/resize/" rel="tag">resize</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p>首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8038f50d6420475e92fda50edf989bdf~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p>下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。</p>
+<h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><p>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2af1219b545046a8a4964b7a6debedaa~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p>引入了红黑树是因为它查找、插入、删除的平均时间复杂度为O(log(n))。这是因为当产生hash碰撞时，数据会挂载（尾插），形成链表。链表空间上不连续，逻辑上连续，增删元素快，只需处理节点间的引用，时间复杂度为O(1)，查询慢，需要遍历所有节点逐一查找，时间复杂度为O(n)；当数组长度大于64并且链表长度大于8的时候才会树化。</p>
+<h2 id="内部属性"><a href="#内部属性" class="headerlink" title="内部属性"></a>内部属性</h2><ul>
+<li>默认初始容量 DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4 （16）</li>
+<li>最大容量 MAXIMUM_CAPACITY = 1 &lt;&lt; 30</li>
+<li>默认加载因子 DEFAULT_LOAD_FACTOR = 0.75f</li>
+<li>阈值 threshold = 容量 * 加载因子</li>
+<li>转化为红黑树的阈值 TREEIFY_THRESHOLD = 8</li>
+<li>树转链表的阈值 UNTREEIFY_THRESHOLD = 6</li>
+</ul>
+<h2 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h2><pre><code class="java">// 默认构造函数，加载因子为默认值 0.75f
+public HashMap() &#123;
+    this.loadFactor = DEFAULT_LOAD_FACTOR;
+ &#125;
+
+ public HashMap(int initialCapacity, float loadFactor) &#123;
+     if (initialCapacity &lt; 0)
+         throw new IllegalArgumentException(&quot;Illegal initial capacity: &quot; + initialCapacity);
+     if (initialCapacity &gt; MAXIMUM_CAPACITY)
+         initialCapacity = MAXIMUM_CAPACITY;
+     if (loadFactor &lt;= 0 || Float.isNaN(loadFactor))
+         throw new IllegalArgumentException(&quot;Illegal load factor: &quot; + loadFactor);
+     this.loadFactor = loadFactor;
+     this.threshold = tableSizeFor(initialCapacity);
+ &#125;
+ 
+ //tableSizeFor的功能（不考虑大于最大容量的情况）是返回大于输入参数且最近的2的整数次幂的数。
+ static final int tableSizeFor(int cap) &#123;
+    int n = cap - 1;
+    n |= n &gt;&gt;&gt; 1;
+    n |= n &gt;&gt;&gt; 2;
+    n |= n &gt;&gt;&gt; 4;
+    n |= n &gt;&gt;&gt; 8;
+    n |= n &gt;&gt;&gt; 16;
+    return (n &lt; 0) ? 1 : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
+&#125;
+</code></pre>
+<h2 id="主要方法"><a href="#主要方法" class="headerlink" title="主要方法"></a>主要方法</h2><h3 id="索引index计算"><a href="#索引index计算" class="headerlink" title="索引index计算"></a>索引index计算</h3><p>这里的Hash算法本质上就是三步：取key的hashCode值、高位运算、取模运算。</p>
+<pre><code class="java">// 扰动函数 
+static final int hash(Object key) &#123;
+    int h;
+    // &gt;&gt;&gt; 16 无符号右移16位，让高位参与运算，减少碰撞
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);
+&#125;
+
+index = (n - 1) &amp; hash;
+</code></pre>
+<p>index是通过<code>(n - 1) &amp; hash</code>计算得出，即(数组长度-1)的二进制与之前求出的hash值做与运算。</p>
+<blockquote>
+<p>取余(%)操作中如果除数是2的幂次则等价于与其除数减一的与(&amp;)操作（也就是说 hash%length==hash&amp;(length-1)的前提是 length 是2的 n 次方；）</p>
+</blockquote>
+<h3 id="put方法"><a href="#put方法" class="headerlink" title="put方法"></a>put方法</h3><pre><code class="java">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+                   boolean evict) &#123;
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+    // 判断当前数组是否已经初始化
+    if ((tab = table) == null || (n = tab.length) == 0)
+        // 若未初始化，调用resize方法进行初始化（默认长度为16）
+        n = (tab = resize()).length;  
+    // (n - 1) &amp; hash 确定元素存放在哪个桶中
+    if ((p = tab[i = (n - 1) &amp; hash]) == null)
+        // 如果桶为空，新生成结点放入数组中
+        tab[i] = newNode(hash, key, value, null);
+    // 若数组中已经存在元素
+    else &#123;
+        Node&lt;K,V&gt; e; K k;
+        // 如果与第一个元素的hash值相等，key相等
+        if (p.hash == hash &amp;&amp;
+            ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+                // 将第一个元素赋值给e，用e来记录
+                e = p;
+        // 如果节点为红黑树结点
+        else if (p instanceof TreeNode)
+            // 放入树中
+            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+        // 其余情况则为链表结点
+        else &#123;
+            // 在链表最末插入结点（jdk1.7采用头插法，容易造成死循环）
+            // 遍历当前链表
+            for (int binCount = 0; ; ++binCount) &#123;
+                //  p.next为空表明处于链表的尾部
+                if ((e = p.next) == null) &#123;
+                    // 在尾部插入新结点
+                    p.next = newNode(hash, key, value, null);
+                    // 如果结点数量达到阈值8
+                    if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        // 转化为红黑树
+                        treeifyBin(tab, hash);
+                    // 跳出循环
+                    break;
+                &#125;
+                // 判断链表中结点的key值与插入的元素的key值是否相等
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    // 相等，跳出循环
+                    break;
+                // 用于遍历桶中的链表，与前面的e = p.next组合，可以遍历链表
+                p = e;
+            &#125;
+        &#125;
+        // e有记录，表示在桶中找到的元素的key值、hash值与插入元素相等的结点
+        if (e != null) &#123; 
+            // 记录e（第一个元素）的value
+            V oldValue = e.value;
+            // onlyIfAbsent if true, don&#39;t change existing value
+            // onlyIfAbsent为false或者旧值为null
+            if (!onlyIfAbsent || oldValue == null)
+                //用新值替换旧值
+                e.value = value;
+            // 访问后回调，将元素添加到链表的最后
+            afterNodeAccess(e);
+            // 返回旧值
+            // map.put(1, &quot;Orcas&quot;);
+            // String oldVal = map.put(1, &quot;Fish&quot;);
+            // =&gt; Orcas
+            return oldValue;
+        &#125;
+    &#125;
+    // 记录是发生内部结构变化的次数
+    ++modCount;
+    // 每次put一个元素++size,当实际大小大于阈值则扩容
+    if (++size &gt; threshold)
+        resize();
+    // 插入后回调
+    afterNodeInsertion(evict);
+    return null;
+&#125; 
+</code></pre>
+<p>具体过程可以通过下图理解：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84f03ba931f49afbcea348ee4e17ab3~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<h3 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h3><pre><code class="java">final Node&lt;K,V&gt;[] resize() &#123;
+    Node&lt;K,V&gt;[] oldTab = table;
+    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+    int oldThr = threshold;
+    int newCap, newThr = 0;
+    // 旧数组中有元素，说明已初始化过，调用resize()是进行扩容的
+    if (oldCap &gt; 0) &#123;
+        if (oldCap &gt;= MAXIMUM_CAPACITY) &#123;
+            // 旧数组长度大于最大容量2^30，则将阈值设置为Integer的最大值
+            threshold = Integer.MAX_VALUE;
+            return oldTab;
+        &#125;
+        // 旧数组双倍扩容后小于最大容量 并且 旧数组大于默认的初始容量16
+        else if ((newCap = oldCap &lt;&lt; 1) &lt; MAXIMUM_CAPACITY &amp;&amp;
+                 oldCap &gt;= DEFAULT_INITIAL_CAPACITY)
+            // 将阈值threshold*2得到新的阈值
+            newThr = oldThr &lt;&lt; 1; 
+    &#125;
+    // 旧阈值=threshold大于0
+    // 说明使用的构造方法是HashMap(int initialCapacity, float loadFactor) 
+    // 该方法中 this.threshold = tableSizeFor(initialCapacity);
+    // tableSizeFor方法返回的是数组的容量（2^N）
+    else if (oldThr &gt; 0) 
+        // 容量设置为阈值threshold
+        newCap = oldThr;
+    else &#123;  
+        // 阈值为初始化时的0，oldCap为空，即创建数组时无参，调用resize()是为了初始化为默认值
+        // 将新的长度设置为默认的初始化长度，即16
+        newCap = DEFAULT_INITIAL_CAPACITY;  
+        // 负载因子0.75*数组长度16=12 新阈值为12
+        newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY); 
+    &#125;
+    // 如果新阈值为0，根据负载因子设置新阈值
+    if (newThr == 0) &#123;
+        float ft = (float)newCap * loadFactor;
+        newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (float)MAXIMUM_CAPACITY ?
+                  (int)ft : Integer.MAX_VALUE);
+    &#125;
+    threshold = newThr;
+        // 创建一个长度为newCap的新的Node数组
+        Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])new Node[newCap];  
+    table = newTab;
+    // 如果旧的数组中有数据，则将数组复制到新的数组中
+    if (oldTab != null) &#123;
+        // 循环遍历旧数组，将有元素的节点进行复制
+        for (int j = 0; j &lt; oldCap; ++j) &#123;
+            Node&lt;K,V&gt; e;
+            // 旧数组有元素的节点
+            if ((e = oldTab[j]) != null) &#123;
+                oldTab[j] = null;
+                // 数组
+                if (e.next == null)
+                    // 重新计算hash值确定元素的位置
+                    newTab[e.hash &amp; (newCap - 1)] = e;
+                // 红黑树
+                else if (e instanceof TreeNode)
+                    // 将原本的二叉树结构拆分组成新的红黑树
+                    ((TreeNode&lt;K,V&gt;)e).split(this, newTab, j, oldCap);
+                // 链表
+                else &#123;
+                    Node&lt;K,V&gt; loHead = null, loTail = null;
+                    Node&lt;K,V&gt; hiHead = null, hiTail = null;
+                    Node&lt;K,V&gt; next;
+                    do &#123;
+                        next = e.next;
+                        // 如果为0，元素位置在扩容后数组中的位置没有发生改变
+                        if ((e.hash &amp; oldCap) == 0) &#123;
+                            if (loTail == null)
+                                // 首位
+                                loHead = e;
+                            else
+                                loTail.next = e;
+                            loTail = e;
+                        &#125;
+                        // 不为0，元素位置在扩容后数组中的位置发生了改变，新的下标位置是原索引+oldCap
+                        else &#123;
+                            if (hiTail == null)
+                                hiHead = e;
+                            else
+                                hiTail.next = e;
+                            hiTail = e;
+                        &#125;
+                    &#125; while ((e = next) != null);
+                    if (loTail != null) &#123;
+                        loTail.next = null;
+                        newTab[j] = loHead;
+                    &#125;
+                    if (hiTail != null) &#123;
+                        hiTail.next = null;
+                        newTab[j + oldCap] = hiHead;
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    return newTab;
+&#125;
+</code></pre>
+<p>如下图所示，n为table长度，数组扩容n &lt;&lt; 1。图（a）表示扩容前的key1和key2两种key确定索引位置的示例，图（b）表示扩容后key1和key2两种key确定索引位置的示例。因此，我们在扩充HashMap的时候，不需要像JDK1.7的实现那样重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“原索引+oldCap”</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b40e57557bda46e491da4c7e21255c9a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">19 <p>文章</p></a></li>
+                    <li><a href="/categories">15 <p>分类</p></a></li>
+                    <li><a href="/tags">59 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">类图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">存储结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E9%83%A8%E5%B1%9E%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">内部属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">主要方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95index%E8%AE%A1%E7%AE%97"><span class="toc-number">5.1.</span> <span class="toc-text">索引index计算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#put%E6%96%B9%E6%B3%95"><span class="toc-number">5.2.</span> <span class="toc-text">put方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="toc-number">5.3.</span> <span class="toc-text">扩容机制</span></a></li></ol></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>

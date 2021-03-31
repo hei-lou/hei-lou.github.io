@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>源码系列-ConcurrentHashMap源码 - Enjoy it</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="java,hexo,spring,面试,github,netty,tcp,Java,JavaWeb,Web程序员,Web开发,JavaWeb开发,个人博客,"> 
+    <meta name="description" content="路上随记,结构
+JDK1.8 的实现摒弃了Segment的概念，直接用Node数组 + 链表 + 红黑树的数据结构来实现，并发控制使用Synchronized和CAS来操作，
+sizeCtl用来控制table,"> 
+    <meta name="author" content="hei-lou"> 
+    <link rel="alternative" href="atom.xml" title="Enjoy it" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/css/ball-atom.min.css">
+
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">Enjoy it</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/img/favicon.png" alt="" data-url="https://hei-lou.github.io">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">源码系列-ConcurrentHashMap源码</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                        <a href="javascript:;" class="iconfont icon-share1"></a>
+                        <div class="share-component-cc" data-disabled="facebook,douban,linkedin,diandian,tencent,google"></div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/img/2.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/categories/源码"><b>「
+                    </b>源码<b> 」</b></a>
+                
+                十二月 05, 2019
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/2019/12/05/ConcurrentHashMap-source-code/" title="源码系列-ConcurrentHashMap源码" class="">源码系列-ConcurrentHashMap源码</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    17k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    15 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">12530</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/concurrenthashmap/" rel="tag">concurrenthashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7ec7616b331d4af296b6b844754b1623~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p>JDK1.8 的实现摒弃了<code>Segment</code>的概念，直接用Node数组 + 链表 + 红黑树的数据结构来实现，并发控制使用<code>Synchronized</code>和<code>CAS</code>来操作，</p>
+<h2 id="sizeCtl"><a href="#sizeCtl" class="headerlink" title="sizeCtl"></a>sizeCtl</h2><p>用来控制table的初始化和扩容的操作，不同的值有不同的含义。</p>
+<ul>
+<li>table未初始化时：sizeCtl = 0或者 sizeCtl= capacity;</li>
+<li>table正在初始化：sizeCtl = -1;</li>
+<li>table初始化完成：sizeCtl = thresold;</li>
+<li>当sizeCtl = − (1 + N)，表明正在有N条线程正在进行resize操作；</li>
+</ul>
+<h2 id="put-方法"><a href="#put-方法" class="headerlink" title="put()方法"></a>put()方法</h2><pre><code class="java">public V put(K key, V value) &#123;
+    return putVal(key, value, false);
+&#125;
+
+final V putVal(K key, V value, boolean onlyIfAbsent) &#123;
+    if (key == null || value == null) throw new NullPointerException();
+    //hash操作
+    int hash = spread(key.hashCode());
+    int binCount = 0;
+    //bitCount表示i处的节点数量，用来判断是否转换成红黑树
+    for (Node&lt;K,V&gt;[] tab = table;;) &#123;//CAS插入
+        Node&lt;K,V&gt; f; int n, i, fh;
+        //除非构造时指定初始化集合，否则默认构造不初始化table
+        if (tab == null || (n = tab.length) == 0)
+            tab = initTable();
+        else if ((f = tabAt(tab, i = (n - 1) &amp; hash)) == null) &#123;
+            //当前节点为NULL，CAS设置新头节点
+            if (casTabAt(tab, i, null, new Node&lt;K,V&gt;(hash, key, value, null)))
+                break;                   // no lock when adding to empty bin
+        &#125;
+        else if ((fh = f.hash) == MOVED)
+            tab = helpTransfer(tab, f);
+            //当前节点正在扩容，让当前线程帮助扩容，扩容完指向新的table
+        else &#123;
+            //正常插入到链表或者红黑树当中
+            V oldVal = null;
+            //对当前节点加锁
+            synchronized (f) &#123;
+                if (tabAt(tab, i) == f) &#123;
+                    if (fh &gt;= 0) &#123;//表明是链表结点类型
+                        binCount = 1;
+                        for (Node&lt;K,V&gt; e = f;; ++binCount) &#123;
+                            K ek;
+                            if (e.hash == hash &amp;&amp;
+                                ((ek = e.key) == key ||
+                                 (ek != null &amp;&amp; key.equals(ek)))) &#123;
+                                oldVal = e.val;
+                                if (!onlyIfAbsent)
+                                //onlyIfAbsent表示是新元素才加入，旧值不替换，默认为fase。
+                                    e.val = value;
+                                break;
+                            &#125;
+                            Node&lt;K,V&gt; pred = e;
+                            if ((e = e.next) == null) &#123;
+                                //加入链表尾部
+                                pred.next = new Node&lt;K,V&gt;(hash, key,
+                                                          value, null);
+                                break;
+                            &#125;
+                        &#125;
+                    &#125;
+                    else if (f instanceof TreeBin) &#123;//是红黑树
+                        Node&lt;K,V&gt; p;
+                        binCount = 2;
+                        if ((p = ((TreeBin&lt;K,V&gt;)f).putTreeVal(hash, key,
+                                                       value)) != null) &#123;
+                            oldVal = p.val;
+                            if (!onlyIfAbsent)
+                                p.val = value;
+                        &#125;
+                    &#125;
+                &#125;
+            &#125;
+            if (binCount != 0) &#123;
+                if (binCount &gt;= TREEIFY_THRESHOLD)
+                //默认table的一个链表结点数超过8个数据结构会转为红黑树
+                    treeifyBin(tab, i);
+                if (oldVal != null)
+                    return oldVal;
+                break;
+            &#125;
+        &#125;
+    &#125;
+    addCount(1L, binCount);//更新size，检测扩容
+    return null;
+&#125;
+</code></pre>
+<h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><pre><code class="java">// &amp;HASH_BITS是为了保证hash为正数
+static final int spread(int h) &#123;
+    return (h ^ (h &gt;&gt;&gt; 16)) &amp; HASH_BITS;
+&#125;
+</code></pre>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><pre><code class="java">private final Node&lt;K,V&gt;[] initTable() &#123;
+    Node&lt;K,V&gt;[] tab; int sc;
+    while ((tab = table) == null || tab.length == 0) &#123;
+        if ((sc = sizeCtl) &lt; 0)
+            // 多线程同时初始化（即sizeCtl = -1 )时，竞争失败的线程yield
+            Thread.yield(); 
+        // CAS设置 sizeCtl = -1 
+        else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) &#123;
+            try &#123;
+                if ((tab = table) == null || tab.length == 0) &#123;
+                    int n = (sc &gt; 0) ? sc : DEFAULT_CAPACITY;
+                    @SuppressWarnings(&quot;unchecked&quot;)
+                    Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])new Node&lt;?,?&gt;[n];
+                    table = tab = nt;
+                    sc = n - (n &gt;&gt;&gt; 2);//扩容阈值为新容量的0.75倍
+                &#125;
+            &#125; finally &#123;
+                sizeCtl = sc;
+            &#125;
+            break;
+        &#125;
+    &#125;
+    return tab;
+&#125;
+</code></pre>
+<h3 id="treeifyBin函数"><a href="#treeifyBin函数" class="headerlink" title="treeifyBin函数"></a>treeifyBin函数</h3><p>treeifyBin函数对于节点数量过多的处理，与HashMap大体一致。</p>
+<ul>
+<li>table比较小时（小于MIN_TREEIFY_CAPACITY=64），先resize；</li>
+<li>table达到一定数量时，转换红黑树；（链表长度 &gt; 8）<pre><code class="java">private final void treeifyBin(Node&lt;K,V&gt;[] tab, int index) &#123;
+  Node&lt;K,V&gt; b; int n, sc;
+  if (tab != null) &#123;
+      // 如果tab.length &lt; MIN_TREEIFY_CAPACITY=64，先resize
+      if ((n = tab.length) &lt; MIN_TREEIFY_CAPACITY)
+          tryPresize(n &lt;&lt; 1); 
+      else if ((b = tabAt(tab, index)) != null &amp;&amp; b.hash &gt;= 0) 
+          //转换成红黑树
+          synchronized (b) &#123;
+              if (tabAt(tab, index) == b) &#123;
+                  TreeNode&lt;K,V&gt; hd = null, tl = null;
+                  for (Node&lt;K,V&gt; e = b; e != null; e = e.next) &#123;
+                      TreeNode&lt;K,V&gt; p =
+                          new TreeNode&lt;K,V&gt;(e.hash, e.key, e.val,
+                                            null, null);
+                      if ((p.prev = tl) == null)
+                          hd = p;
+                      else
+                          tl.next = p;
+                      tl = p;
+                  &#125;
+                  setTabAt(tab, index, new TreeBin&lt;K,V&gt;(hd));
+              &#125;
+          &#125;
+      &#125;
+  &#125;
+&#125;
+</code></pre>
+</li>
+</ul>
+<h3 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h3><p>如果新增节点之后，所在的链表的元素个数大于等于8，则会调用treeifyBin把链表转换为红黑树。在转换结构时，若tab的长度小于MIN_TREEIFY_CAPACITY，默认值为64，则会将数组长度扩大到原来的两倍，并触发transfer，重新调整节点位置。（只有当tab.length &gt;= 64, ConcurrentHashMap才会使用红黑树。）</p>
+<pre><code class="java">// tab是旧table，nextTab是新table
+private final void transfer(Node&lt;K,V&gt;[] tab, Node&lt;K,V&gt;[] nextTab) &#123;
+    int n = tab.length, stride;
+    if ((stride = (NCPU &gt; 1) ? (n &gt;&gt;&gt; 3) / NCPU : n) &lt; MIN_TRANSFER_STRIDE)
+        stride = MIN_TRANSFER_STRIDE; // subdivide range
+        //stride表示每个线程处理桶的最小数目。
+    if (nextTab == null) &#123;            // initiating
+        try &#123;
+            @SuppressWarnings(&quot;unchecked&quot;)
+            Node&lt;K,V&gt;[] nt = (Node&lt;K,V&gt;[])new Node&lt;?,?&gt;[n &lt;&lt; 1];//table两倍扩容
+            nextTab = nt;
+        &#125; catch (Throwable ex) &#123;      // try to cope with OOME
+            sizeCtl = Integer.MAX_VALUE;
+            return;
+        &#125;
+        nextTable = nextTab;
+        transferIndex = n;//扩容总进度，&gt;=transferIndex的桶都已分配出去。
+    &#125;
+    int nextn = nextTab.length;
+    ForwardingNode&lt;K,V&gt; fwd = new ForwardingNode&lt;K,V&gt;(nextTab);
+    //advance表示是否迁移完成
+    boolean advance = true;
+    //finish表示扩容是否结束
+    boolean finishing = false;
+    for (int i = 0, bound = 0;;) &#123;
+    //处理一个 stride 长度的任务，i 会被赋值为该 stride 内最大的下标，而 bound 会被赋值为该 stride 内最小的下标
+    //通过循环不断减小 i 的值，从右往左依次迁移桶上面的数据，直到 i 小于 bound 时结束该次长度为 stride 的迁移任务
+    //结束这次的任务后会通过外层 addCount、helpTransfer、tryPresize 方法的 while 循环达到继续领取其他任务的效果
+        Node&lt;K,V&gt; f; int fh;
+        while (advance) &#123;
+            int nextIndex, nextBound;
+            if (--i &gt;= bound || finishing)
+                advance = false;
+            else if ((nextIndex = transferIndex) &lt;= 0) &#123;
+                //transferIndex &lt;= 0 说明数组的hash桶已被线程分配完毕，没有了待分配的hash桶，将 i 设置为 -1 ，后面的代码根据这个数值退出当前线的扩容操作
+                i = -1;
+                advance = false;//false表示没处理完当前桶
+            &#125;
+            //只有首次进入for循环才会进入这个判断里面去，设置 bound 和 i 的值，也就是领取到的迁移任务的数组区间
+            else if (U.compareAndSwapInt
+                     (this, TRANSFERINDEX, nextIndex,
+                      nextBound = (nextIndex &gt; stride ?
+                                   nextIndex - stride : 0))) &#123;
+                //确定当前线程每次分配的待迁移桶的范围为[bound, nextIndex)
+                bound = nextBound;
+                i = nextIndex - 1;
+                advance = false;
+            &#125;
+        &#125;
+        // i&lt;0表示当前线程的任务已经做完，后两个判断是边界检查
+        if (i &lt; 0 || i &gt;= n || i + n &gt;= nextn) &#123;
+            int sc;
+            if (finishing) &#123;
+                //扩容结束后做后续工作，将 nextTable 设置为 null，表示扩容已结束，将 table 指向新数组，sizeCtl 设置为扩容阈值
+                nextTable = null;
+                table = nextTab;
+                sizeCtl = (n &lt;&lt; 1) - (n &gt;&gt;&gt; 1);
+                return;
+            &#125;
+            //每当一条线程扩容结束就会更新一次 sizeCtl 的值，进行减 1 操作
+            if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) &#123;
+                //如果下面为false，说明该线程不是扩容大军里面的最后一条线程，直接return
+                if ((sc - 2) != resizeStamp(n) &lt;&lt; RESIZE_STAMP_SHIFT)
+                    return;
+                //如果为true，修改标志位，并且重新检查有没有遗漏的
+                finishing = advance = true;
+                i = n; // recheck before commit
+                //重新检查一遍
+                //正常情况下，tab应该全都是ForwardingNode
+                //如果出现问题，多个线程同时申请到了一个transfer，此时当前线程领取的任务作废
+                //重新检查时候要处理作废而没被迁移的桶
+            &#125;
+        &#125;
+        else if ((f = tabAt(tab, i)) == null)
+        //桶为null，直接放一个ForwardingNode
+            advance = casTabAt(tab, i, null, fwd);
+        else if ((fh = f.hash) == MOVED)
+        //数组上遇到hash值为MOVED，也就是 -1 的位置，说明该位置已经被其他线程迁移过了，
+        //将 advance 设置为 true ，以便继续往下一个桶检查并进行迁移操作
+            advance = true; // already processed
+        else &#123;
+            //数据迁移
+            synchronized (f) &#123;
+                //桶内元素迁移加锁
+                if (tabAt(tab, i) == f) &#123;
+                    Node&lt;K,V&gt; ln, hn;
+                    if (fh &gt;= 0) &#123;
+                        //fh &gt;= 0说明是链表
+                        int runBit = fh &amp; n;//n是2的幂次，所以runBit只能为1或者0
+                        Node&lt;K,V&gt; lastRun = f;//lastRun指向最后一个相邻runBit不同的节点
+                        for (Node&lt;K,V&gt; p = f.next; p != null; p = p.next) &#123;
+                            //遍历整条链表，找出 lastRun 节点
+                            int b = p.hash &amp; n;
+                            if (b != runBit) &#123;
+                                runBit = b;
+                                lastRun = p;
+                            &#125;
+                        &#125;
+
+                        if (runBit == 0) &#123;
+                            ln = lastRun;
+                            hn = null;
+                        &#125;
+                        else &#123;
+                            hn = lastRun;
+                            ln = null;
+                        &#125;
+                        //头插，以lastRun分界拆成hn和ln
+                        for (Node&lt;K,V&gt; p = f; p != lastRun; p = p.next) &#123;
+                            int ph = p.hash; K pk = p.key; V pv = p.val;
+                            if ((ph &amp; n) == 0)
+                                ln = new Node&lt;K,V&gt;(ph, pk, pv, ln);
+                                //四个参数分别是hash值，key，value，next节点，所以是头插法
+                            else
+                                hn = new Node&lt;K,V&gt;(ph, pk, pv, hn);
+                        &#125;
+
+                        setTabAt(nextTab, i, ln);
+                        //ln 链设置到新数组下标为 i 的位置上
+                        setTabAt(nextTab, i + n, hn);
+                        //hn 链设置到新数组下标为 i + n(n为原数组长度) 的位置上
+                        setTabAt(tab, i, fwd);
+                         //在原table中设置ForwardingNode节点以提示该桶扩容完成。
+                        advance = true;
+                         //advance 设置为 true 表示当前 hash 桶已处理完，可以继续处理下一个 hash 桶
+                    &#125;
+                    else if (f instanceof TreeBin) &#123;
+                        //红黑树处理与链表类似
+                        //同样也是使用高位和低位两条链表进行迁移
+                        //在迁移过程中，判断是否需要转换成红黑树
+                        //1、如果符合条件则直接将 TreeNode 链表转为红黑树，再设置到新数组中去
+                        //2、如果不符合条件则将 TreeNode 转换为普通的 Node 节点，再将该普通链表设置到新数组中去
+                        ......
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>ForwardingNode的作用：</p>
+<ul>
+<li>占位作用，用于标识数组该位置的桶已经迁移完毕，处于扩容中的状态。</li>
+<li>作为一个转发的作用，扩容期间如果遇到查询操作，遇到转发节点，会把该查询操作转发到新的数组上去，不会阻塞查询操作</li>
+</ul>
+<p>多线程下扩容分配如图所示：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/00ef492297b04522b27d6d43dc9d071f~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<h2 id="size统计"><a href="#size统计" class="headerlink" title="size统计"></a>size统计</h2><p>ConcurrentHashMap的元素个数等于baseCounter和数组里每个CounterCell的值之和，这样做的原因是，当多个线程同时执行CAS修改baseCount值，失败的线程会将值放到CounterCell中。在计算 size 的时候，会将 baseCount 和 CounterCell 数组中的元素的 value 累加，得到总的大小，但这个数字仍旧可能是不准确的。</p>
+<pre><code class="java">private transient volatile long baseCount;
+
+private final void addCount(long x, int check) &#123;
+    CounterCell[] as; long b, s;
+    // 如果cas修改 baseCount 失败
+    if ((as = counterCells) != null ||
+        !U.compareAndSwapLong(this, BASECOUNT, b = baseCount, s = b + x)) &#123;
+        CounterCell a; long v; int m;
+        boolean uncontended = true;
+        // 如果计数盒子是空（尚未出现并发）
+        // 如果随机取余一个数组位置为空 或者
+        // 修改这个槽位的变量失败（出现并发了）
+        // 执行 fullAddCount 方法。并结束
+        if (as == null || (m = as.length - 1) &lt; 0 ||
+            (a = as[ThreadLocalRandom.getProbe() &amp; m]) == null ||
+            !(uncontended =
+              U.compareAndSwapLong(a, CELLVALUE, v = a.value, v + x))) &#123;
+            fullAddCount(x, uncontended);
+            return;
+        &#125;
+        if (check &lt;= 1)
+            return;
+        s = sumCount();
+    &#125;
+    // 如果需要检查,检查是否需要扩容，在 putVal 方法调用时，默认就是要检查的。
+    if (check &gt;= 0) &#123;
+        Node&lt;K,V&gt;[] tab, nt; int n, sc;
+        // 如果map.size() 大于 sizeCtl（达到扩容阈值需要扩容） 且
+        // table 不是空；且 table 的长度小于 1 &lt;&lt; 30。（可以扩容）
+        while (s &gt;= (long)(sc = sizeCtl) &amp;&amp; (tab = table) != null &amp;&amp;
+               (n = tab.length) &lt; MAXIMUM_CAPACITY) &#123;
+            // 根据 length 得到一个标识
+            int rs = resizeStamp(n);
+            // 如果正在扩容
+            if (sc &lt; 0) &#123;
+                // 如果 sc 的低 16 位不等于 标识符（校验异常 sizeCtl 变化了）
+                // 如果 sc == 标识符 + 1 （扩容结束了，不再有线程进行扩容）（默认第一个线程设置 sc ==rs 左移 16 位 + 2，当第一个线程结束扩容了，就会将 sc 减一。这个时候，sc 就等于 rs + 1）
+                // 如果 sc == 标识符 + 65535（帮助线程数已经达到最大）
+                // 如果 nextTable == null（结束扩容了）
+                // 如果 transferIndex &lt;= 0 (转移状态变化了)
+                // 结束循环 
+                if ((sc &gt;&gt;&gt; RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                    sc == rs + MAX_RESIZERS || (nt = nextTable) == null ||
+                    transferIndex &lt;= 0)
+                    break;
+                // 如果可以帮助扩容，那么将 sc 加 1. 表示多了一个线程在帮助扩容
+                if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1))
+                    // 扩容
+                    transfer(tab, nt);
+            &#125;
+            // 如果不在扩容，将 sc 更新：标识符左移 16 位 然后 + 2. 也就是变成一个负数。高 16 位是标识符，低 16 位初始是 2.
+            else if (U.compareAndSwapInt(this, SIZECTL, sc,
+                                         (rs &lt;&lt; RESIZE_STAMP_SHIFT) + 2))
+                // 更新 sizeCtl 为负数后，开始扩容。
+                transfer(tab, null);
+            s = sumCount();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>CounterCell：使用了<code>@sun.misc.Contended</code>标记的类，内部包含一个<code>volatile</code>变量。<code>@sun.misc.Contended</code>这个注解标识着这个类防止需要防止 “伪共享”。</p>
+<blockquote>
+<p>缓存系统中是以缓存行（cache line）为单位存储的。缓存行是2的整数幂个连续字节，一般为32-256个字节。最常见的缓存行大小是64个字节。当多线程修改互相独立的变量时，如果这些变量共享同一个缓存行，就会无意中影响彼此的性能，这就是伪共享。</p>
+</blockquote>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/statics/maque.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci='6b227afc1a8f90f99af6'
+        data-cs='cadc70748cf10f01d03812ee1c0a6e786279377b'
+        data-r='hei-lou.github.io'
+        data-o='hei-lou'
+        data-a='hei-lou'
+        data-d=''
+    >留言</div>
+
+
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/dsktsajy6/image/upload/v1616202713/blog/logo.png" height=300 width=300></img>
+                    <p>hei-lou</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/hei-lou" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="mailto:ziven1024@gmail.com" target="_blank"><span
+                                    class=" iconfont icon-email-fill"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">19 <p>文章</p></a></li>
+                    <li><a href="/categories">15 <p>分类</p></a></li>
+                    <li><a href="/tags">59 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sizeCtl"><span class="toc-number">2.</span> <span class="toc-text">sizeCtl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#put-%E6%96%B9%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">put()方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.</span> <span class="toc-text">哈希算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">3.2.</span> <span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#treeifyBin%E5%87%BD%E6%95%B0"><span class="toc-number">3.3.</span> <span class="toc-text">treeifyBin函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9"><span class="toc-number">3.4.</span> <span class="toc-text">扩容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#size%E7%BB%9F%E8%AE%A1"><span class="toc-number">4.</span> <span class="toc-text">size统计</span></a></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+	<p class="copyright">
+        <span title="本站访问量"><span class=" iconfont icon-yonghu"> </span> <span id="busuanzi_value_site_pv" class="gradient-text"></span></span> | <span title="本页阅读量"><span class="iconfont icon-eye"> </span> <span id="busuanzi_value_page_pv" class="gradient-text"></span></span>
+    </p>
+    <p class="copyright" id="copyright">
+        &copy; 2021
+        <span class="gradient-text">
+            hei-lou
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.4" target="_blank" rel="noopener">v1.4.4</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.css">
+ 
+<script src="//cdn.bootcss.com/gitalk/1.7.2/gitalk.min.js"></script>
+  
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/obsidian.js"></script>
+<script src="/js/jquery.truncate.js"></script>
+<script src="/js/search.js"></script>
+ 
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+ 
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+ 
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+  
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+   
+<script src="/js/busuanzi.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    if ($('span[id^="busuanzi_"]').length) {
+      initialBusuanzi();
+    }
+  });
+</script>
+ 
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-149874671-1');
+</script>
+ 
+
+<script>
+  function initialTyped() {
+    var typedTextEl = $('.typed-text');
+    if (typedTextEl && typedTextEl.length > 0) {
+      var typed = new Typed('.typed-text', {
+        strings: ['Think like an artist, develop like an artisan', '艺术家思维去思考问题，工匠创造精神去开发'],
+        typeSpeed: 90,
+        loop: true,
+        loopCount: Infinity,
+        backSpeed: 20,
+      });
+    }
+  }
+
+  if ($('.article-header') && $('.article-header').length) {
+    $(document).ready(function () {
+      initialTyped();
+    });
+  }
+</script>
+
+
+
+
+ <script> var _hmt = _hmt || []; (function() { var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?81d3e77f59b8ddf6f794f14eb2c13baa"; var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s); })(); </script> 
+
+</html>
