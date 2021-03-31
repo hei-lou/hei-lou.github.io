@@ -60,6 +60,35 @@
     
     
     <entry>
+      <title>DirectByteBuffer原理探究</title>
+      <link href="2020/05/11/direct-byte-buffer/"/>
+      <url>2020/05/11/direct-byte-buffer/</url>
+      
+        <content type="html"><![CDATA[<p>DirectByteBuffer是Java用于实现堆外内存的一个重要类，通常用在通信过程中做缓冲池，如在Netty、MINA等NIO框架中应用广泛。DirectByteBuffer对于堆外内存的创建、使用、销毁等逻辑均由Unsafe提供的堆外内存API来实现。</p><h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><p>下图为DirectByteBuffer构造函数，创建DirectByteBuffer的时候，通过Unsafe.allocateMemory分配内存、Unsafe.setMemory进行内存初始化，而后构建Cleaner对象用于跟踪DirectByteBuffer对象的垃圾回收，以实现当<br>DirectByteBuffer被垃圾回收时，分配的堆外内存一起被释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f42140b9c1b141229073e5c6a987944a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><h2 id="堆外内存释放"><a href="#堆外内存释放" class="headerlink" title="堆外内存释放"></a>堆外内存释放</h2><p>Cleaner继承自Java四大引用类型之一的虚引用PhantomReference（众所周知，无法通过虚引用获取与之关联的对象实例，且当对象仅被虚引用引用时，在任何发生GC的时候，其均可被回收），通常PhantomReference与引用队列ReferenceQueue结合使用，可以实现虚引用关联对象被垃圾回收时能够进行系统通知、资源清理等功能。</p><p>如下图所示，当某个被Cleaner引用的对象将被回收时，JVM垃圾收集器会将此对象的引用放入到对象引用中的pending链表中，等待Reference-Handler进行相关处理。其中，Reference-Handler为一个拥有最高优先级的守护线程，会循环不断的处理pending链表中的对象引用，执行Cleaner的clean方法进行相关清理工作。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4582074d22a94f78a8b4459bfcd1ce80~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>所以当DirectByteBuffer仅被Cleaner引用（即为虚引用）时，其可以在任意GC时段被回收。当DirectByteBuffer实例对象被回收时，在Reference-Handler线程操作中，会调用Cleaner的clean方法根据创建Cleaner时传入的Deallocator来进行堆外内存的释放。</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dddc8021c9df4477ad5386a2d0b709a9~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> NIO </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> DirectByteBuffer </tag>
+            
+            <tag> NIO </tag>
+            
+            <tag> 虚引用 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>并发编程之伪共享</title>
       <link href="2020/04/11/false-sharing/"/>
       <url>2020/04/11/false-sharing/</url>
@@ -77,6 +106,31 @@
         <tags>
             
             <tag> 伪共享 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>魔法类Unfase</title>
+      <link href="2020/04/11/magic-class-unsafe/"/>
+      <url>2020/04/11/magic-class-unsafe/</url>
+      
+        <content type="html"><![CDATA[<h2 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h2><p>如下Unsafe源码所示，Unsafe类为一单例实现，提供静态方法getUnsafe获取Unsafe实例，当且仅当调用getUnsafe方法的类为引导类加载器所加载时才合法，否则抛出SecurityException异常。</p><pre><code class="java">public final class Unsafe &#123;  // 单例对象  private static final Unsafe theUnsafe;  private Unsafe() &#123;  &#125;  @CallerSensitive  public static Unsafe getUnsafe() &#123;    Class var0 = Reflection.getCallerClass();    // 仅在引导类加载器`BootstrapClassLoader`加载时才合法    if(!VM.isSystemDomainLoader(var0.getClassLoader())) &#123;          throw new SecurityException(&quot;Unsafe&quot;);    &#125; else &#123;      return theUnsafe;    &#125;  &#125;&#125;</code></pre><p>可通过如下方法获取实例：</p><ul><li>从getUnsafe方法的使用限制条件出发，通过Java命令行命令-Xbootclasspath/a把调用Unsafe相关方法的类A所在jar包路径追加到默认的bootstrap路径中，使得A被引导类加载器加载，从而通过Unsafe.getUnsafe方法安全的获取Unsafe实例。</li></ul><pre><code class="bash">java -Xbootclasspath/a: $&#123;path&#125;   // 其中path为调用Unsafe相关方法的类所在jar包路径 </code></pre><ul><li>通过反射获取单例对象theUnsafe。</li></ul><pre><code class="java">private static Unsafe reflectGetUnsafe() &#123;    try &#123;      Field field = Unsafe.class.getDeclaredField(&quot;theUnsafe&quot;);      field.setAccessible(true);      return (Unsafe) field.get(null);    &#125; catch (Exception e) &#123;      log.error(e.getMessage(), e);      return null;    &#125;&#125;</code></pre><h2 id="内存操作"><a href="#内存操作" class="headerlink" title="内存操作"></a>内存操作</h2><p>通常，我们在Java中创建的对象都处于堆内内存（heap）中，堆内内存是由JVM所管控的Java进程内存，并且它们遵循JVM的内存管理机制，JVM会采用垃圾回收机制统一管理堆内存。与之相对的是堆外内存，存在于JVM管控之外的内存区域，Java中对堆外内存的操作，依赖于Unsafe提供的操作堆外内存的native方法。</p><pre><code class="java">//分配内存, 相当于C++的malloc函数public native long allocateMemory(long bytes);//扩充内存public native long reallocateMemory(long address, long bytes);//释放内存public native void freeMemory(long address);//在给定的内存块中设置值public native void setMemory(Object o, long offset, long bytes, byte value);//内存拷贝public native void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes);//获取给定地址值，忽略修饰限定符的访问限制。与此类似操作还有: getInt，getDouble，getLong，getChar等public native Object getObject(Object o, long offset);//为给定地址设置值，忽略修饰限定符的访问限制，与此类似操作还有: putInt,putDouble，putLong，putChar等public native void putObject(Object o, long offset, Object x);//获取给定地址的byte类型的值（当且仅当该内存地址为allocateMemory分配时，此方法结果为确定的）public native byte getByte(long address);//为给定地址设置byte类型的值（当且仅当该内存地址为allocateMemory分配时，此方法结果才是确定的）public native void putByte(long address, byte x);</code></pre><h3 id="使用堆外内存的原因"><a href="#使用堆外内存的原因" class="headerlink" title="使用堆外内存的原因"></a>使用堆外内存的原因</h3><ul><li>对垃圾回收停顿的改善。由于堆外内存是直接受操作系统管理而不是JVM，所以当我们使用堆外内存时，即可保持较小的堆内内存规模。从而在GC时减少回收停顿对于应用的影响。</li><li>提升程序I/O操作的性能。通常在I/O通信过程中，会存在堆内内存到堆外内存的数据拷贝操作，对于需要频繁进行内存间数据拷贝且生命周期较短的暂存数据，都建议存储到堆外内存。</li></ul><h2 id="CAS相关"><a href="#CAS相关" class="headerlink" title="CAS相关"></a>CAS相关</h2><p>CAS即比较并替换，操作包含三个操作数——内存位置、预期原值及新值。执行CAS操作的时候，将内存位置的值与预期原值比较，如果相匹配，那么处理器会自动将该位置值更新为新值，否则，处理器不做任何操作。我们都知道，CAS是一条CPU的原子指令，不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。</p><pre><code class="java">/**    *  CAS  * @param o         包含要修改field的对象  * @param offset    对象中某field的偏移量  * @param expected  期望值  * @param update    更新值  * @return          true | false  */public final native boolean compareAndSwapObject(Object o, long offset,  Object expected, Object update);public final native boolean compareAndSwapInt(Object o, long offset, int expected,int update);  public final native boolean compareAndSwapLong(Object o, long offset, long expected, long update);</code></pre><h2 id="线程调度"><a href="#线程调度" class="headerlink" title="线程调度"></a>线程调度</h2><p>包括线程挂起、恢复、锁机制等方法。</p><pre><code class="java">//取消阻塞线程public native void unpark(Object thread);//阻塞线程public native void park(boolean isAbsolute, long time);//获得对象锁（可重入锁）@Deprecatedpublic native void monitorEnter(Object o);//释放对象锁@Deprecatedpublic native void monitorExit(Object o);//尝试获取对象锁@Deprecatedpublic native boolean tryMonitorEnter(Object o);</code></pre><h2 id="Class相关"><a href="#Class相关" class="headerlink" title="Class相关"></a>Class相关</h2><p>主要提供Class和它的静态字段的操作相关方法，包含静态字段内存定位、定义类、定义匿名类、检验&amp;确保初始化等。</p><pre><code class="java">//获取给定静态字段的内存地址偏移量，这个值对于给定的字段是唯一且固定不变的public native long staticFieldOffset(Field f);//获取一个静态类中给定字段的对象指针public native Object staticFieldBase(Field f);//判断是否需要初始化一个类，通常在获取一个类的静态属性的时候（因为一个类如果没初始化，它的静态属性也不会初始化）使用。 当且仅当ensureClassInitialized方法不生效时返回false。public native boolean shouldBeInitialized(Class&lt;?&gt; c);//检测给定的类是否已经初始化。通常在获取一个类的静态属性的时候（因为一个类如果没初始化，它的静态属性也不会初始化）使用。public native void ensureClassInitialized(Class&lt;?&gt; c);//定义一个类，此方法会跳过JVM的所有安全检查，默认情况下，ClassLoader（类加载器）和ProtectionDomain（保护域）实例来源于调用者public native Class&lt;?&gt; defineClass(String name, byte[] b, int off, int len, ClassLoader loader, ProtectionDomain protectionDomain);//定义一个匿名类public native Class&lt;?&gt; defineAnonymousClass(Class&lt;?&gt; hostClass, byte[] data, Object[] cpPatches);</code></pre><h2 id="对象操作"><a href="#对象操作" class="headerlink" title="对象操作"></a>对象操作</h2><p>主要包含对象成员属性相关操作及非常规的对象实例化方式等相关方法。</p><pre><code class="java">//返回对象成员属性在内存地址相对于此对象的内存地址的偏移量public native long objectFieldOffset(Field f);//获得给定对象的指定地址偏移量的值，与此类似操作还有：getInt，getDouble，getLong，getChar等public native Object getObject(Object o, long offset);//给定对象的指定地址偏移量设值，与此类似操作还有：putInt，putDouble，putLong，putChar等public native void putObject(Object o, long offset, Object x);//从对象的指定偏移量处获取变量的引用，使用volatile的加载语义public native Object getObjectVolatile(Object o, long offset);//存储变量的引用到对象的指定的偏移量处，使用volatile的存储语义public native void putObjectVolatile(Object o, long offset, Object x);//有序、延迟版本的putObjectVolatile方法，不保证值的改变被其他线程立即看到。只有在field被volatile修饰符修饰时有效public native void putOrderedObject(Object o, long offset, Object x);//绕过构造方法、初始化代码来创建对象public native Object allocateInstance(Class&lt;?&gt; cls) throws InstantiationException;</code></pre><h2 id="数组相关"><a href="#数组相关" class="headerlink" title="数组相关"></a>数组相关</h2><pre><code class="java">//返回数组中第一个元素的偏移地址public native int arrayBaseOffset(Class&lt;?&gt; arrayClass);//返回数组中一个元素占用的大小public native int arrayIndexScale(Class&lt;?&gt; arrayClass);</code></pre><h2 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h2><p>在Java 8中引入，用于定义内存屏障（也称内存栅栏，内存栅障，屏障指令等，是一类同步屏障指令，是CPU或编译器在对内存随机访问的操作中的一个同步点，使得此点之前的所有读写操作都执行后才可以开始执行此点之后的操作），避免代码重排序。</p><pre><code class="java">//内存屏障，禁止load操作重排序。屏障前的load操作不能被重排序到屏障后，屏障后的load操作不能被重排序到屏障前public native void loadFence();//内存屏障，禁止store操作重排序。屏障前的store操作不能被重排序到屏障后，屏障后的store操作不能被重排序到屏障前public native void storeFence();//内存屏障，禁止load、store操作重排序public native void fullFence();</code></pre><h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><p>获取系统相关信息的方法。</p><pre><code class="java">//返回系统指针的大小。返回值为4（32位系统）或 8（64位系统）。public native int addressSize();  //内存页的大小，此值为2的幂次方。public native int pageSize();</code></pre><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul><li><a href="https://tech.meituan.com/2019/02/14/talk-about-java-magic-class-unsafe.html">美团技术团队</a></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Unsafe </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> unsafe </tag>
             
         </tags>
       
