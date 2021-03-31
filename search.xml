@@ -140,8 +140,8 @@
     
     <entry>
       <title>并发编程之volatile</title>
-      <link href="2020/03/08/volatile/"/>
-      <url>2020/03/08/volatile/</url>
+      <link href="2020/03/07/volatile/"/>
+      <url>2020/03/07/volatile/</url>
       
         <content type="html"><![CDATA[<h2 id="内存可见性问题"><a href="#内存可见性问题" class="headerlink" title="内存可见性问题"></a>内存可见性问题</h2><p>我们首先来看看在多线程下处理共享变量时Java的内存模型：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd51315c24634a6aa87594664440015c~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>Java内存模型规定，将所有的变量都存放在主内存中，当线程使用变量时，会把主内存里面的变量复制到自己的工作空间或者叫作工作内存，线程读写变量时操作的是自己工作内存中的变量。</p><h2 id="synchronized关键字"><a href="#synchronized关键字" class="headerlink" title="synchronized关键字"></a>synchronized关键字</h2><p>synchronized块是Java提供的一种原子性内置锁，线程的执行代码在进入synchronized代码块前会自动获取内部锁，这时候其他线程访问该同步代码块时会被阻塞挂起。拿到内部锁的线程会在正常退出同步代码块或者抛出异常后或者在同步块内调用了该内置锁资源的wait系列方法时释放该内置锁。内置锁是排它锁，也就是当一个线程获取这个锁后，其他线程必须等待该线程释放锁后才能获取该锁。</p><p>另外，由于Java中的线程是与操作系统的原生线程一一对应的，所以当阻塞一个线程时，需要从用户态切换到内核态执行阻塞操作，这是很耗时的操作，而synchronized的使用就会导致上下文切换。</p><h3 id="synchronized的内存语义"><a href="#synchronized的内存语义" class="headerlink" title="synchronized的内存语义"></a>synchronized的内存语义</h3><p>进入synchronized块的内存语义是把在synchronized块内使用到的变量从线程的工作内存中清除，这样在synchronized块内使用到该变量时就不会从线程的工作内存中获取，而是直接从主内存中获取。退出synchronized块的内存语义是把在synchronized块内对共享变量的修改刷新到主内存。</p><h2 id="volatile关键字"><a href="#volatile关键字" class="headerlink" title="volatile关键字"></a>volatile关键字</h2><p>当一个变量被声明为volatile时，线程在写入变量时不会把值缓存在寄存器或者其他地方，而是会把值刷新回主内存。当其他线程读取该共享变量时，会从主内存重新获取最新值，而不是使用当前线程的工作内存中的值。volatile虽然提供了可见性保证，但并不保证操作的原子性。</p><h3 id="volatile实现原理"><a href="#volatile实现原理" class="headerlink" title="volatile实现原理"></a>volatile实现原理</h3><p>在生成汇编代码时会在volatile修饰的共享变量进行写操作的时候会多出Lock前缀的指令。这个Lock指令主要有这两个方面的影响：</p><ul><li>将当前处理器缓存行的数据写回系统内存；</li><li>这个写回内存的操作会使得其他CPU里缓存了该内存地址的数据无效</li></ul>]]></content>
       
