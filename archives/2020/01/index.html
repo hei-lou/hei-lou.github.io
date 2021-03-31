@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 19 」</p>
+                        <p style="text-align: center">「 22 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -100,6 +100,84 @@ Vector API(孵化)提升了Java在CPU向量计算的性能，这是对大规模�
                                             关于博客在老早以前，自己就有搭建一个博客的想法，中途也尝试自己动手操作过，但是好几次都半途而废了。在自己的想法中，一个博客需要一套管理系统，自己没那么多时间。最近在晚上搜寻的时候，发现了一个惊为天人的博客，其UI甚合我意，于是一番操作下发现了这个Hexo，以及那个深得我心的主题-obsidian。
 Hexo
 Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">四月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">四月 11, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/04/11/false-sharing/">并发编程之伪共享</a>
+                                        <p>
+                                            Cache为了解决计算机系统中主内存与CPU之间运行速度差问题，会在CPU与主内存之间添加一级或者多级高速缓冲存储器（Cache）。在Cache内部是按行存储的，其中每一行称为一个Cache行。Cache行是Cache与主内存进行数据交换的单位，Cache行的大小一般为2的幂次数字节。
+数据访问当CPU访问某个变量时，首先会去看CPU Cache内是否有该变量，如果有则直接从中获取，否则就去...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">三月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">三月 20, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/03/20/volatile/">并发编程之volatile</a>
+                                        <p>
+                                            内存可见性问题我们首先来看看在多线程下处理共享变量时Java的内存模型：
+
+Java内存模型规定，将所有的变量都存放在主内存中，当线程使用变量时，会把主内存里面的变量复制到自己的工作空间或者叫作工作内存，线程读写变量时操作的是自己工作内存中的变量。
+synchronized关键字synchronized块是Java提供的一种原子性内置锁，线程的执行代码在进入synchronized代码块前会...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">二月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">二月 15, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/02/15/happens-before/">并发编程之Happens-Before原则</a>
+                                        <p>
+                                            Happens-Before原则JVM定义的Happens-Before原则是一组偏序关系：对于两个操作A和B，这两个操作可以在不同的线程中执行。如果A Happens-Before B，那么可以保证，当A操作执行完后，A操作的执行结果对B操作是可见的。Happens-Before的规则包括：
+
+程序顺序规则
+锁定规则
+volatile变量规则
+线程启动规则
+线程结束规则
+中断规则
+终结器规...
                                         </p>
                                     </div>
                                 </li>

@@ -140,43 +140,44 @@
             <a href="/categories/并发"><b>「
                 </b>并发<b> 」</b></a>
             
-            七月 15, 2019
+            九月 05, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/07/15/context-switch/" title="并发编程之上下文切换" class="posttitle">并发编程之上下文切换</a></h3>
+            <a href="/2019/09/05/locksupport/" title="并发编程之LockSupport" class="posttitle">并发编程之LockSupport</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                1.3k
+                2.6k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                1 mins.
+                2 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%B8%8A%E7%BA%BF%E6%96%87%E5%88%87%E6%8D%A2/" rel="tag">上线文切换</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BA%BF%E7%A8%8B/" rel="tag">线程</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/locksupport/" rel="tag">locksupport</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/park/" rel="tag">park</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <p>CPU通过时间片分配算法来循环执行任务，当前任务执行一个时间片后会切换到下一个任务。但是，在切换前会保存上一个任务的状态，以便下次切换回这个任务时，可以再加载这个任务的状态。所以任务从保存到再加载的过程就是一次上下文切换。</p>
-<p>上下文切换过高，会导致CPU像个搬运工，频繁在寄存器和运行队列直接奔波  ，更多的时间花在了线程切换，而不是真正工作的线程上。直接的消耗包括CPU寄存器需要保存和加载，系统调度器的代码需要执行。间接消耗在于多核 cache之间的共享数据。 </p>
+            <p>LockSupport提供的park/unpark是以线程的角度来设计，真正解耦了线程之间的同步。</p>
 <ul>
-<li>使用Lmbench可以测量上下文切换的时长。</li>
-<li>使用vmstat可以测量上下文切换的次数。</li>
-</ul>
-<ul>
-<li>对于抢占式操作系统而言， 大体有几种：</li>
-...</ul>
+<li><p>park()方法，对当前线程执行阻塞操作，直到获取到可用许可后才解除阻塞，也就相当于当前线程进入阻塞状态。</p>
+<blockquote>
+<p>park 方法还可以在其他任何时间“毫无理由”地返回，因此通常必须在重新检查返回条件的循环里调用此方法。park不会释放当前线程占有的锁资源。</p>
+</blockquote>
+</li>
+<li><p>parkNanos(long)方法，对当前线程执行阻塞操作，等待获取到可用许可后才解除阻塞，最大的等待时间由传入的参数来指定，一旦超过最大时间它也会解除阻塞。</p>
+</li>
+<li><p>parkUntil(long)方法，，对当前线程执行阻塞操作，等待获取到可用许...</p></li></ul>
             
-            <span class="read-more"><a href="/2019/07/15/context-switch/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/09/05/locksupport/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -197,6 +198,158 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/4.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/并发">
+                  <b>「 </b>并发<b> 」</b>
+                </a>
+            
+            九月 05, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/09/05/locksupport/" title="并发编程之LockSupport" class="posttitle">并发编程之LockSupport</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        2.6k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        2 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/locksupport/" rel="tag">locksupport</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/park/" rel="tag">park</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>LockSupport提供的park/unpark是以线程的角度来设计，真正解耦了线程之间的同步。</p>
+<ul>
+<li><p>park()方法，对当前线程执行阻塞操作，直到获取到可用许可后才解除阻塞，也就相当于当前线程进入阻塞状态。</p>
+<blockquote>
+<p>park 方法还可以在其他任何时间“毫无理由”地返回，因此通常必须在重新检查返回条件的循环里调用此方法。park不会释放当前线程占有的锁资源。</p>
+</blockquote>
+</li>
+<li><p>parkNanos(long)方法，对当前线程执行阻塞操作，等待获取到可用许可后才解除阻塞，最大的等待时间由传入的参数来指定，一旦超过最大时...</p></li></ul>
+            
+            <span class="read-more"><a href="/2019/09/05/locksupport/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/8.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/并发">
+                  <b>「 </b>并发<b> 」</b>
+                </a>
+            
+            八月 23, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/08/23/aqs-principle-analyzing/" title="并发编程之AQS原理剖析" class="posttitle">并发编程之AQS原理剖析</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        4.4k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        4 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/AQS/" rel="tag">AQS</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/CLH/" rel="tag">CLH</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag">并发</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>AQS全称是AbstractQueuedSynchronizer，即抽象同步队列。下面看一下AQS的类图结构：</p>
+<p></p>
+<p>在AQS中维持了一个volatile修饰的单一共享状态state，来实现同步器同步。其更新采用乐观锁思想的CAS算法。</p>
+<p>CLH(Craig, Landin, and Hagersten locks) 同步队列 是一个FIFO双向队列，其内部通过节点head和tail记录队首和队尾元素，队列元素的类型为Node。AQS依赖它来完成同步状态state的管理，当前线程如果获取同步状态失败时...</p>
+            
+            <span class="read-more"><a href="/2019/08/23/aqs-principle-analyzing/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/7.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/锁">
+                  <b>「 </b>锁<b> 」</b>
+                </a>
+            
+            八月 07, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/08/07/classification-of-the-lock/" title="并发编程之死锁、活锁、饥饿" class="posttitle">并发编程之死锁、活锁、饥饿</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        2.6k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        2 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%AD%BB%E9%94%81/" rel="tag">死锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%A5%A5%E9%A5%BF/" rel="tag">饥饿</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>死锁是指两个或两个以上的进程（线程）在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程（线程）称为死锁进程（线程）。</p>
+<h3 id="死锁产生的四个必要条件"><a href="#死锁产生的四个必要条件" class="headerlink" title="死锁产生的四个必要条件"></a>死锁产生的四个必要条件</h3><ul>
+<li>互斥条件：线程(进程)对于所分配到的资源具有排它性，即一个资源只能被一个线程(进程)占用，直到被该线程(进程)释放</li>
+<li>请求与保持条件：一个线程(进程)因请求被占用资源而发生阻塞时，对已获得的资源保持不放。</li>
+<li>不剥夺条件：线程(进程)已获得的资源在...</li></ul>
+            
+            <span class="read-more"><a href="/2019/08/07/classification-of-the-lock/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
 <div class="post" id="post">
     <div class="post-cover animated fadeIn" style="
             background-image:
@@ -569,117 +722,9 @@
 </div>
 
 
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/2.jpg);">
     </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/密码学">
-                  <b>「 </b>密码学<b> 」</b>
-                </a>
-            
-            四月 02, 2019
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2019/04/02/cryptography-preliminary-learn/" title="密码学初探" class="posttitle">密码学初探</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        5.6k
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        5 mins.
-                    </span>
-                
-                
-            </p>
-            
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/DH/" rel="tag">DH</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RSA/" rel="tag">RSA</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%8A%A0%E5%AF%86/" rel="tag">加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">对称加密</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%AA%8C%E8%AF%81%E7%A0%81/" rel="tag">消息验证码</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9A%8F%E6%9C%BA%E6%95%B0/" rel="tag">随机数</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag">非对称加密</a></li></ul>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <p>密码学有着严格的规范，其算法的实现原理是公开的。密码学算法是相对安全的，主要解决四个问题：</p>
-<ul>
-<li>机密性（隐私性）：在网络中传递的数据如果具备机密性，只有拥有密钥的才能解释这些数据，密钥是加密算法的关键。</li>
-<li>完整性：接收方能够确保接收到的数据就是发送方发送的原始数据，在密码学中，主要使用消息验证码（<code>MAC</code>）算法保证完整性。</li>
-<li>身份验证：通信双方必须确保对端就是要通信的对象。在密码学中，一般使用数字签名技术确认身份。</li>
-<li>不可抵赖性：在密码学中，数字签名技术能够避免抵赖。</li>
-</ul>
-<blockquote>
-<p>OpenSSL：是<code>SSL</code>和<code>TLS...</code></p></blockquote>
-            
-            <span class="read-more"><a href="/2019/04/02/cryptography-preliminary-learn/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/5.jpg);">
-    </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/网络">
-                  <b>「 </b>网络<b> 」</b>
-                </a>
-            
-            三月 21, 2019
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2019/03/21/principle-of-network-tcp/" title="计算机网络、TCP原理" class="posttitle">计算机网络、TCP原理</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        6k
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        5 mins.
-                    </span>
-                
-                
-            </p>
-            
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/tcp/" rel="tag">tcp</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/" rel="tag">三次握手</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <p></p>
-<ul>
-<li><p>应用层：通过应用进程间的交互来完成特定的网络应用。应用层协议定义的是应用进程间通信和交互的规则。应用层交互的数据单元成为报文。常用应用层协议有HTTP、DNS、FTP、SMTP。</p>
-</li>
-<li><p>运输层：运输层的任务就是负责向两个主机中进程之间的通信提供通用的数据传输服务。运输层主要使用以下两种协议：</p>
-<blockquote>
-<p>TCP：提供面向连接的、可靠的数据传输服务，其数据传输单位是报文段。</p>
-<p>UDP：提供无连接的、尽最大努力的数据传输服务，其数据传输的单位是用户数据报</p>
-</blockquote>
-</li>
-<li><p>网络层：选择合适的网间路由和交换结点，为分组交换网上...</p></li></ul>
-            
-            <span class="read-more"><a href="/2019/03/21/principle-of-network-tcp/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-    </div>
+    
+    <div id="pager"><a href="/page/3/" class="more" data-loading="加载中..." data-load-more="加载更多">加载更多</a></div>
     
 </div>
 <div id="preview"></div>
