@@ -142,7 +142,7 @@
     <div class='main'>
         <div class="content markdown animated fadeIn">
             <p>循环依赖就是循环引用，就是两个或者多个 bean 相互之间的持有对方，最后形成一个环。例如 A 引用了 B，B 引用了 C，C 引用了 A。</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/03f20e99523e40d6aaae2d3120906c5c~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/03f20e99523e40d6aaae2d3120906c5c~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h2 id="解决循环依赖"><a href="#解决循环依赖" class="headerlink" title="解决循环依赖"></a>解决循环依赖</h2><p>原型(Prototype)的场景是不支持循环依赖的，通常会走到AbstractBeanFactory类中下面的判断，抛出异常。通过构造器注入的循环依赖，也是无法解决的。</p>
 <p>对于 setter 注入造成的依赖可以通过 Spring 容器提前暴露刚完成构造器注入但未完成其他步骤（如 setter 注入）的 bean 来完成。</p>
 <h3 id="Bean创建的几个关键点"><a href="#Bean创建的几个关键点" class="headerlink" title="Bean创建的几个关键点"></a>Bean创建的几个关键点</h3><p>Spring 创建Bean的过程，大致和对象的初始化有点类似吧。有几个关键的步骤</p>
@@ -308,7 +308,7 @@ protected void addSingletonFactory(String beanName, ObjectFactory&lt;?&gt; singl
 <li>populateBean注入依赖</li>
 </ul>
 <p>实例化过程如下：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/44f7f90fa18f4dc2b4b797cccf1d9356~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/44f7f90fa18f4dc2b4b797cccf1d9356~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <p>关键点：</p>
 <ul>
 <li>A绑定到ObjectFactory 注册到工厂缓存singletonFactory中，</li>

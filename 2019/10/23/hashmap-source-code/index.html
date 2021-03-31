@@ -142,10 +142,10 @@
     <div class='main'>
         <div class="content markdown animated fadeIn">
             <h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p>首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8038f50d6420475e92fda50edf989bdf~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8038f50d6420475e92fda50edf989bdf~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <p>下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。</p>
 <h2 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h2><p>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2af1219b545046a8a4964b7a6debedaa~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2af1219b545046a8a4964b7a6debedaa~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <p>引入了红黑树是因为它查找、插入、删除的平均时间复杂度为O(log(n))。这是因为当产生hash碰撞时，数据会挂载（尾插），形成链表。链表空间上不连续，逻辑上连续，增删元素快，只需处理节点间的引用，时间复杂度为O(1)，查询慢，需要遍历所有节点逐一查找，时间复杂度为O(n)；当数组长度大于64并且链表长度大于8的时候才会树化。</p>
 <h2 id="内部属性"><a href="#内部属性" class="headerlink" title="内部属性"></a>内部属性</h2><ul>
 <li>默认初始容量 DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4 （16）</li>
@@ -273,7 +273,7 @@ index = (n - 1) &amp; hash;
 &#125; 
 </code></pre>
 <p>具体过程可以通过下图理解：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84f03ba931f49afbcea348ee4e17ab3~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d84f03ba931f49afbcea348ee4e17ab3~tplv-k3u1fbpfcp-zoom-1.image"></p>
 <h3 id="扩容机制"><a href="#扩容机制" class="headerlink" title="扩容机制"></a>扩容机制</h3><pre><code class="java">final Node&lt;K,V&gt;[] resize() &#123;
     Node&lt;K,V&gt;[] oldTab = table;
     int oldCap = (oldTab == null) ? 0 : oldTab.length;
@@ -373,7 +373,7 @@ index = (n - 1) &amp; hash;
 &#125;
 </code></pre>
 <p>如下图所示，n为table长度，数组扩容n &lt;&lt; 1。图（a）表示扩容前的key1和key2两种key确定索引位置的示例，图（b）表示扩容后key1和key2两种key确定索引位置的示例。因此，我们在扩充HashMap的时候，不需要像JDK1.7的实现那样重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“原索引+oldCap”</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b40e57557bda46e491da4c7e21255c9a~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b40e57557bda46e491da4c7e21255c9a~tplv-k3u1fbpfcp-zoom-1.image"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
