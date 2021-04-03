@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 29 」</p>
+                        <p style="text-align: center">「 33 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -109,9 +109,59 @@ Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（�
                                     <div class="timeline-info"></div>
                                     <div class="timeline-marker"></div>
                                     <div class="timeline-content">
+                                        <h2 class="timeline-title">一月 2021</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">一月 20, 2021</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2021/01/20/paxos/">PAXOS的一些理解</a>
+                                        <p>
+                                            Paxos算法
+Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。Paxos：多数派决议（最终解决一致性问题）
+
+Paxos算法有三种角色：Proposer，Acceptor，Learner
+Proposer：提交者（议案提交者）
+提交议案(判断是否过半)，提交批准议案(判断是否过半)
+
+Acceptor：接收者...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
                                         <h2 class="timeline-title">十二月 2020</h2>
                                     </div>
                                 </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">十二月 20, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/12/20/docker-init/">docker安装</a>
+                                        <p>
+                                            1、Docker 要求 CentOS 系统的内核版本高于 3.10 ，通过 uname -r 命令查看你当前的内核版本。
+$ uname -r
+
+2、使用 root 权限登录 Centos。确保 yum 包更新到最新。
+$ sudo yum update
+
+3、卸载旧版本(如果安装过旧版本的话)
+$ sudo yum remove docker  docker-common docker-s...
+                                        </p>
+                                    </div>
+                                </li>
+                            
                                 
                                 <li class="timeline-item">
                                     <div class="timeline-info">
@@ -195,6 +245,61 @@ HTTP 请求中的来源识别
 
 时间戳
  在参数中加上当前请求的时间戳，服务端拿到这个请求后会拿当前的时间和请求中的时间做比较，比如在 5 分钟之...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">九月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">九月 21, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/09/21/distributed-transaction/">分布式事务相关</a>
+                                        <p>
+                                            CAP 定理CAP 定理指出对于一个分布式系统来说，不可能同时满足以下三点:
+
+一致性 (Consistence): 等同于所有节点访问同一份最新的数据副本 (强一致性)
+可用性 (Availability): 每次请求都能获取到非错的响应，但是不保证获取的数据为最新数据
+分区容错性 (Partition tolerance): 系统中任意信息的丢失或失败不会影响系统的继续运作。
+
+由 CA...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item period">
+                                    <div class="timeline-info"></div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <h2 class="timeline-title">八月 2020</h2>
+                                    </div>
+                                </li>
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">八月 15, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/08/15/zookeeper-zab/">Zookeeper ZAB协议</a>
+                                        <p>
+                                            Zookeeper Automic Broadcast(ZAB)，即Zookeeper原子性广播，是Paxos经典实现。
+ZAB(zookeeper)中节点分四种状态
+looking：选举Leader的状态（崩溃恢复状态下）
+following：跟随者（follower）的状态，服从Leader命令
+leading：当前节点是Leader，负责协调工作。
+observing：observer...
                                         </p>
                                     </div>
                                 </li>

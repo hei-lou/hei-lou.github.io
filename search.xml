@@ -60,6 +60,56 @@
     
     
     <entry>
+      <title>PAXOS的一些理解</title>
+      <link href="2021/01/20/paxos/"/>
+      <url>2021/01/20/paxos/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Paxos算法"><a href="#Paxos算法" class="headerlink" title="Paxos算法"></a>Paxos算法</h2><blockquote><p>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。<br>Paxos：多数派决议（最终解决一致性问题）</p></blockquote><p>Paxos算法有三种角色：Proposer，Acceptor，Learner</p><p>Proposer：提交者（议案提交者）</p><pre><code>提交议案(判断是否过半)，提交批准议案(判断是否过半)</code></pre><p>Acceptor：接收者（议案接收者）</p><pre><code>接受议案或者驳回议案，给proposer回应(promise)</code></pre><p>Learner：学习者（打酱油的）</p><pre><code>如果议案产生，学习议案。</code></pre><ul><li>如果Acceptor没有接受议案，那么他必须接受第一个议案</li><li>每个议案必须有一个编号，并且编号只能增长，不能重复。越往后越大。</li><li>接受编号大的议案，如果小于之前接受议案编号，那么不接受</li><li>议案有2种(提交的议案，批准的议案)</li></ul><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c36bbc319d1b45929519861bd3523af9~tplv-k3u1fbpfcp-zoom-1.image"></p><p>1）<strong>Prepare阶段（议案提交）</strong></p><p>a）Proposer希望议案V。首先发出Prepare请求至大多数Acceptor。Prepare请求内容为序列号K</p><p>b）Acceptor收到Prepare请求为编号K后，检查自己手里是否有处理过Prepare请求。</p><p>c）如果Acceptor没有接受过任何Prepare请求，那么用OK来回复Proposer，代表Acceptor必须接受收到的第一个议案（设定1）</p><p>d）否则，如果Acceptor之前接受过任何Prepare请求（如：MaxN），那么比较议案编号，如果K&lt;MaxN，则用reject或者error回复Proposer</p><p>e）如果K&gt;=MaxN，那么检查之前是否有批准的议案，如果没有则用OK来回复Proposer，并记录K</p><p>f）如果K&gt;=MaxN，那么检查之前是否有批准的议案，如果有则回复批准的议案编号和议案内容（如：&lt;AcceptN, AcceptV&gt;， AcceptN为批准的议案编号，AcceptV为批准的议案内容）</p><p>2）<strong>Accept阶段（批准阶段）</strong></p><p>a）Proposer收到过半Acceptor发来的回复，回复都是OK，且没有附带任何批准过的议案编号和议案内容。那么Proposer继续提交批准请求，不过此时会连议案编号K和议案内容V一起提交（&lt;K, V&gt;这种数据形式）</p><p>b）Proposer收到过半Acceptor发来的回复，回复都是OK，且附带批准过的议案编号和议案内容（&lt;pok，议案编号，议案内容&gt;）。那么Proposer找到所有回复中超过半数的那个（假设为&lt;pok，AcceptNx，AcceptVx&gt;）作为提交批准请求（请求为&lt;K，AcceptVx&gt;）发送给Acceptor。</p><p>c）Proposer没有收到过半Acceptor发来的回复，则修改议案编号K为K+1，并将编号重新发送给Acceptors（重复Prepare阶段的过程）</p><p>d）Acceptor收到Proposer发来的Accept请求，如果编号K&lt;MaxN则不回应或者reject。</p><p>e）Acceptor收到Proposer发来的Accept请求，如果编号K&gt;=MaxN则批准该议案，并设置手里批准的议案为&lt;K，接受议案的编号，接受议案的内容&gt;，回复Proposer。</p><p>f）经过一段时间Proposer对比手里收到的Accept回复，如果超过半数，则结束流程（代表议案被批准），同时通知Leaner可以学习议案。</p><p>g) 经过一段时间Proposer对比手里收到的Accept回复，如果未超过半数，则修改议案编号重新进入Prepare阶段。</p><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><h3 id="先后提议的场景"><a href="#先后提议的场景" class="headerlink" title="先后提议的场景"></a>先后提议的场景</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/28bd47cfe4ab47d3bcab169740924bc9~tplv-k3u1fbpfcp-zoom-1.image"></p><p>角色：</p><p>proposer：参谋1，参谋2</p><p>acceptor：将军1，将军2，将军3（决策者）</p><p>1）参谋1发起提议，派通信兵带信给3个将军，内容为（编号1）；<br>2）3个将军收到参谋1的提议，由于之前还没有保存任何编号，因此把（编号1）保存下来，避免遗忘；同时让通信兵带信回去，内容为（ok）；<br>3）参谋1收到至少2个将军的回复，再次派通信兵带信给3个将军，内容为（编号1，进攻时间1）；<br>4）3个将军收到参谋1的时间，把（编号1，进攻时间1）保存下来，避免遗忘；同时让通信兵带信回去，内容为（Accepted）；<br>5）参谋1收到至少2个将军的（Accepted）内容，确认进攻时间已经被大家接收；<br>6）参谋2发起提议，派通信兵带信给3个将军，内容为（编号2）；<br>7）3个将军收到参谋2的提议，由于（编号2）比（编号1）大，因此把（编号2）保存下来，避免遗忘；又由于之前已经接受参谋1的提议，因此让通信兵带信回去，内容为（编 号1，进攻时间1）；<br>8）参谋2收到至少2个将军的回复，由于回复中带来了已接受的参谋1的提议内容，参谋2因此不再提出新的进攻时间，接受参谋1提出的时间；</p><h3 id="交叉场景"><a href="#交叉场景" class="headerlink" title="交叉场景"></a>交叉场景</h3><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/48441173a2b849aaafd9174d7f9204ae~tplv-k3u1fbpfcp-zoom-1.image"></p><p>角色：</p><p>proposer：参谋1，参谋2</p><p>acceptor：将军1，将军2，将军3（决策者）</p><p>1）参谋1发起提议，派通信兵带信给3个将军，内容为（编号1）；</p><p>2）3个将军的情况如下<br>　　a）将军1和将军2收到参谋1的提议，将军1和将军2把（编号1）记录下来，如果有其他参谋提出更小的编号，将被拒绝；同时让通信兵带信回去，内容为（ok）；<br>　　b）负责通知将军3的通信兵被抓，因此将军3没收到参谋1的提议；</p><p>3）参谋2在同一时间也发起了提议，派通信兵带信给3个将军，内容为（编号2）；<br>4）3个将军的情况如下<br>　　a）将军2和将军3收到参谋2的提议，将军2和将军3把（编号2）记录下来，如果有其他参谋提出更小的编号，将被拒绝；同时让通信兵带信回去，内容为（ok）；<br>　　b）负责通知将军1的通信兵被抓，因此将军1没收到参谋2的提议；<br>5）参谋1收到至少2个将军的回复，再次派通信兵带信给有答复的2个将军，内容为（编号1，进攻时间1）；<br>6）2个将军的情况如下<br>　　a）将军1收到了（编号1，进攻时间1），和自己保存的编号相同，因此把（编号1，进攻时间1）保存下来；同时让通信兵带信回去，内容为（Accepted）；<br>　　b）将军2收到了（编号1，进攻时间1），由于（编号1）小于已经保存的（编号2），因此让通信兵带信回去，内容为（Rejected，编号2）；<br>7）参谋2收到至少2个将军的回复，再次派通信兵带信给有答复的2个将军，内容为（编号2，进攻时间2）；<br>8）将军2和将军3收到了（编号2，进攻时间2），和自己保存的编号相同，因此把（编号2，进攻时间2）保存下来，同时让通信兵带信回去，内容为（Accepted）；<br>9）参谋2收到至少2个将军的（Accepted）内容，确认进攻时间已经被多数派接受；</p><p>10）参谋1只收到了1个将军的（Accepted）内容，同时收到一个（Rejected，编号2）；参谋1重新发起提议，派通信兵带信给3个将军，内容为（编号3）；</p><p>11）3个将军的情况如下<br>　　a）将军1收到参谋1的提议，由于（编号3）大于之前保存的（编号1），因此把（编号3）保存下来；由于将军1已经接受参谋1前一次的提议，因此让通信兵带信回去，内容为（编号1，进攻时间1）；<br>　　b）将军2收到参谋1的提议，由于（编号3）大于之前保存的（编号2），因此把（编号3）保存下来；由于将军2已经接受参谋2的提议，因此让通信兵带信回去，内容为（编号2，进攻时间2）；<br>　　c）负责通知将军3的通信兵被抓，因此将军3没收到参谋1的提议；</p><p>12）参谋1收到了至少2个将军的回复，比较两个回复的编号大小，选择大编号对应的进攻时间作为最新的提议；参谋1再次派通信兵带信给有答复的2个将军，内容为（编号3，进攻时间2）；<br>13）将军1和将军2收到了（编号3，进攻时间2），和自己保存的编号相同，因此保存（编号3，进攻时间2），同时让通信兵带信回去，内容为（Accepted）；<br>14）参谋1收到了至少2个将军的（accepted）内容，确认进攻时间已经被多数派接受。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分布式 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> PAXOS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>docker安装</title>
+      <link href="2020/12/20/docker-init/"/>
+      <url>2020/12/20/docker-init/</url>
+      
+        <content type="html"><![CDATA[<p>1、Docker 要求 CentOS 系统的内核版本高于 3.10 ，通过 uname -r 命令查看你当前的内核版本。</p><pre><code class="bash">$ uname -r</code></pre><p>2、使用 root 权限登录 Centos。确保 yum 包更新到最新。</p><pre><code class="bash">$ sudo yum update</code></pre><p>3、卸载旧版本(如果安装过旧版本的话)</p><pre><code class="bash">$ sudo yum remove docker  docker-common docker-selinux docker-engine</code></pre><p>4、安装需要的软件包， yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的</p><pre><code class="bash">$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2</code></pre><p>5、设置yum源</p><pre><code class="bash">$ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</code></pre><p>6、可以查看所有仓库中所有docker版本，并选择特定版本安装</p><pre><code class="bash">$ yum list docker-ce --showduplicates | sort -r</code></pre><p>7、安装docker</p><pre><code class="bash">$ sudo yum install docker-ce $ sudo yum install &lt;FQPN&gt;  # 例如：sudo yum install docker-ce-17.12.0.ce</code></pre><p>8、启动并加入开机启动</p><pre><code class="bash">$ sudo systemctl start docker$ sudo systemctl enable docker</code></pre><p>9、验证安装是否成功(有client和service两部分表示docker安装启动都成功了)</p><pre><code class="bash">$ docker version</code></pre><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8f7bf01429404a4a9a30bbeafd12704c~tplv-k3u1fbpfcp-zoom-1.image"></p><p>10、Docker 镜像加速器<br>对于使用 systemd 的系统，请在 /etc/docker/daemon.json 中写入如下内容（如果文件不存在请新建该文件）</p><pre><code class="bash">&#123;  &quot;registry-mirrors&quot;: [    &quot;https://registry.docker-cn.com&quot;  ]&#125;</code></pre><p>之后重新启动服务。</p><pre><code class="bash">$ sudo systemctl daemon-reload$ sudo systemctl restart docker</code></pre><blockquote><p>之后就可以用docker pull尽情安装你想安装的docker镜像啦</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> docker </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>DirectByteBuffer原理探究</title>
       <link href="2020/12/05/direct-byte-buffer/"/>
       <url>2020/12/05/direct-byte-buffer/</url>
@@ -162,6 +212,66 @@
             <tag> 安全 </tag>
             
             <tag> 接口设计 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>分布式事务相关</title>
+      <link href="2020/09/21/distributed-transaction/"/>
+      <url>2020/09/21/distributed-transaction/</url>
+      
+        <content type="html"><![CDATA[<h2 id="CAP-定理"><a href="#CAP-定理" class="headerlink" title="CAP 定理"></a>CAP 定理</h2><p>CAP 定理指出对于一个分布式系统来说，不可能同时满足以下三点:</p><ul><li>一致性 (Consistence): 等同于所有节点访问同一份最新的数据副本 (强一致性)</li><li>可用性 (Availability): 每次请求都能获取到非错的响应，但是不保证获取的数据为最新数据</li><li>分区容错性 (Partition tolerance): 系统中任意信息的丢失或失败不会影响系统的继续运作。</li></ul><p>由 CAP 定理可知数据库的设计需要权衡取舍，所以可以把系统大致分为三类：</p><ul><li>CA: 单点集群，满足一致性，可用性的系统，通常在可扩展性上不太强大</li><li>CP: 满足一致性，分区容忍性的系统，通常性能不是特别高</li><li>AP: 满足可用性，分区容忍性的系统，通常可能对一致性要求低一些</li></ul><h2 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h2><p>BASE 理论是对 CAP 理论的延伸，核心思想是虽然无法做到强一致性 (Strong Consistency)，但可以采用适合的方式达到最终一致性 (Eventual Consitency)</p><p>BASE 包含三部分:</p><ul><li>基本可用 (Basically Available): 指分布式系统在出现故障的时候，允许损失部分可用性，保证核心可用</li><li>软状态 (Soft State): 指允许系统存在中间状态，而该中间状态不会影响系统整体可用性。分布式存储中一般一份数据至少会有三个副本，允许不同节点间副本同步的延时就是软状态的体现。mysql replication 的异步复制也是一种体现</li><li>最终一致性 (Eventual Consistency): 指系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。最终一致性是弱一致性的一种特殊情况</li></ul><h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><p>分布式事务用于在分布式系统中保证不同节点之间的数据一致性，通常会涉及到多个数据库。分布式事务处理的关键是必须有一种方法可以知道事务在任何地方所做的所有动作，提交或回滚事务的决定必须产生统一的结果(全部提交或全部回滚)。</p><h3 id="XA-规范"><a href="#XA-规范" class="headerlink" title="XA 规范"></a>XA 规范</h3><p>Open Group定义了一套DTP分布式模型，主要含有：</p><ul><li>AP（应用程序）</li><li>TM（事务管理器）</li><li>RM（资源管理器）   —-  通常指数据库</li><li>CRM（通讯资源管理器）四部分   —- 消息中间件</li></ul><p> XA则是DTP模型定义TM和RM之前通讯的接口规范。XA接口函数由数据库厂商提供。TM交易中间件用它来通知数据库事务的开始、结束以及提交、回滚等。 二阶段提交和三阶段提交就是根据这种思想衍生而来。</p><h4 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h4><p>角色：协调者（coordinator），参与者（participants, 或cohort）       </p><p>保证事务在提交时，协调者和参与者处于一致性状态，如果其中有一个参与者出现了故障或者网络问题，不能及时的回应协调者，那么这次事务就宣告失败或者出现阻塞。</p><p><strong>准备阶段</strong></p><p>事务协调者(事务管理器)给每个参与者(资源管理器)发送Prepare消息，每个参与者要么直接返回失败(如权限验证失败)，要么在本地执行事务，写本地的redo和undo日志，但不提交</p><p><strong>提交阶段</strong></p><p>如果协调者收到了参与者的失败消息或者超时，直接给每个参与者发送回滚(Rollback)消息；否则，发送提交(Commit)消息；参与者根据协调者的指令执行提交或者回滚操作，释放所有事务处理过程中使用的锁资源。(注意:必须在最后阶段释放锁资源)</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/42c03d3fb378461fa6fb654b7ed9e86c~tplv-k3u1fbpfcp-zoom-1.image"></p><p>二阶段提交看起来确实能够提供原子性的操作，但是不幸的事，二阶段提交还是有几个缺点的：</p><ol><li><p><strong>同步阻塞问题</strong>。在事务执行过程中，所有参与节点都是事务阻塞型的。参与者占有公共资源时，其他第三方节点访问公共资源则会处于阻塞。</p></li><li><p><strong>单点故障</strong>。在2PC中由协调者进行协调，一旦协调者发生故障，参与者会阻塞。尤其在第二阶段commit阶段，协调者发生故障，那么所有的参与者还都处于锁定事务资源的状态中，而无法继续完成事务操作。</p></li></ol><blockquote><p>如果是协调者挂掉，可以重新选举一个协调者，但是无法解决因为协调者宕机导致的参与者处于阻塞状态的问题</p></blockquote><ol start="3"><li><p><strong>数据不一致</strong>。在二阶段提交的阶段二中，当协调者向参与者发送commit请求之后，发生了局部网络异常或者在发送commit请求过程中协调者发生了故障，导致只有一部分参与者接受到了commit请求。而在这部分参与者接到commit请求之后就会执行commit操作。但是其他部分未接到commit请求的机器则无法执行事务提交。于是整个分布式系统便出现了数据不一致性的现象。</p></li><li><p><strong>二阶段无法解决的问题</strong>。协调者发出commit消息，并且只有部分参与者收到消息，此时协调者和收到消息的参与者发生宕机。那么即使协调者通过  选举协议  产生了新的协调者，这条事务的状态也是不确定的，集群中不能判断出事务是否被已经提交。</p></li></ol><h4 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h4><p>相比2PC，3PC引入超时机制，并把2PC的准备阶段再次一分为二，这样三阶段提交就有CanCommit、PreCommit、DoCommit三个阶段。</p><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4d12d1aec06d4101a1a3661e32d7b52c~tplv-k3u1fbpfcp-zoom-1.image"></p><p>相对于2PC，3PC主要解决：单点故障问题、减少阻塞。因为一旦参与者无法“及时”收到来自协调者的信息之后，他会默认执行commit，而不会一直持有事务资源并处于阻塞状态。</p><p>通过上述过程可知最后无论是二阶段提交还是三阶段提交都无法彻底解决分布式的一致性问题，如果系统正常运行都能满足强一致性，但是如果出现意外还是会导致不一致，不过可以通过其他手段达到一致性，比如分区数据恢复或者事务补偿机制或者采用其他一致性算法。</p><h3 id="分区数据恢复"><a href="#分区数据恢复" class="headerlink" title="分区数据恢复"></a>分区数据恢复</h3><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/30d0e2c363e342f083e1379bdd7aa02e~tplv-k3u1fbpfcp-zoom-1.image"></p><p>复杂的数据恢复可以参见 SVN 的版本控制，可能可以自动合并，也可能会发生冲突然后需要人工干预。</p><p>简单的数据恢复可以参见 Mysql 的主从同步，数据可以自动从主库导到从库。</p><p>合并分区数据达成一致并不是最困难的，更困难的是处理分区过程中产生的错误。当分区操作引起错误，可以通过事务补偿补救错误，这可能是人工的也可能是自动的。</p><h3 id="分区事务补偿"><a href="#分区事务补偿" class="headerlink" title="分区事务补偿"></a>分区事务补偿</h3><p>比如 MQ 消息事务和 TCC 事务协议就是一种补偿机制:</p><ul><li>MQ 事务: 利用消息中间件来异步完成事务的后一半更新，实现系统的最终一致性</li><li>TCC 事务: TCC 是阿里巴巴提出的协议，将一个事务分为 Try、Commit、Cancel 三部分，也可以达到最终一致性</li></ul><h3 id="其他一致性算法"><a href="#其他一致性算法" class="headerlink" title="其他一致性算法"></a>其他一致性算法</h3><ul><li>Paxos 算法: 一种基于消息传递且具有高度容错特性的一致性算法</li><li>Raft 算法: Raft 是一个共识算法，用于取代 Paxos。Raft 的目标是提供更好理解的算法，并且证明可以提供与 Paxos 相同的容错性以及性能</li><li>Zab: Zookeeper atomic broadcast protocol，是 Zookeeper 内部用到的一致性协议。相比 Paxos，Zab 最大的特点是保证强一致性 (strong consistency，或叫线性一致性 linearizable consistency)</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分布式 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CAP </tag>
+            
+            <tag> BASE </tag>
+            
+            <tag> XA </tag>
+            
+            <tag> 2PC </tag>
+            
+            <tag> 3PC </tag>
+            
+            <tag> TCC </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Zookeeper ZAB协议</title>
+      <link href="2020/08/15/zookeeper-zab/"/>
+      <url>2020/08/15/zookeeper-zab/</url>
+      
+        <content type="html"><![CDATA[<p>Zookeeper Automic Broadcast(ZAB)，即Zookeeper原子性广播，是Paxos经典实现。</p><h2 id="ZAB-zookeeper-中节点分四种状态"><a href="#ZAB-zookeeper-中节点分四种状态" class="headerlink" title="ZAB(zookeeper)中节点分四种状态"></a>ZAB(zookeeper)中节点分四种状态</h2><ul><li>looking：选举Leader的状态（崩溃恢复状态下）</li><li>following：跟随者（follower）的状态，服从Leader命令</li><li>leading：当前节点是Leader，负责协调工作。</li><li>observing：observer(观察者)，不参与选举，只读节点。</li></ul><h2 id="ZAB中的两个模式"><a href="#ZAB中的两个模式" class="headerlink" title="ZAB中的两个模式"></a>ZAB中的两个模式</h2><p>崩溃恢复、消息广播</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/28e85a445bd6480588901083666b14cf~tplv-k3u1fbpfcp-zoom-1.image"></p><h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><p>leader挂了，需要选举新的leader</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/98ca08656ef84d8a94b6955e260d73bc~tplv-k3u1fbpfcp-zoom-1.image"></p><p>a.每个server都有一张选票&lt;myid，zxid&gt;，如（3,9），选票投自己。</p><p>b.每个server投完自己后，再分别投给其他还可用的服务器。如把Server3的（3,9）分别投给Server4和Server5，一次类推</p><p>c.比较投票，比较逻辑：优先比较Zxid，Zxid相同时才比较myid。比较Zxid时，大的做leader；比较myid时，小的做leader</p><p>d.改变服务器状态（崩溃恢复-&gt;数据同步，或者崩溃恢复-&gt;消息广播）</p><h3 id="消息广播"><a href="#消息广播" class="headerlink" title="消息广播"></a>消息广播</h3><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8edd6c20a3f54220ac015fa3d065187b~tplv-k3u1fbpfcp-zoom-1.image"></p><p>a.Leader接受请求后，将这个请求赋予全局的唯一64位自增Id（zxid）。</p><p>b.将zxid作为议案发给所有follower。</p><p>c.所有的follower接受到议案后，想将议案写入硬盘后，马上回复Leader一个ACK（OK）。</p><p>d.当Leader接受到合法数量（过半）Acks，Leader给所有follower发送commit命令。</p><p>e.follower执行commit命令。</p><blockquote><p>到了这个阶段，ZK集群才正式对外提供服务，并且Leader可以进行消息广播，如果有新节点加入，还需要进行同步。</p></blockquote><h3 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h3><p>a.取出Leader最大lastZxid（从本地log日志来）</p><p>b.找到对应zxid的数据，进行同步（数据同步过程保证所有follower一致）</p><p>c.只有满足quorum同步完成，准Leader才能成为真正的Leader</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> zookeeper </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zab </tag>
             
         </tags>
       

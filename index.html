@@ -245,6 +245,118 @@
     <div class="post-cover animated fadeIn" style="
             background-image:
             radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/3.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/分布式">
+                  <b>「 </b>分布式<b> 」</b>
+                </a>
+            
+            一月 20, 2021
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2021/01/20/paxos/" title="PAXOS的一些理解" class="posttitle">PAXOS的一些理解</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        4.5k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        4 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/PAXOS/" rel="tag">PAXOS</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <blockquote>
+<p>Google Chubby的作者Mike Burrows说过这个世界上只有一种一致性算法，那就是Paxos，其它的算法都是残次品。<br>Paxos：多数派决议（最终解决一致性问题）</p>
+</blockquote>
+<p>Paxos算法有三种角色：Proposer，Acceptor，Learner</p>
+<p>Proposer：提交者（议案提交者）</p>
+<pre><code>提交议案(判断是否过半)，提交批准议案(判断是否过半)
+</code></pre>
+<p>Acceptor：接收者（议案接收者）</p>
+<pre><code>接受议案或者驳回议案，给proposer回应(promise)
+</code></pre>
+<p>Learner：学习者（打酱油的）</p>
+<pre><code>如...</code></pre>
+            
+            <span class="read-more"><a href="/2021/01/20/paxos/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/3.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/docker">
+                  <b>「 </b>DOCKER<b> 」</b>
+                </a>
+            
+            十二月 20, 2020
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2020/12/20/docker-init/" title="docker安装" class="posttitle">docker安装</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        1.7k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        2 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>1、Docker 要求 CentOS 系统的内核版本高于 3.10 ，通过 uname -r 命令查看你当前的内核版本。</p>
+<pre><code class="bash">$ uname -r
+</code></pre>
+<p>2、使用 root 权限登录 Centos。确保 yum 包更新到最新。</p>
+<pre><code class="bash">$ sudo yum update
+</code></pre>
+<p>3、卸载旧版本(如果安装过旧版本的话)</p>
+<pre><code class="bash">$ sudo yum remove docker  docker-common docker-selinux docker-engine
+</code></pre>
+<p>4、安装需要的软件包， yum-util 提供yum-config...</p>
+            
+            <span class="read-more"><a href="/2020/12/20/docker-init/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
             url(/img/4.jpg);">
     </div>
     <div class="else">
@@ -454,40 +566,46 @@
     <div class="else">
         <p class="animated fadeInDown">
             
-                <a href="/categories/锁">
-                  <b>「 </b>锁<b> 」</b>
+                <a href="/categories/分布式">
+                  <b>「 </b>分布式<b> 」</b>
                 </a>
             
-            五月 28, 2020
+            九月 21, 2020
         </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2020/05/28/fair-nofair-lock/" title="并发编程之公平、非公平锁" class="posttitle">并发编程之公平、非公平锁</a></h3>
+        <h3 class="post-title animated fadeInDown"><a href="/2020/09/21/distributed-transaction/" title="分布式事务相关" class="posttitle">分布式事务相关</a></h3>
         
             <p class="post-count animated fadeInDown">
                 
                     <span>
                         <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        1.2k
+                        4.5k
                     </span>
                 
                 
                     <span>
                         <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        1 mins.
+                        4 mins.
                     </span>
                 
                 
             </p>
             
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%85%AC%E5%B9%B3%E9%94%81/" rel="tag">公平锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%9D%9E%E5%85%AC%E5%B9%B3%E9%94%81/" rel="tag">非公平锁</a></li></ul>
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/2PC/" rel="tag">2PC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/3PC/" rel="tag">3PC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/BASE/" rel="tag">BASE</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/CAP/" rel="tag">CAP</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/TCC/" rel="tag">TCC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/XA/" rel="tag">XA</a></li></ul>
             
         
         <div class="md-content animated fadeIn">
             
-                <p>公平锁是指多个线程按照申请锁的顺序来获取锁，线程直接进入队列中排队，队列中的第一个线程才能获得锁。公平锁的优点是等待锁的线程不会饿死。缺点是整体吞吐效率相对非公平锁要低，等待队列中除第一个线程以外的所有线程都会阻塞，CPU唤醒阻塞线程的开销比非公平锁大。</p>
-<p></p>
-<p>如上图所示，只有拿到锁的人才能够打水，每个过来打水的人都要管理员的允许并拿到锁之后才能去打水，如果前面有人正在打水，那么这个想要打水的人就必须排队。管理员会查看下一个要去打水的人是不是队伍里排最前面的人，如果是的话，才会给你锁让你去打水；如果...</p>
+                <p>CAP 定理指出对于一个分布式系统来说，不可能同时满足以下三点:</p>
+<ul>
+<li>一致性 (Consistence): 等同于所有节点访问同一份最新的数据副本 (强一致性)</li>
+<li>可用性 (Availability): 每次请求都能获取到非错的响应，但是不保证获取的数据为最新数据</li>
+<li>分区容错性 (Partition tolerance): 系统中任意信息的丢失或失败不会影响系统的继续运作。</li>
+</ul>
+<p>由 CAP 定理可知数据库的设计需要权衡取舍，所以可以把系统大致分为三类：</p>
+<ul>
+<li>CA: 单点集群，满足一致性，可用性的系统，通常...</li></ul>
             
-            <span class="read-more"><a href="/2020/05/28/fair-nofair-lock/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+            <span class="read-more"><a href="/2020/09/21/distributed-transaction/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
 </div>
@@ -502,114 +620,19 @@
     <div class="else">
         <p class="animated fadeInDown">
             
-                <a href="/categories/锁">
-                  <b>「 </b>锁<b> 」</b>
+                <a href="/categories/zookeeper">
+                  <b>「 </b>ZOOKEEPER<b> 」</b>
                 </a>
             
-            五月 15, 2020
+            八月 15, 2020
         </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2020/05/15/synchronized-lock/" title="并发编程之Synchronized锁" class="posttitle">并发编程之Synchronized锁</a></h3>
+        <h3 class="post-title animated fadeInDown"><a href="/2020/08/15/zookeeper-zab/" title="Zookeeper ZAB协议" class="posttitle">Zookeeper ZAB协议</a></h3>
         
             <p class="post-count animated fadeInDown">
                 
                     <span>
                         <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        3.1k
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        3 mins.
-                    </span>
-                
-                
-            </p>
-            
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E5%81%8F%E5%90%91%E9%94%81/" rel="tag">偏向锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81/" rel="tag">轻量级锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81/" rel="tag">重量级锁</a></li></ul>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <p>synchronized是悲观锁，在操作同步资源之前需要给同步资源先加锁，这把锁就是存在Java对象头里的，Hotspot的对象头主要包括两部分数据：Mark Word（标记字段）、Klass Pointer（类型指针）。</p>
-<ul>
-<li><p>Mark Word：默认存储对象的HashCode，分代年龄和锁标志位信息。这些信息都是与对象自身定义无关的数据，所以Mark Word被设计成一个非固定的数据结构以便在极小的空间内存存储尽量多的数据。它会根据对象的状态复用自己的存储空间，也就是说在运行期间Mark Word...</p></li></ul>
-            
-            <span class="read-more"><a href="/2020/05/15/synchronized-lock/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/5.jpg);">
-    </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/锁">
-                  <b>「 </b>锁<b> 」</b>
-                </a>
-            
-            四月 10, 2020
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2020/04/10/spin-lock/" title="并发编程之自旋锁" class="posttitle">并发编程之自旋锁</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        1.6k
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        1 mins.
-                    </span>
-                
-                
-            </p>
-            
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%87%AA%E6%97%8B%E9%94%81/" rel="tag">自旋锁</a></li></ul>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <p>阻塞或唤醒一个Java线程需要操作系统切换CPU状态来完成，这种状态转换需要耗费处理器时间。在许多场景中，同步资源的锁定时间很短，为了这一小段时间去切换线程，线程挂起和恢复现场的花费可能会让系统得不偿失。如果物理机器有多个处理器，能够让两个或以上的线程同时并行执行，我们就可以让后面那个请求锁的线程不放弃CPU的执行时间，看看持有锁的线程是否很快就会释放锁。</p>
-<p>而为了让当前线程“稍等一下”，我们需让当前线程进行自旋，如果在自旋完成后前面锁定同步资源的线程已经释放了锁，那么当前线程就可以不必阻塞而是直...</p>
-            
-            <span class="read-more"><a href="/2020/04/10/spin-lock/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/4.jpg);">
-    </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/锁">
-                  <b>「 </b>锁<b> 」</b>
-                </a>
-            
-            三月 21, 2020
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2020/03/21/optimistic-and-pessimistic-lock/" title="并发编程之乐观锁、悲观锁" class="posttitle">并发编程之乐观锁、悲观锁</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        1.8k
+                        1.9k
                     </span>
                 
                 
@@ -621,18 +644,25 @@
                 
             </p>
             
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%B9%90%E8%A7%82%E9%94%81/" rel="tag">乐观锁</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%82%B2%E8%A7%82%E9%94%81/" rel="tag">悲观锁</a></li></ul>
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/zab/" rel="tag">zab</a></li></ul>
             
         
         <div class="md-content animated fadeIn">
             
-                <p>Java中，synchronized关键字和Lock的实现类都是悲观锁。</p>
-<p>而乐观锁认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。</p>
-<p>乐观锁在Java中是通过使用无锁编程来实现，最常采用的是CAS算法，Java原子类中的递增操作就通过CAS自旋实现的。</p>
+                <p>Zookeeper Automic Broadcast(ZAB)，即Zookeeper原子性广播，是Paxos经典实现。</p>
+<ul>
+<li>looking：选举Leader的状态（崩溃恢复状态下）</li>
+<li>following：跟随者（follower）的状态，服从Leader命令</li>
+<li>leading：当前节点是Leader，负责协调工作。</li>
+<li>observing：observer(观察者)，不参与选举，只读节点。</li>
+</ul>
+<p>崩溃恢复、消息广播</p>
 <p></p>
-<p>根据从上面的概念描述我们可以...</p>
+<h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><p>leader挂了，需要选举新的leader</p>
+<p></p>
+<p>a.每个server都有一张选票&lt...</p>
             
-            <span class="read-more"><a href="/2020/03/21/optimistic-and-pessimistic-lock/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+            <span class="read-more"><a href="/2020/08/15/zookeeper-zab/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
 </div>
