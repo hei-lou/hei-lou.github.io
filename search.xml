@@ -236,6 +236,8 @@
       
         <tags>
             
+            <tag> 3PC </tag>
+            
             <tag> CAP </tag>
             
             <tag> BASE </tag>
@@ -244,9 +246,42 @@
             
             <tag> 2PC </tag>
             
+            <tag> TCC </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>RocketMQ事务消息</title>
+      <link href="2020/09/08/rocketmq-transaction-message/"/>
+      <url>2020/09/08/rocketmq-transaction-message/</url>
+      
+        <content type="html"><![CDATA[<h2 id="分布式事务当前解决方案"><a href="#分布式事务当前解决方案" class="headerlink" title="分布式事务当前解决方案"></a>分布式事务当前解决方案</h2><h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/165c3555726341fe978bd809b6bedd11~tplv-k3u1fbpfcp-zoom-1.image"></p><p>2PC 把事务的执行分为两个阶段，第一个阶段即 prepare 阶段，这个阶段实际上就是投票阶段，协调者向参与者确认是否可以共同提交，再得到全部参与者的所有回答后，协调者向所有的参与者发布共同提交或者共同回滚的指令，用以保证事务达到一致性。    </p><p>2PC 是几乎所有分布式事务算法的基础，后续的分布式事务算法几乎都由此改进而来，其优缺点非常明显：</p><ul><li>优点：在于已经有较为成熟的实现方案，比如 XA。</li><li>缺点：XA 是一个阻塞协议。服务在投票后需要等待协调器的决定，此时服务会阻塞并锁定资源。由于其阻塞机制和最差时间复杂度高， 因此，这种设计不能适应随着事务涉及的服务数量增加而扩展的需要，很难用于并发较高以及子事务声明周期较长 (long-running transactions) 的分布式服务中。</li></ul><h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ae5d64657c648cd8166a0afc06aa0d5~tplv-k3u1fbpfcp-zoom-1.image"></p><p>3PC 在 commit 之前增加了 preCommit 的过程，使得在参与者在收不到确认时，依然可以从容 commit 或者 rollback，避免资源锁定太久导致浪费。但是 3PC 同样存在着很多问题。实现起来非常复杂，因为很难通过多次询问来解决系统间分歧问题，尤其是存在超时状态互不信任的分布式网络中，这也就是著名的拜占庭将军问题。</p><h3 id="SAGA"><a href="#SAGA" class="headerlink" title="SAGA"></a>SAGA</h3><p>SAGA算法是一种异步的分布式事务解决方案，其理论基础在于，其假设所有事件按照顺序推进，总能达到系统的最终一致性，因此 saga 需要服务分别定义提交接口以及补偿接口，当某个事务分支失败时，调用其它的分支的补偿接口来进行回滚，saga 的具体实现分为两种：<code>Choreography</code> 以及 <code>Orchestration</code>，</p><p><code>Choreography</code>如下图所示：</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f373cb72b0974122949d28aab928cd18~tplv-k3u1fbpfcp-zoom-1.image"></p><p>这种模式下不存在协调器的概念，每个节点均对自己的上下游负责，在监听处理上游节点事件的同时，对下游节点发布事件。</p><p><code>Orchestration</code>存在中心节点的模式，如下图所示：</p><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2152f4f26c724140a60b8ebe9307d0fb~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png"></p><p>该中心节点，即协调器知道整个事务的分布状态，相比于无中心节点方式，该方式有着许多优点：</p><ul><li>能够避免事务之间的循环依赖关系。</li><li>参与者只需要执行命令 / 回复 (其实回复消息也是一种事件消息)，降低参与者的复杂性。</li><li>在添加新步骤时，事务复杂性保持线性，回滚更容易管理。因此大多数 saga 模型实现均采用了这种思路。</li></ul><p>SAGA 模型的优缺点：</p><ul><li>优点：其降低了事务粒度，使得事务扩展更加容易，同时采用了异步化方式提升性能。</li><li>缺点：很难定义补偿接口，回滚代价高，而且由于 SAGA 在执行过程中采用了先提交后补偿的思路进行操作，所以单个子事务在并发提交时的隔离性很难保证。</li></ul><h3 id="TCC"><a href="#TCC" class="headerlink" title="TCC"></a>TCC</h3><p>TCC(Try-Confirm-Concel) 模型同样是一种补偿性事务，主要分为 Try：检查、保留资源，Confirm：执行事务，Concel：释放资源三个阶段，如下图所示：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/70e1abfce7114227b69308f4c1f1c461~tplv-k3u1fbpfcp-zoom-1.image"></p><p>其中，活动管理器记录了全局事务的推进状态以及各子事务的执行状态，负责推进各个子事务共同进行提交或者回滚。同时负责在子事务处理超时后不停重试，重试不成功后转手工处理，用以保证事务的最终一致性。</p><p>相比于 SAGA 模型，其优缺点在于：</p><ul><li>优点：尝试阶段仅仅只是对业务系统做检测，并保留业务资源，并没有真正提交，所以后续 SAGA 需要针对提交的事务做补偿，而 TCC 则仅仅需要释放保留资源，降低了补偿成本；并且，由于在 Try 阶段对资源进行了保留锁定，所以相比于 SAGA 模式，TCC 模式拥有更高的隔离性。</li><li>缺点：相比于 SAGA 模式，TCC 模式多增加了一个状态，导致在业务开发过程中，复杂度上升，而且协调器与子事务的通信过程增加，状态轮转处理也更为复杂。</li></ul><h2 id="RocketMQ-事务消息"><a href="#RocketMQ-事务消息" class="headerlink" title="RocketMQ 事务消息"></a>RocketMQ 事务消息</h2><p>RocketMQ 事务消息设计则主要是为了解决 Producer 端的消息发送与本地事务执行的原子性问题，RocketMQ 的设计中 broker 与 producer 端的双向通信能力，使得 broker 天生可以作为一个事务协调者存在；而 RocketMQ 本身提供的存储机制，则为事务消息提供了持久化能力；RocketMQ 的高可用机制以及可靠消息设计，则为事务消息在系统在发生异常时，依然能够保证事务的最终一致性达成。</p><h3 id="RocketMQ-事务消息设计"><a href="#RocketMQ-事务消息设计" class="headerlink" title="RocketMQ 事务消息设计"></a>RocketMQ 事务消息设计</h3><p>事务消息作为一种异步确保型事务， 将两个事务分支通过 MQ 进行异步解耦，RocketMQ 事务消息的设计流程同样借鉴了两阶段提交理论，整体交互流程如下图所示：</p><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/27c68fa6ac964eed9d9e25a10eb7bea7~tplv-k3u1fbpfcp-zoom-1.image"></p><ol><li>事务发起方首先发送 prepare 消息到 MQ。</li><li>在发送 prepare 消息成功后执行本地事务。</li><li>根据本地事务执行结果返回 commit 或者是 rollback。</li><li>如果消息是 rollback，MQ 将删除该 prepare 消息不进行下发，如果是 commit 消息，MQ 将会把这个消息发送给 consumer 端。</li><li>如果执行本地事务过程中，执行端挂掉，或者超时，MQ 将会不停的询问其同组的其它 producer 来获取状态。</li><li>Consumer 端的消费成功机制有 MQ 保证。</li></ol><h3 id="RocketMQ事务消息实现"><a href="#RocketMQ事务消息实现" class="headerlink" title="RocketMQ事务消息实现"></a>RocketMQ事务消息实现</h3><p>在具体实现上，RocketMQ 通过使用 Half Topic 以及 Operation Topic 两个内部队列来存储事务消息推进状态，如下图所示：</p><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b90ae2cb2fe64a21bf36ebbd543b64b4~tplv-k3u1fbpfcp-zoom-1.image"></p><p>其中，Half Topic 对应队列中存放着 prepare 消息，Operation Topic 对应的队列则存放了 prepare message 对应的 commit/rollback 消息，消息体中则是 prepare message 对应的 offset，服务端通过比对两个队列的差值来找到尚未提交的超时事务，进行回查。</p><p>在具体实现上，事务消息作为普通消息的一个应用场景，在实现过程中进行了分层抽象，从而避免了对 RocketMQ 原有存储机制的修改，如下图所示：</p><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/851458cfd8b54b1593deacdeee75198e~tplv-k3u1fbpfcp-zoom-1.image"></p><ul><li>在用户侧，用户需要分别实现本地事务执行以及本地事务回查方法，因此只需关注本地事务的执行状态即可；</li><li>在 service 层，对事务消息的两阶段提交进行了抽象，同时针对超时事务实现了回查逻辑，通过不断扫描当前事务推进状态，来不断反向请求 Producer 端获取超时事务的执行状态，在避免事务挂起的同时，也避免了 Producer 端的单点故障。</li><li>在存储层，RocketMQ 通过 Bridge 封装了与底层队列存储的相关操作，用以操作两个对应的内部队列，用户也可以依赖其它存储介质实现自己的 service，RocketMQ 会通过 ServiceProvider 加载进来。</li></ul><blockquote><p>转自：<a href="https://www.infoq.cn/article/2018%2F08%2Frocketmq-4.3-release">RocketMQ 4.3 正式发布，支持分布式事务</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> RocketMQ </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 事务消息 </tag>
+            
+            <tag> RocketMQ </tag>
+            
+            <tag> 2pc </tag>
+            
             <tag> 3PC </tag>
             
-            <tag> TCC </tag>
+            <tag> SAGA </tag>
+            
+            <tag> tcc </tag>
             
         </tags>
       

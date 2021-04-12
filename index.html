@@ -615,54 +615,48 @@
     <div class="post-cover animated fadeIn" style="
             background-image:
             radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/8.jpg);">
+            url(/img/1.jpg);">
     </div>
     <div class="else">
         <p class="animated fadeInDown">
             
-                <a href="/categories/zookeeper">
-                  <b>「 </b>ZOOKEEPER<b> 」</b>
+                <a href="/categories/RocketMQ">
+                  <b>「 </b>ROCKETMQ<b> 」</b>
                 </a>
             
-            八月 15, 2020
+            九月 08, 2020
         </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2020/08/15/zookeeper-zab/" title="Zookeeper ZAB协议" class="posttitle">Zookeeper ZAB协议</a></h3>
+        <h3 class="post-title animated fadeInDown"><a href="/2020/09/08/rocketmq-transaction-message/" title="RocketMQ事务消息" class="posttitle">RocketMQ事务消息</a></h3>
         
             <p class="post-count animated fadeInDown">
                 
                     <span>
                         <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        1.9k
+                        5k
                     </span>
                 
                 
                     <span>
                         <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        2 mins.
+                        5 mins.
                     </span>
                 
                 
             </p>
             
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/zab/" rel="tag">zab</a></li></ul>
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/2pc/" rel="tag">2pc</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/3PC/" rel="tag">3PC</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/SAGA/" rel="tag">SAGA</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/tcc/" rel="tag">tcc</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF/" rel="tag">事务消息</a></li></ul>
             
         
         <div class="md-content animated fadeIn">
             
-                <p>Zookeeper Automic Broadcast(ZAB)，即Zookeeper原子性广播，是Paxos经典实现。</p>
+                <h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><p></p>
+<p>2PC 把事务的执行分为两个阶段，第一个阶段即 prepare 阶段，这个阶段实际上就是投票阶段，协调者向参与者确认是否可以共同提交，再得到全部参与者的所有回答后，协调者向所有的参与者发布共同提交或者共同回滚的指令，用以保证事务达到一致性。    </p>
+<p>2PC 是几乎所有分布式事务算法的基础，后续的分布式事务算法几乎都由此改进而来，其优缺点非常明显：</p>
 <ul>
-<li>looking：选举Leader的状态（崩溃恢复状态下）</li>
-<li>following：跟随者（follower）的状态，服从Leader命令</li>
-<li>leading：当前节点是Leader，负责协调工作。</li>
-<li>observing：observer(观察者)，不参与选举，只读节点。</li>
-</ul>
-<p>崩溃恢复、消息广播</p>
-<p></p>
-<h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><p>leader挂了，需要选举新的leader</p>
-<p></p>
-<p>a.每个server都有一张选票&lt...</p>
+<li>优点：在于已经有较为成熟的实现方案，比如 XA。</li>
+<li>缺点：XA 是一个阻塞协议。服务在投票后需要等待协调器的决定，此时服务会阻塞并锁定资源。由于其阻...</li></ul>
             
-            <span class="read-more"><a href="/2020/08/15/zookeeper-zab/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+            <span class="read-more"><a href="/2020/09/08/rocketmq-transaction-message/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
 </div>

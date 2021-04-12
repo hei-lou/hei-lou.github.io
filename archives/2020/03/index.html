@@ -60,7 +60,7 @@
                 <div class="content animated fadeIn">
                     <div class="set">
                         <h1 style="text-align: center">Archived</h1>
-                        <p style="text-align: center">「 33 」</p>
+                        <p style="text-align: center">「 34 」</p>
                         <ul class="timeline timeline-centered">
                             
                             
@@ -273,6 +273,24 @@ HTTP 请求中的来源识别
 分区容错性 (Partition tolerance): 系统中任意信息的丢失或失败不会影响系统的继续运作。
 
 由 CA...
+                                        </p>
+                                    </div>
+                                </li>
+                            
+                                
+                                <li class="timeline-item">
+                                    <div class="timeline-info">
+                                        <span class="gradient-text">九月 08, 2020</span>
+                                    </div>
+                                    <div class="timeline-marker"></div>
+                                    <div class="timeline-content">
+                                        <a class="timeline-title" target="_self" href="/2020/09/08/rocketmq-transaction-message/">RocketMQ事务消息</a>
+                                        <p>
+                                            分布式事务当前解决方案2PC
+2PC 把事务的执行分为两个阶段，第一个阶段即 prepare 阶段，这个阶段实际上就是投票阶段，协调者向参与者确认是否可以共同提交，再得到全部参与者的所有回答后，协调者向所有的参与者发布共同提交或者共同回滚的指令，用以保证事务达到一致性。    
+2PC 是几乎所有分布式事务算法的基础，后续的分布式事务算法几乎都由此改进而来，其优缺点非常明显：
+
+优点：在于已...
                                         </p>
                                     </div>
                                 </li>

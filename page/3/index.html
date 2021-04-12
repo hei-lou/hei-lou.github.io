@@ -130,54 +130,50 @@
             animation-duration: 2.8s;
             background-image:
                 radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.56), #100e17),
-                url(/img/4.jpg);">
+                url(/img/8.jpg);">
         </div>
     </div>
     
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/并发"><b>「
-                </b>并发<b> 」</b></a>
+            <a href="/categories/源码"><b>「
+                </b>源码<b> 」</b></a>
             
-            九月 05, 2019
+            十月 23, 2019
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/2019/09/05/locksupport/" title="并发编程之LockSupport" class="posttitle">并发编程之LockSupport</a></h3>
+            <a href="/2019/10/23/hashmap-source-code/" title="源码系列-HashMap源码" class="posttitle">源码系列-HashMap源码</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                2.6k
+                10k
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                2 mins.
+                9 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/locksupport/" rel="tag">locksupport</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/park/" rel="tag">park</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E9%94%81/" rel="tag">锁</a></li></ul>
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/resize/" rel="tag">resize</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a></li></ul>
         
         <div class="md-content animated fadeIn">
             
-            <p>LockSupport提供的park/unpark是以线程的角度来设计，真正解耦了线程之间的同步。</p>
-<ul>
-<li><p>park()方法，对当前线程执行阻塞操作，直到获取到可用许可后才解除阻塞，也就相当于当前线程进入阻塞状态。</p>
-<blockquote>
-<p>park 方法还可以在其他任何时间“毫无理由”地返回，因此通常必须在重新检查返回条件的循环里调用此方法。park不会释放当前线程占有的锁资源。</p>
-</blockquote>
-</li>
-<li><p>parkNanos(long)方法，对当前线程执行阻塞操作，等待获取到可用许可后才解除阻塞，最大的等待时间由传入的参数来指定，一旦超过最大时间它也会解除阻塞。</p>
-</li>
-<li><p>parkUntil(long)方法，，对当前线程执行阻塞操作，等待获取到可用许...</p></li></ul>
+            <p>首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。</p>
+<p></p>
+<p>下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。</p>
+<p>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：</p>
+<p></p>
+<p>引入了红黑树是因为它查找、插入、删除的平均时间复杂度为O(log(n))。这是因为当产生hash碰撞时，数据会挂载（尾插），形成链表。链表空间上不连续，逻辑上连续，增删元素快，只需处理节点间的引用，时间复杂度为O(1)，查询慢，需要遍历所有节...</p>
             
-            <span class="read-more"><a href="/2019/09/05/locksupport/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/2019/10/23/hashmap-source-code/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -198,6 +194,57 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/8.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/源码">
+                  <b>「 </b>源码<b> 」</b>
+                </a>
+            
+            十月 23, 2019
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/2019/10/23/hashmap-source-code/" title="源码系列-HashMap源码" class="posttitle">源码系列-HashMap源码</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        10k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        9 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/hashmap/" rel="tag">hashmap</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/resize/" rel="tag">resize</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%BA%90%E7%A0%81/" rel="tag">源码</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p>首先看一下Map家族四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。</p>
+<p></p>
+<p>下面我们主要解读HashMap，结合源码，从存储结构、常用方法分析、扩容以及安全性等方面深入解读HashMap的工作原理。</p>
+<p>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下图所示：</p>
+<p></p>
+<p>引入了红黑树是因为它查找、插入、删除的平均时间复杂度为O(log(n))。这是因为当产生hash碰撞时，数据会挂载（尾插），形成链表。链表空间...</p>
+            
+            <span class="read-more"><a href="/2019/10/23/hashmap-source-code/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
 <div class="post" id="post">
     <div class="post-cover animated fadeIn" style="
             background-image:
@@ -668,59 +715,6 @@
 <li>数据库容量受到物理内存的限制，不能用作海量数据的高性能读写，因此Redis适合的场...</li></ul>
             
             <span class="read-more"><a href="/2019/05/21/redis-basic-knowledge/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/profile.jpg);">
-    </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/Redis">
-                  <b>「 </b>REDIS<b> 」</b>
-                </a>
-            
-            五月 10, 2019
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/2019/05/10/redis-base-data-structure/" title="Redis底层数据结构" class="posttitle">Redis底层数据结构</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        18k
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        16 mins.
-                    </span>
-                
-                
-            </p>
-            
-                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/quicklist/" rel="tag">quicklist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/sds/" rel="tag">sds</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/skiplist/" rel="tag">skiplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/ziplist/" rel="tag">ziplist</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/tags/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="tag">跳跃表</a></li></ul>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <h3 id="简单动态字符串（SDS）"><a href="#简单动态字符串（SDS）" class="headerlink" title="简单动态字符串（SDS）"></a>简单动态字符串（SDS）</h3><p></p>
-<p>相较于C字符串的优点：</p>
-<ul>
-<li>常数复杂度获取字符串长度。</li>
-<li>杜绝缓冲区溢出。C字符串不记录自身长度容易造成缓冲区溢出，<code>SDS</code>修改时，API会自动将<code>SDS</code>的空间扩展至执行修改所需的大小，然后才执行实际的修改操作。</li>
-<li>减少修改字符串时带来的内存重分配次数。<code>SDS</code>采用空间预分配（<code>增长操作</code>）和惰性释放（<code>缩短操作</code>）</li>
-<li>二进制安全。C字符串只能保存文本数据，而不能保存像图片、音频、视频、压缩文件这样的二进制数据。<code>SDS</code>可以保存任意格式的二进制数据。</li>
-<li>兼容部分C字符串函数，避免了不必要的代码重...</li></ul>
-            
-            <span class="read-more"><a href="/2019/05/10/redis-base-data-structure/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
 </div>
